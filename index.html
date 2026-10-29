@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Mojang.kebaya – Sewa Kebaya Cantik Sukabumi</title>
-    <meta name="description" content="Mojang.kebaya – Sewa kebaya cantik di Kota Sukabumi. 5 series eksklusif, 15 pilihan warna, full payet, free laundry & resize.">
+    <title>Mojang.kebaya – Sewa Kebaya Sukabumi, Kirim se-Pulau Jawa</title>
+    <meta name="description" content="Mojang.kebaya – Sewa kebaya full payet dari Sukabumi, bisa dikirim ke seluruh Pulau Jawa. 5 series eksklusif, 15 pilihan warna, free laundry & resize.">
     <meta name="theme-color" content="#1F1512">
     <!-- Cover link saat dibagikan di WhatsApp / Instagram / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Mojang.kebaya">
     <meta property="og:locale" content="id_ID">
     <meta property="og:url" content="https://mojang-kebaya.vercel.app/">
-    <meta property="og:title" content="Mojang.kebaya – Sewa Kebaya Cantik Sukabumi">
-    <meta property="og:description" content="Sewa kebaya cantik di Kota Sukabumi. Koleksi terbaru: Geulis Burgundy & Aruni Blush Pink.">
+    <meta property="og:title" content="Mojang.kebaya – Sewa Kebaya Sukabumi, Kirim se-Pulau Jawa">
+    <meta property="og:description" content="Sewa kebaya cantik dari Sukabumi, kirim ke seluruh Pulau Jawa. Koleksi terbaru: Geulis Burgundy & Aruni Blush Pink.">
     <meta property="og:image" content="https://mojang-kebaya.vercel.app/image/cover-link.jpg">
     <meta property="og:image:type" content="image/jpeg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Mojang.kebaya – Sewa Kebaya Sukabumi">
+    <meta property="og:image:alt" content="Mojang.kebaya – Sewa Kebaya Sukabumi, Kirim se-Pulau Jawa">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://mojang-kebaya.vercel.app/image/cover-link.jpg">
 
@@ -32,6 +32,8 @@
     <link rel="stylesheet" href="assets/css/loader.css">
     <link rel="stylesheet" href="assets/css/experience.css">
     <noscript><style>.arch-ph{opacity:.5;z-index:0}.arch img,.detail-img img{z-index:1}</style></noscript>
+    <!-- Section "Sewa Luar Kota" memakai gaya S&K; ini hanya untuk baris tombolnya -->
+    <style>.sec-ship .ship-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:clamp(32px,5vw,56px)}</style>
 
     <link rel="icon" type="image/svg+xml" href="image/logo/favicon.svg">
     <link rel="icon" type="image/png" sizes="48x48" href="image/logo/favicon-48.png">
@@ -50,12 +52,19 @@
         "streetAddress": "Jl. Pelabuan 2, Gg. Dayeuhluhur, Warudoyong",
         "addressLocality": "Sukabumi",
         "addressRegion": "Jawa Barat",
-        "postalCode": "43165",
+        "postalCode": "43133",
         "addressCountry": "ID"
       },
       "priceRange": "Rp300.000 - Rp400.000",
-      "description": "Sewa kebaya cantik di Sukabumi, banyak pilihan warna, dan desain elegan.",
-      "areaServed": { "@type": "City", "name": "Sukabumi" },
+      "description": "Sewa kebaya cantik full payet di Sukabumi, bisa dikirim ke seluruh Pulau Jawa. Banyak pilihan warna dan desain elegan.",
+      "areaServed": [
+        { "@type": "AdministrativeArea", "name": "Banten" },
+        { "@type": "AdministrativeArea", "name": "DKI Jakarta" },
+        { "@type": "AdministrativeArea", "name": "Jawa Barat" },
+        { "@type": "AdministrativeArea", "name": "Jawa Tengah" },
+        { "@type": "AdministrativeArea", "name": "DI Yogyakarta" },
+        { "@type": "AdministrativeArea", "name": "Jawa Timur" }
+      ],
       "openingHoursSpecification": {
         "@type": "OpeningHoursSpecification",
         "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
@@ -97,6 +106,7 @@
             <a href="#koleksi" data-go="koleksi">Koleksi</a>
             <a href="katalog.html">Katalog</a>
             <a href="#cara-sewa">Cara Sewa</a>
+            <a href="#luar-kota">Luar Kota</a>
         </nav>
         <a class="hdr-cta" href="https://wa.me/628985555506" target="_blank" rel="noopener">Booking (WA) <span aria-hidden="true">↗</span></a>
         <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="mnav">Menu</button>
@@ -110,9 +120,10 @@
         <li><a href="#koleksi" data-go="koleksi"><span>01</span>Koleksi</a></li>
         <li><a href="katalog.html"><span>02</span>Katalog</a></li>
         <li><a href="#cara-sewa"><span>03</span>Cara Sewa</a></li>
-        <li><a href="#momen" data-go="momen"><span>04</span>Momen</a></li>
-        <li><a href="#syarat"><span>05</span>S&amp;K</a></li>
-        <li><a href="#kontak"><span>06</span>Booking</a></li>
+        <li><a href="#luar-kota"><span>04</span>Luar Kota</a></li>
+        <li><a href="#momen" data-go="momen"><span>05</span>Momen</a></li>
+        <li><a href="#syarat"><span>06</span>S&amp;K</a></li>
+        <li><a href="#kontak"><span>07</span>Booking</a></li>
     </ul>
     <div class="mnav-foot"><a href="https://instagram.com/mojang.kebaya" target="_blank" rel="noopener">Instagram ↗</a><a href="https://wa.me/628985555506" target="_blank" rel="noopener">WhatsApp ↗</a></div>
 </div>
@@ -132,9 +143,9 @@
 
         <!-- 01 · POTRET (hero) -->
         <div class="ch ch-hero hero is-on" data-ch="0">
-            <p class="eyebrow">Sewa Kebaya Cantik <i></i> Full Payet <i></i> Sukabumi</p>
+            <p class="eyebrow">Sewa Kebaya Full Payet <i></i> Sukabumi <i></i> Kirim se-Pulau Jawa</p>
             <h1 class="h-display split">Cantik itu Kamu<br>Kebayanya <em>Kami.</em></h1>
-            <p class="lede"><span data-count="series">05</span> series eksklusif, <span data-count="all">15</span> pilihan warna — full payet, free laundry &amp; free resize.</p>
+            <p class="lede"><span data-count="series">05</span> series eksklusif, <span data-count="all">15</span> pilihan warna — full payet, free laundry &amp; free resize. Ambil di Sukabumi atau kirim ke seluruh Pulau Jawa.</p>
             <div class="cta-row">
                 <a class="btn btn-gold" href="#koleksi" data-go="koleksi">Jelajahi Koleksi <span aria-hidden="true">→</span></a>
                 <a class="btn btn-ghost" href="https://wa.me/628985555506" target="_blank" rel="noopener">Booking via WhatsApp <span aria-hidden="true">↗</span></a>
@@ -218,7 +229,7 @@
         <div class="ch ch-center" data-ch="5">
             <p class="ch-no">06 <i></i> Sewa</p>
             <h2 class="ch-title split">Siap untuk<br>hari <em>Anda?</em></h2>
-            <p class="ch-body">Pilih tanggal, chat WhatsApp, bayar DP — kebaya siap diambil atau dikirim.</p>
+            <p class="ch-body">Pilih tanggal, chat WhatsApp, bayar DP — kebaya siap diambil di Sukabumi atau dikirim ke seluruh Pulau Jawa.</p>
             <div class="cta-row">
                 <a class="btn btn-gold" href="#cara-sewa">Lihat cara sewa <span aria-hidden="true">↓</span></a>
                 <a class="btn btn-ghost" href="katalog.html">Buka katalog</a>
@@ -280,11 +291,47 @@
             <li class="rv"><span class="flow-no">02</span><b>Chat WhatsApp</b><p>0898 5555 506.</p></li>
             <li class="rv"><span class="flow-no">03</span><b>Bayar DP</b><p>Min. Rp 100.000 ke BCA.</p></li>
             <li class="rv"><span class="flow-no">04</span><b>Pelunasan</b><p>Paling lambat H-3.</p></li>
-            <li class="rv"><span class="flow-no">05</span><b>Ambil / kirim</b><p>Gallery Sukabumi atau dikirim.</p></li>
+            <li class="rv"><span class="flow-no">05</span><b>Ambil / kirim</b><p>Gallery Sukabumi atau kirim se-Pulau Jawa.</p></li>
         </ol>
         <div class="flow-cta rv">
             <a class="btn btn-gold" href="katalog.html">Pilih kebaya di katalog <span aria-hidden="true">→</span></a>
             <a class="btn btn-ghost" href="https://wa.me/628985555506" target="_blank" rel="noopener">Chat WhatsApp <span aria-hidden="true">↗</span></a>
+        </div>
+    </div>
+</section>
+
+<!-- ═════════ SEWA LUAR KOTA · KIRIM SE-PULAU JAWA ═════════ -->
+<section class="sec sec-snk sec-ship" id="luar-kota">
+    <div class="wrap">
+        <div class="sec-label"><span>Sewa Luar Kota</span><span>Kirim se-Pulau Jawa</span></div>
+        <div class="snk-top">
+            <h2 class="big split">Dari Sukabumi ke<br>seluruh <em>Pulau Jawa</em></h2>
+            <dl class="snk-key">
+                <div class="rv"><dt>Jangkauan</dt><dd>6 Provinsi</dd></div>
+                <div class="rv"><dt>Kebaya tiba</dt><dd>H-1</dd></div>
+            </dl>
+        </div>
+        <div class="snk-cols">
+            <div class="snk-col rv">
+                <p class="snk-h"><span>01</span>Area pengiriman</p>
+                <ul><li><strong>Banten</strong> &amp; <strong>DKI Jakarta</strong></li><li><strong>Jawa Barat</strong></li><li><strong>Jawa Tengah</strong> &amp; <strong>DI Yogyakarta</strong></li><li><strong>Jawa Timur</strong></li></ul>
+            </div>
+            <div class="snk-col rv">
+                <p class="snk-h"><span>02</span>Fitting jarak jauh</p>
+                <ul><li>Kirim <strong>foto + ukuran LD</strong> via WhatsApp</li><li>Kami cocokkan dengan ukuran kebaya pilihan Anda</li><li>Resize <strong>gratis</strong>, konfirmasi min. <strong>3 hari sebelum</strong></li></ul>
+            </div>
+            <div class="snk-col rv">
+                <p class="snk-h"><span>03</span>Pengiriman</p>
+                <ul><li>Kebaya tiba <strong>H-1</strong> sebelum hari pakai</li><li>Biaya pengiriman ditanggung <strong>penyewa</strong></li><li>Tanyakan estimasi ongkir ke kota Anda via WhatsApp</li></ul>
+            </div>
+            <div class="snk-col rv">
+                <p class="snk-h"><span>04</span>Pengembalian</p>
+                <ul><li>Dikembalikan <strong>H+1</strong>, maks. pukul <strong>12.00 WIB</strong></li><li><strong>Tidak perlu dicuci</strong>, laundry gratis dari kami</li></ul>
+            </div>
+        </div>
+        <div class="ship-cta rv">
+            <a class="btn btn-gold" href="https://wa.me/628985555506?text=Halo%20Mojang.kebaya%2C%20saya%20mau%20sewa%20kebaya%20untuk%20dikirim%20ke%20luar%20kota.%0AKota%20tujuan%3A%20...%0ATanggal%20acara%3A%20...%0AUkuran%20LD%3A%20..." target="_blank" rel="noopener">Tanya ongkir ke kota Anda <span aria-hidden="true">↗</span></a>
+            <a class="btn btn-ghost" href="katalog.html">Pilih kebaya di katalog <span aria-hidden="true">→</span></a>
         </div>
     </div>
 </section>
@@ -309,7 +356,7 @@
         <div class="two-r acc">
             <details><summary><span class="no">01</span>Berapa lama masa sewa?<span class="pm"></span></summary><div class="ans"><strong>3 hari</strong>: H-1 ambil, hari H pakai, H+1 kembali. Batas kembali Sukabumi 16.00 WIB, luar kota 12.00 WIB.</div></details>
             <details><summary><span class="no">02</span>Bagaimana kalau ukurannya tidak pas?<span class="pm"></span></summary><div class="ans">Resize <strong>gratis</strong>. Cek ukuran Lingkar Dada (LD) di detail kebaya, lalu konfirmasi resize minimal <strong>3 hari sebelum</strong> tanggal sewa.</div></details>
-            <details><summary><span class="no">03</span>Bisa pesan dari luar kota?<span class="pm"></span></summary><div class="ans">Bisa. Fitting via foto + ukuran LD di WhatsApp. Kebaya tiba H-1, ongkir ditanggung penyewa.</div></details>
+            <details><summary><span class="no">03</span>Bisa pesan dari luar kota?<span class="pm"></span></summary><div class="ans">Bisa, kami kirim ke <strong>seluruh Pulau Jawa</strong>. Fitting via foto + ukuran LD di WhatsApp. Kebaya tiba H-1, ongkir ditanggung penyewa. <a class="ulink" href="#luar-kota">Lihat sewa luar kota ↑</a></div></details>
             <details><summary><span class="no">04</span>Kalau batal, DP kembali?<span class="pm"></span></summary><div class="ans"><strong>Tidak.</strong> DP tidak dapat dikembalikan jika penyewa membatalkan. Perubahan jadwal bisa 1 kali.</div></details>
             <details><summary><span class="no">05</span>Bagaimana jika kebaya rusak?<span class="pm"></span></summary><div class="ans">Penyewa bertanggung jawab penuh. Kerusakan/hilang dikenakan <strong>ganti rugi 2× harga kebaya</strong>.</div></details>
         </div>
@@ -334,7 +381,7 @@
             </div>
             <div class="snk-col rv">
                 <p class="snk-h"><span>02</span>Durasi &amp; pengambilan</p>
-                <ul><li>Masa sewa <strong>3 hari</strong>: H-1 ambil, hari H pakai, H+1 kembali</li><li>Luar kota: kebaya tiba <strong>H-1</strong> sebelum hari pakai</li><li>Pengembalian luar kota maks pukul <strong>12.00 WIB</strong></li><li>Pengembalian Sukabumi maks pukul <strong>16.00 WIB</strong></li><li>Biaya pengiriman ditanggung <strong>penyewa</strong></li></ul>
+                <ul><li>Masa sewa <strong>3 hari</strong>: H-1 ambil, hari H pakai, H+1 kembali</li><li>Pengiriman ke <strong>seluruh Pulau Jawa</strong>, kebaya tiba <strong>H-1</strong> sebelum hari pakai</li><li>Pengembalian luar kota maks pukul <strong>12.00 WIB</strong></li><li>Pengembalian Sukabumi maks pukul <strong>16.00 WIB</strong></li><li>Biaya pengiriman ditanggung <strong>penyewa</strong></li></ul>
             </div>
             <div class="snk-col rv">
                 <p class="snk-h"><span>03</span>Perawatan &amp; tanggung jawab</p>
@@ -358,6 +405,7 @@
             <div class="contact-side">
                 <a href="https://wa.me/628985555506" target="_blank" rel="noopener"><span>WhatsApp</span><span>0898 5555 506 ↗</span></a>
                 <a href="https://instagram.com/mojang.kebaya" target="_blank" rel="noopener"><span>Instagram</span><span>@mojang.kebaya ↗</span></a>
+                <a href="#luar-kota"><span>Pengiriman</span><span>Seluruh Pulau Jawa ↑</span></a>
             </div>
             <p class="contact-note">Formulir ini membuka WhatsApp dengan pesan yang sudah terisi. Booking baru terkonfirmasi setelah DP diterima.</p>
         </div>
@@ -366,7 +414,7 @@
             <div class="fld"><label for="fTgl">Tanggal acara</label><input id="fTgl" name="tanggal" type="date" required></div>
             <div class="fld"><label for="fKebaya">Kebaya</label><select id="fKebaya" name="kebaya"><option value="">Belum memilih</option></select></div>
             <div class="fld"><label for="fAcara">Acara</label><select id="fAcara" name="acara"><option>Wisuda</option><option>Lamaran</option><option>Resepsi</option><option>Lainnya</option></select></div>
-            <div class="fld full"><label for="fCat">Catatan</label><textarea id="fCat" name="catatan" rows="2" placeholder="Ukuran LD, luar kota, dll."></textarea></div>
+            <div class="fld full"><label for="fCat">Catatan</label><textarea id="fCat" name="catatan" rows="2" placeholder="Ukuran LD, kota tujuan jika dikirim, dll."></textarea></div>
             <button class="submit" type="submit"><span>Kirim via WhatsApp</span><span aria-hidden="true">↗</span></button>
         </form>
     </div>
@@ -382,8 +430,8 @@
             <p>Kebaya premium<br>harga affordable</p>
         </div>
         <div><h4>Series</h4><a href="katalog.html?series=aruni">Aruni</a><a href="katalog.html?series=kinasih">Kinasih</a><a href="katalog.html?series=niskala">Niskala</a><a href="katalog.html?series=puspa">Puspa</a><a href="katalog.html?series=geulis">Geulis</a></div>
-        <div><h4>Navigasi</h4><a href="#baru">Koleksi Baru</a><a href="katalog.html">Katalog</a><a href="#cara-sewa">Cara Sewa</a><a href="#faq">FAQ</a><a href="#syarat">Syarat &amp; Ketentuan</a></div>
-        <div><h4>Sosial / Kota</h4><a href="https://instagram.com/mojang.kebaya" target="_blank" rel="noopener">Instagram ↗</a><a href="https://wa.me/628985555506" target="_blank" rel="noopener">WhatsApp ↗</a><p class="foot-addr">Jl. Pelabuan 2, Gg. Dayeuhluhur<br>Warudoyong, Sukabumi 43133<br>Setiap hari 09.00 – 21.00</p></div>
+        <div><h4>Navigasi</h4><a href="#baru">Koleksi Baru</a><a href="katalog.html">Katalog</a><a href="#cara-sewa">Cara Sewa</a><a href="#luar-kota">Sewa Luar Kota</a><a href="#faq">FAQ</a><a href="#syarat">Syarat &amp; Ketentuan</a></div>
+        <div><h4>Sosial / Kota</h4><a href="https://instagram.com/mojang.kebaya" target="_blank" rel="noopener">Instagram ↗</a><a href="https://wa.me/628985555506" target="_blank" rel="noopener">WhatsApp ↗</a><p class="foot-addr">Jl. Pelabuan 2, Gg. Dayeuhluhur<br>Warudoyong, Sukabumi 43133<br>Setiap hari 09.00 – 21.00<br>Kirim ke seluruh Pulau Jawa</p></div>
     </div>
     <p class="wordmark" aria-hidden="true">Mojang.kebaya</p>
     <div class="wrap foot-bot"><span>© <span data-year></span> Mojang.kebaya</span><a href="#home" data-go="potret">Kembali ke atas ↑</a></div>

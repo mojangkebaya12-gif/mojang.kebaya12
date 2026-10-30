@@ -123,8 +123,8 @@ if (chips) {
 
 
 /* ── 4. DETAIL & MOMEN ─────────────────────────────────────── */
-// kebaya yang ditampilkan di bab "Detail" — ganti key di sini (format: series-warna)
-const fav = byKey('geulis-rose-gold') || ITEMS[0];
+// kebaya di bab "Detail" dipilih di data.js dengan opsi { detail: true }
+const fav = ITEMS.find(i => i.detail) || ITEMS.find(i => i.fav === 1) || ITEMS[0];
 const detail = $('#detail');
 if (detail && fav) {
   const img = $('img', detail);

@@ -123,7 +123,7 @@ if (chips) {
 
 
 /* ── 4. DETAIL & MOMEN ─────────────────────────────────────── */
-const fav = ITEMS.find(i => i.fav === 1) || byKey('aruni-creamy-nude') || ITEMS[0];
+const fav = ITEMS.find(i => i.fav === 1) || byKey('geulis-baby-pink') || ITEMS[0];
 const detail = $('#detail');
 if (detail && fav) {
   const img = $('img', detail);

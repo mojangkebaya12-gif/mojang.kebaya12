@@ -41,6 +41,7 @@ const FAMILIES = {
    opsi (boleh dikosongkan):
      new: true    → label "Baru" + tampil di "Koleksi Baru"
      fav: 1..n    → urutan di "Foto customer" homepage
+     detail: true → tampil di bab "Detail" homepage (pilih SATU kebaya saja)
      foto: '…'    → jika nama file foto tidak mengikuti aturan di bawah,
                     tulis '<folder>/<nama-file>' tanpa .png
      ld: '…'      → jika ukuran LD kebaya ini berbeda dari series-nya
@@ -62,7 +63,7 @@ const KEBAYA = [
   ['niskala', 'Ice Blue',      350, '#BED6E4', 'biru'],
   ['puspa',   'Mahogany',      350, '#5A2A1E', 'netral'],
   ['geulis',  'Baby Pink',     390, '#F2C6D0', 'pink',   { foto: 'elysian/elysian-baby-pink' }],
-  ['geulis',  'Rose Gold',     400, '#C99A86', 'nude'],
+  ['geulis',  'Rose Gold',     400, '#C99A86', 'nude',   { detail: true }],
   ['geulis',  'Butter Yellow', 390, '#EFD98F', 'kuning'],
   ['geulis',  'Creamy Nude',   390, '#E6D2BC', 'nude'],
 ];
@@ -107,6 +108,7 @@ const ITEMS = KEBAYA.map(([s, color, price, hex, fam, o = {}], id) => {
     series: ser.name,
     isNew: !!o.new,
     fav: o.fav || 0,
+    detail: !!o.detail,
     priceTxt: 'Rp ' + (price * 1000).toLocaleString('id-ID'),
     img: `image/${foto}.png`,
     photos: [1, 2, 3, 4, 5].map(n => `image/foto-customer/${file}/${n}.jpeg`),

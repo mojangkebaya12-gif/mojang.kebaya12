@@ -11,6 +11,7 @@ const KONTAK = {
   wa: '628985555506',           // WhatsApp 0898 5555 506 (format 62…)
   waTxt: '0898 5555 506',
   ig: 'mojang.kebaya',
+  tiktok: 'mojang.kebaya',
 };
 
 /* ── SERIES ─────────────────────────────────────────────────────
@@ -56,7 +57,7 @@ const KEBAYA = [
   ['aruni',   'Navy',          350, '#1F2A4A', 'biru',   { extra: 2, cust: 4 }],
   ['aruni',   'Nude Pink',     350, '#DDB3A7', 'pink',   { extra: 4, cust: 5 }],
   ['aruni',   'Emerald',       350, '#11605E', 'hijau',  { extra: 3 }],
-  ['kinasih', 'Grey',          350, '#9A9A98', 'netral', { cust: 5 }],
+  ['kinasih', 'Grey',          300, '#9A9A98', 'netral', { cust: 5 }],
   ['kinasih', 'Ice Blue',      350, '#B9D3E2', 'biru',   { cust: 4 }],
   ['kinasih', 'Maroon',        350, '#5E1A22', 'merah',  { cust: 4 }],
   ['niskala', 'Ice Blue',      350, '#BED6E4', 'biru',   { extra: 1, cust: 4 }],

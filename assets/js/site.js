@@ -10,6 +10,10 @@ const $ = s => document.querySelector(s);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const waLink = msg => `https://wa.me/${KONTAK.wa}?text=${encodeURIComponent(msg)}`;
 const hideBroken = img => { img.onerror = () => img.closest('[data-photo]')?.remove(); };
+const minPrice = Math.min(...ITEMS.map(i => i.price));
+const rb = p => `${p}rb`;
+// foto kedua yang muncul saat kursor diarahkan ke kartu (desktop)
+const altPhoto = i => i.photos[1] ? i.photos[1].replace('image/kebaya/', 'image/kebaya/thumb/') : (i.cust[0] || '');
 
 /* ── State filter (ikut tersimpan di URL supaya bisa dibagikan) ─
    Tetap mendukung link lama: ?series=aruni  ?warna=nude,pink  ?baru=1 */
@@ -66,9 +70,11 @@ function renderGrid() {
     <li class="card">
       <button class="card-btn" type="button" data-key="${i.key}" aria-label="Lihat detail ${esc(i.name)}, ${i.priceTxt}">
         <div class="card-img">
-          <img src="${i.thumb}" alt="Kebaya ${esc(i.name)}" width="480" height="640" ${n > 3 ? 'loading="lazy"' : 'fetchpriority="high"'} decoding="async">
-          ${i.isNew ? '<span class="badge">Baru</span>' : ''}
+          <img src="${i.thumb}" alt="Kebaya ${esc(i.name)}" width="480" height="640" ${n > 3 ? 'loading="lazy"' : ''} decoding="async">
+          ${altPhoto(i) ? `<img class="alt" src="${altPhoto(i)}" alt="" loading="lazy" decoding="async">` : ''}
+          ${i.isNew ? '<span class="badge">Baru</span>' : i.price === minPrice ? '<span class="badge deal">Hemat</span>' : ''}
           ${i.photos.length + i.cust.length > 1 ? `<span class="count">${i.photos.length + i.cust.length} foto</span>` : ''}
+          <span class="card-view">Lihat detail</span>
         </div>
         <div class="card-meta">
           <div class="card-series"><i style="background:${i.hex}"></i>${esc(i.series)}</div>
@@ -240,19 +246,71 @@ $('#dCalBtn').addEventListener('click', () => {
 const reelItems = ITEMS.filter(i => i.cust.length).flatMap(i => i.cust.slice(0, 2).map(src => ({ i, src })));
 $('#reel').innerHTML = reelItems.map(({ i, src }) => `
   <li data-photo><button type="button" data-key="${i.key}">
-    <img src="${src}" alt="Customer memakai ${esc(i.name)}" loading="lazy" decoding="async" width="230" height="307">
-    <span>${esc(i.name)}</span>
+    <span class="r-img"><img src="${src}" alt="Customer memakai ${esc(i.name)}" loading="lazy" decoding="async" width="260" height="347"></span>
+    <span class="r-name">${esc(i.name)}</span>
   </button></li>`).join('');
 $('#reel').querySelectorAll('img').forEach(hideBroken);
 
-/* ── Link WhatsApp umum ── */
+/* ── Series: kartu di halaman utama & daftar di footer ── */
+const seriesInfo = Object.entries(SERIES).map(([k, ser], n) => {
+  const list = ITEMS.filter(i => i.s === k);
+  const cover = list.find(i => i.isNew) || list[0];
+  return { k, ser, n, list, cover, min: Math.min(...list.map(i => i.price)) };
+}).filter(x => x.list.length);
+
+$('#seriesList').innerHTML = seriesInfo.map(({ k, ser, n, list, cover, min }) => `
+  <li class="reveal"><button type="button" data-go-series="${k}" aria-label="Lihat series ${esc(ser.name)}">
+    <span class="s-img"><img src="${cover.thumb}" alt="" loading="lazy" decoding="async"></span>
+    <span class="s-no">0${n + 1}</span>
+    <span class="s-name">${esc(ser.name)}</span>
+    <span class="s-meta">${list.length} warna · mulai ${rb(min)}</span>
+    <span class="s-dots">${list.map(i => `<i style="background:${i.hex}"></i>`).join('')}</span>
+  </button></li>`).join('');
+$('#footSeries').innerHTML = seriesInfo.map(({ k, ser }) =>
+  `<li><a href="?series=${k}#katalog" data-go-series="${k}">${esc(ser.name)}</a></li>`).join('');
+
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-go-series]'); if (!b) return;
+  e.preventDefault();
+  Object.assign(state, { series: b.dataset.goSeries, fam: [], baru: false });
+  update();
+  $('#katalog').scrollIntoView({ behavior: 'smooth' });
+});
+
+/* ── Angka di hero ── */
+$('#statCount').textContent = ITEMS.length;
+$('#statSeries').textContent = seriesInfo.length;
+$('#statMin').textContent = rb(minPrice);
+
+/* ── Link WhatsApp, Instagram & TikTok ── */
 document.querySelectorAll('.js-wa').forEach(a => {
   const msg = a.dataset.msg ? decodeURIComponent(a.dataset.msg) : 'Halo Mojang.kebaya, saya mau tanya sewa kebaya.';
   a.href = waLink(msg);
 });
+document.querySelectorAll('.js-ig').forEach(a => { a.href = `https://instagram.com/${KONTAK.ig}`; });
+document.querySelectorAll('.js-tt').forEach(a => { a.href = `https://www.tiktok.com/@${KONTAK.tiktok}`; });
+$('#footTerms').addEventListener('click', () => { $('#syarat').open = true; });
 
-$('#countAll').textContent = ITEMS.length;
 $('#year').textContent = new Date().getFullYear();
+
+/* ── Animasi muncul saat digulir ── */
+if ('IntersectionObserver' in window) {
+  const io = new IntersectionObserver(entries => entries.forEach(en => {
+    if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+  }), { rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // tombol Chat melayang disembunyikan saat ajakan & footer terlihat (tombolnya sudah ada di sana)
+  const fab = $('.fab');
+  const seen = new Set();
+  const fo = new IntersectionObserver(entries => {
+    entries.forEach(en => en.isIntersecting ? seen.add(en.target) : seen.delete(en.target));
+    fab.classList.toggle('hide', seen.size > 0);
+  });
+  document.querySelectorAll('.cta, .foot').forEach(el => fo.observe(el));
+} else {
+  document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+}
 
 /* ── Mulai ── */
 update();

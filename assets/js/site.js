@@ -68,20 +68,20 @@ function filtered() {
 function renderGrid() {
   const list = filtered();
   $('#grid').innerHTML = list.map((i, n) => `
-    <li class="card">
+    <li class="card" style="--i:${Math.min(n, 8)}">
       <button class="card-btn" type="button" data-key="${i.key}" aria-label="Lihat detail ${esc(i.name)}, ${i.priceTxt}">
         <div class="card-img">
           <img src="${i.thumb}" alt="Kebaya ${esc(i.name)}" width="480" height="640" ${n > 3 ? 'loading="lazy"' : ''} decoding="async">
           ${altPhoto(i) ? `<img class="alt" src="${altPhoto(i)}" alt="" loading="lazy" decoding="async">` : ''}
           ${i.isNew ? '<span class="badge">Baru</span>' : i.price === minPrice ? '<span class="badge deal">Hemat</span>' : ''}
           ${i.photos.length + i.cust.length > 1 ? `<span class="count">${i.photos.length + i.cust.length} foto</span>` : ''}
-          <span class="card-view">Lihat detail</span>
         </div>
         <div class="card-meta">
           <div class="card-series"><i style="background:${i.hex}"></i>${SERIES[i.s].unggulan ? '✦ ' : ''}${esc(i.series)}</div>
           <div class="card-name">${esc(i.color)}</div>
           <div class="card-price">${i.priceTxt} <small>/ 3 hari</small></div>
           ${i.ld ? `<div class="card-ld">${esc(i.ld)}</div>` : ''}
+          <span class="card-cta">Lihat detail <svg width="12" height="12" aria-hidden="true"><use href="#i-arrow"/></svg></span>
         </div>
       </button>
     </li>`).join('');
@@ -364,7 +364,7 @@ $('#shipForm').addEventListener('submit', e => {
 /* ── Angka di hero ── */
 $('#statCount').textContent = ITEMS.length;
 $('#statSeries').textContent = seriesInfo.length;
-$('#statMin').textContent = rb(minPrice);
+$('#statMin').textContent = minPrice;
 
 /* ── Link WhatsApp, Instagram & TikTok ── */
 document.querySelectorAll('.js-wa').forEach(a => {
@@ -376,6 +376,43 @@ document.querySelectorAll('.js-tt').forEach(a => { a.href = `https://www.tiktok.
 $('#footTerms').addEventListener('click', () => { $('#syarat').open = true; });
 
 $('#year').textContent = new Date().getFullYear();
+
+/* ── Angka menghitung naik di hero ── */
+const reduceAll = matchMedia('(prefers-reduced-motion: reduce)').matches;
+document.querySelectorAll('[data-count]').forEach(el => {
+  const end = +el.textContent;
+  el.dataset.end = end;
+  if (reduceAll || !end) return;
+  const t0 = performance.now() + 700, dur = 1200;
+  el.textContent = '0';
+  const tick = now => {
+    const p = Math.min(1, Math.max(0, (now - t0) / dur));
+    el.textContent = Math.round(end * (1 - Math.pow(1 - p, 3)));
+    if (p < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+  setTimeout(() => { el.textContent = end; }, 700 + dur + 150);   // pastikan angka akhir selalu tampil
+});
+
+/* ── Header & garis progres baca ── */
+const topBar = $('#top'), prog = $('#progress');
+function onScroll() {
+  const max = document.documentElement.scrollHeight - innerHeight;
+  prog.style.transform = `scaleX(${max > 0 ? scrollY / max : 0})`;
+  topBar.classList.toggle('scrolled', scrollY > 40);
+}
+onScroll();
+addEventListener('scroll', onScroll, { passive: true });
+
+/* ── Pengaman animasi: jika jam animasi browser tidak berjalan
+   (tab di latar belakang, mode hemat daya, perekam layar), tampilkan semua konten langsung ── */
+const t0anim = document.timeline ? document.timeline.currentTime : null;
+setTimeout(() => {
+  if (document.timeline && document.timeline.currentTime - t0anim < 300) {
+    document.documentElement.classList.remove('anim');
+    document.querySelectorAll('[data-count]').forEach(el => { el.textContent = el.dataset.end; });
+  }
+}, 1800);
 
 /* ── Animasi muncul saat digulir ── */
 function revealCheck() {

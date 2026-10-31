@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Mojang.kebaya – Sewa Kebaya Full Payet Sukabumi, Kirim se-Pulau Jawa</title>
   <meta name="description" content="Sewa kebaya full payet Mojang.kebaya Sukabumi: 15 pilihan warna mulai Rp300.000, free laundry & free resize. Ambil di Sukabumi atau kirim ke seluruh Pulau Jawa.">
-  <meta name="theme-color" content="#140E0C">
+  <meta name="theme-color" content="#3F0F1C">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Mojang.kebaya">
   <meta property="og:locale" content="id_ID">
@@ -16,9 +16,11 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;0,600;1,500;1,600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="image/kebaya/geulis-burgundy.jpg" fetchpriority="high">
   <link rel="stylesheet" href="assets/css/site.css">
+  <!-- animasi hanya aktif jika browser benar-benar memutarnya; konten tetap tampil tanpa animasi -->
+  <script>if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('anim');</script>
 
   <link rel="icon" type="image/svg+xml" href="image/logo/favicon.svg">
   <link rel="icon" type="image/png" sizes="48x48" href="image/logo/favicon-48.png">
@@ -50,19 +52,39 @@
 </head>
 <body>
 
-<!-- Ikon (dipakai ulang di header, footer & tombol) -->
+<!-- Ikon garis (SVG, dipakai ulang di seluruh halaman) -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></symbol>
   <symbol id="i-ig" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/></g><circle cx="17.4" cy="6.6" r="1.2" fill="currentColor"/></symbol>
   <symbol id="i-tt" viewBox="0 0 24 24"><path fill="currentColor" d="M12.5.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></symbol>
-  <symbol id="i-arrow" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+  <symbol id="i-drop" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5s6 6.2 6 10.3a6 6 0 0 1-12 0C6 9.7 12 3.5 12 3.5Z"/><path d="M9.5 14.5a2.6 2.6 0 0 0 2.5 2.4"/></g></symbol>
+  <symbol id="i-tape" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="6.5"/><circle cx="10" cy="10" r="2"/><path d="M16.5 10v9.5H21M13 19.5h1.5M10 19.5h1"/></g></symbol>
+  <symbol id="i-hanger" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6.5A2 2 0 1 1 12 8.5v1.6"/><path d="M12 10.1 3.4 16.3c-.8.6-.4 1.7.6 1.7h16c1 0 1.4-1.1.6-1.7L12 10.1Z"/></g></symbol>
+  <symbol id="i-truck" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.5h11v9.5h-11zM13.5 10h4l3 3v3h-7"/><circle cx="6.5" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></g></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></g></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16v10H9.5L5 19.5v-4H4z"/><path d="M8 10.5h8"/></g></symbol>
+  <symbol id="i-wallet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5h17v12h-17z"/><path d="M3.5 7.5 15 4l1.2 3.5"/><circle cx="16.5" cy="13.5" r="1"/></g></symbol>
+  <symbol id="i-card" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5.5" width="18" height="13" rx="2"/><circle cx="8.5" cy="11" r="2"/><path d="M5.8 15.5c.6-1.3 1.6-2 2.7-2s2.1.7 2.7 2M14 10h4M14 13.5h3"/></g></symbol>
 </svg>
 
 <a class="skip" href="#katalog">Langsung ke katalog</a>
+<div class="progress" aria-hidden="true"><span id="progress"></span></div>
 
-<a class="announce" href="?baru=1#katalog">
-  <span>Baru: <b>Geulis Burgundy</b> &amp; <b>Aruni Blush Pink</b></span>
-  <svg width="14" height="14"><use href="#i-arrow"/></svg>
+<!-- PITA INFORMASI (teks berjalan) -->
+<a class="announce" href="?baru=1#katalog" aria-label="Koleksi baru Geulis Burgundy dan Aruni Blush Pink. Free laundry dan resize, kirim ke seluruh Pulau Jawa">
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>Koleksi baru · Geulis Burgundy &amp; Aruni Blush Pink</span><i>✦</i>
+      <span>Free laundry &amp; free resize</span><i>✦</i>
+      <span>Kirim ke seluruh Pulau Jawa</span><i>✦</i>
+      <span>Mulai Rp300.000 / 3 hari</span><i>✦</i>
+      <span>Koleksi baru · Geulis Burgundy &amp; Aruni Blush Pink</span><i>✦</i>
+      <span>Free laundry &amp; free resize</span><i>✦</i>
+      <span>Kirim ke seluruh Pulau Jawa</span><i>✦</i>
+      <span>Mulai Rp300.000 / 3 hari</span><i>✦</i>
+    </div>
+  </div>
 </a>
 
 <header class="top" id="top">
@@ -78,10 +100,6 @@
       <a href="#luar-kota">Kirim se-Jawa</a>
       <a href="#faq">FAQ</a>
     </nav>
-    <div class="top-social">
-      <a class="js-ig" href="https://instagram.com/mojang.kebaya" target="_blank" rel="noopener" aria-label="Instagram"><svg width="20" height="20"><use href="#i-ig"/></svg></a>
-      <a class="js-tt" href="https://www.tiktok.com/@mojang.kebaya" target="_blank" rel="noopener" aria-label="TikTok"><svg width="18" height="18"><use href="#i-tt"/></svg></a>
-    </div>
     <a class="btn btn-gold btn-sm js-wa" href="https://wa.me/628985555506" target="_blank" rel="noopener">Booking</a>
     <button class="burger" id="menuBtn" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="drawer">
       <span></span><span></span><span></span>
@@ -97,7 +115,6 @@
       <a class="brand" href="#" data-close><img src="image/logo/mojang-logo-gold-160.png" alt="" width="32" height="36" loading="lazy"><span>Mojang.kebaya</span></a>
       <button class="drawer-x" type="button" data-close aria-label="Tutup menu">×</button>
     </div>
-
     <ul class="drawer-nav">
       <li><a href="#katalog" data-close><span>01</span>Katalog</a></li>
       <li><a href="#series" data-close><span>02</span>Series</a></li>
@@ -105,15 +122,13 @@
       <li><a href="#luar-kota" data-close><span>04</span>Kirim se-Pulau Jawa</a></li>
       <li><a href="#faq" data-close><span>05</span>FAQ &amp; ketentuan</a></li>
     </ul>
-
     <p class="label">Lihat per series</p>
     <ul class="drawer-series" id="drawerSeries"></ul>
-
     <div class="drawer-cta">
-      <a class="btn btn-gold js-wa" href="https://wa.me/628985555506" target="_blank" rel="noopener"><svg width="18" height="18"><use href="#i-wa"/></svg> Booking via WhatsApp</a>
+      <a class="btn btn-gold js-wa" href="https://wa.me/628985555506" target="_blank" rel="noopener"><svg width="18" height="18" aria-hidden="true"><use href="#i-wa"/></svg> Booking via WhatsApp</a>
       <div class="drawer-social">
-        <a class="pill js-ig" href="https://instagram.com/mojang.kebaya" target="_blank" rel="noopener"><svg width="16" height="16"><use href="#i-ig"/></svg> Instagram</a>
-        <a class="pill js-tt" href="https://www.tiktok.com/@mojang.kebaya" target="_blank" rel="noopener"><svg width="14" height="14"><use href="#i-tt"/></svg> TikTok</a>
+        <a class="pill js-ig" href="https://instagram.com/mojang.kebaya" target="_blank" rel="noopener"><svg width="16" height="16" aria-hidden="true"><use href="#i-ig"/></svg> Instagram</a>
+        <a class="pill js-tt" href="https://www.tiktok.com/@mojang.kebaya" target="_blank" rel="noopener"><svg width="14" height="14" aria-hidden="true"><use href="#i-tt"/></svg> TikTok</a>
       </div>
       <p class="tiny">Jl. Pelabuan 2, Gg. Dayeuhluhur, Warudoyong, Sukabumi · Setiap hari 09.00–21.00</p>
     </div>
@@ -122,17 +137,31 @@
 
 <main>
   <!-- HERO -->
-  <section class="hero">
+  <section class="hero dark">
     <div class="hero-bg" aria-hidden="true"></div>
     <div class="wrap hero-in">
-      <div class="hero-title">
+      <div class="hero-copy">
         <p class="eyebrow">Sewa kebaya full payet · Sukabumi</p>
-        <h1>Cantik itu kamu,<br><em>kebayanya kami.</em></h1>
+        <h1 class="hero-title">
+          <span class="ln"><span>Cantik itu kamu,</span></span>
+          <span class="ln"><span><em>kebayanya kami.</em></span></span>
+        </h1>
+        <p class="lead">Kebaya full payet untuk wisuda, lamaran dan hari istimewa Anda. Satu paket lengkap, sudah termasuk laundry dan resize.</p>
+        <div class="cta-row">
+          <a class="btn btn-gold" href="#katalog">Lihat katalog <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          <a class="btn btn-ghost js-wa" href="https://wa.me/628985555506" target="_blank" rel="noopener"><svg width="18" height="18" aria-hidden="true"><use href="#i-wa"/></svg> Booking via WhatsApp</a>
+        </div>
+        <dl class="stats">
+          <div><dt><span data-count id="statCount">15</span></dt><dd>pilihan warna</dd></div>
+          <div><dt><span data-count id="statSeries">5</span></dt><dd>series</dd></div>
+          <div><dt><span data-count id="statMin">300</span>rb</dt><dd>mulai / 3 hari</dd></div>
+          <div><dt><span data-count>6</span></dt><dd>provinsi di Jawa</dd></div>
+        </dl>
       </div>
 
       <div class="hero-media">
         <span class="frame-deco" aria-hidden="true"></span>
-        <button class="arch arch-main" id="heroMain" type="button" data-key="geulis-burgundy" aria-label="Lihat detail kebaya">
+        <button class="hero-main" id="heroMain" type="button" data-key="geulis-burgundy" aria-label="Lihat detail kebaya">
           <span class="hero-slides" id="heroSlides">
             <img class="on" src="image/kebaya/geulis-burgundy.jpg" alt="Kebaya Geulis Burgundy" fetchpriority="high">
           </span>
@@ -142,57 +171,47 @@
             <span class="hero-price" id="heroPrice">Rp 400.000</span>
           </span>
         </button>
-        <button class="arch arch-float" id="heroNext" type="button" aria-label="Kebaya berikutnya">
+        <!-- segel berputar -->
+        <div class="seal" aria-hidden="true">
+          <svg viewBox="0 0 120 120"><defs><path id="sealPath" d="M60,60 m-47,0 a47,47 0 1,1 94,0 a47,47 0 1,1 -94,0"/></defs>
+            <text><textPath href="#sealPath" textLength="292">SEWA KEBAYA ✦ SUKABUMI ✦ KIRIM SE-PULAU JAWA ✦</textPath></text></svg>
+          <img src="image/logo/mojang-logo-gold-160.png" alt="">
+        </div>
+        <button class="hero-next" id="heroNext" type="button" aria-label="Kebaya berikutnya">
           <img id="heroNextImg" src="image/kebaya/thumb/aruni-blush-pink.jpg" alt="">
-          <span class="next-lbl">Berikutnya</span>
+          <span>Berikutnya <svg width="12" height="12" aria-hidden="true"><use href="#i-arrow"/></svg></span>
         </button>
         <div class="hero-dots" id="heroDots" role="tablist" aria-label="Pilih kebaya"></div>
       </div>
-
-      <div class="hero-body">
-        <p class="lead">Kebaya full payet untuk wisuda, lamaran dan hari spesial. Satu paket sudah lengkap, dicuci dan disesuaikan ukurannya gratis.</p>
-        <div class="hero-cta">
-          <a class="btn btn-gold" href="#katalog">Lihat katalog <svg width="16" height="16"><use href="#i-arrow"/></svg></a>
-          <a class="btn btn-ghost js-wa" href="https://wa.me/628985555506" target="_blank" rel="noopener"><svg width="18" height="18"><use href="#i-wa"/></svg> Chat WhatsApp</a>
-        </div>
-        <dl class="stats">
-          <div><dt id="statCount">15</dt><dd>pilihan warna</dd></div>
-          <div><dt id="statSeries">5</dt><dd>series eksklusif</dd></div>
-          <div><dt id="statMin">300rb</dt><dd>mulai / 3 hari</dd></div>
-          <div><dt>6</dt><dd>provinsi di Jawa</dd></div>
-        </dl>
-      </div>
     </div>
-    <a class="scroll-cue" href="#series" aria-label="Gulir ke koleksi"><span></span></a>
   </section>
 
   <!-- KEUNGGULAN -->
-  <section class="trust" aria-label="Keunggulan">
-    <ul class="wrap trust-in">
-      <li><b>Free laundry</b><span>Kembalikan tanpa dicuci</span></li>
-      <li><b>Free resize</b><span>Disesuaikan ukuran LD</span></li>
-      <li><b>Paket lengkap</b><span>Rok songket, hijab, veil</span></li>
-      <li><b>Kirim se-Pulau Jawa</b><span>Tiba H-1 sebelum acara</span></li>
+  <section class="perks" aria-label="Keunggulan">
+    <ul class="wrap perks-in">
+      <li class="reveal"><svg aria-hidden="true"><use href="#i-drop"/></svg><div><b>Free laundry</b><span>Kembalikan tanpa dicuci</span></div></li>
+      <li class="reveal" style="--d:1"><svg aria-hidden="true"><use href="#i-tape"/></svg><div><b>Free resize</b><span>Disesuaikan ukuran Anda</span></div></li>
+      <li class="reveal" style="--d:2"><svg aria-hidden="true"><use href="#i-hanger"/></svg><div><b>Paket lengkap</b><span>Kebaya, rok songket, hijab, veil</span></div></li>
+      <li class="reveal" style="--d:3"><svg aria-hidden="true"><use href="#i-truck"/></svg><div><b>Kirim se-Pulau Jawa</b><span>Tiba H-1 sebelum acara</span></div></li>
     </ul>
   </section>
 
   <!-- SERIES -->
   <section id="series" class="section">
-    <div class="wrap head-row reveal">
-      <div>
-        <p class="eyebrow">Koleksi</p>
-        <h2>Lima siluet, <em>satu signature.</em></h2>
-      </div>
-      <p class="muted head-note">Setiap series punya karakter sendiri. Pilih satu untuk melihat semua warnanya.</p>
+    <div class="wrap head reveal">
+      <p class="eyebrow">Koleksi</p>
+      <h2>Lima series, <em>satu signature.</em></h2>
+      <p class="muted">Ketuk series untuk melihat semua warnanya di katalog.</p>
     </div>
     <ul class="series" id="seriesList"></ul>
   </section>
 
   <!-- KATALOG -->
   <section id="katalog" class="catalog" aria-labelledby="katalogTitle">
-    <div class="wrap catalog-head reveal">
+    <div class="wrap head center reveal">
       <p class="eyebrow">Katalog</p>
-      <h2 id="katalogTitle">Temukan kebayamu.</h2>
+      <h2 id="katalogTitle">Temukan <em>kebayamu.</em></h2>
+      <p class="muted">Ketuk kebaya untuk melihat foto, ukuran, cek tanggal, lalu booking lewat WhatsApp.</p>
     </div>
     <div class="filters">
       <div class="wrap filters-in">
@@ -200,14 +219,13 @@
         <div class="swatches" id="fColor" role="group" aria-label="Filter warna"></div>
       </div>
     </div>
-
     <div class="wrap">
       <div class="result-row">
         <p class="result" id="result" aria-live="polite"></p>
         <label class="sort">
           <span class="sr-only">Urutkan</span>
           <select id="fSort">
-            <option value="new">Terbaru</option>
+            <option value="new">Unggulan</option>
             <option value="low">Harga terendah</option>
             <option value="high">Harga tertinggi</option>
           </select>
@@ -222,47 +240,48 @@
   </section>
 
   <!-- PAKET -->
-  <section class="band">
+  <section class="band dark">
     <div class="wrap pkg">
       <figure class="pkg-img reveal"><img src="image/kebaya/geulis-rose-gold-2.jpg" alt="Detail payet kebaya Geulis Rose Gold" loading="lazy"></figure>
-      <div class="reveal">
+      <div class="reveal" style="--d:1">
         <p class="eyebrow">Isi satu paket sewa</p>
-        <h2>Semua sudah termasuk, <em>tinggal pakai.</em></h2>
-        <p class="band-lead">Tidak ada biaya tambahan untuk aksesori. Satu harga untuk tiga hari, dari ambil sampai kembali.</p>
+        <h2>Satu harga, <em>semua sudah termasuk.</em></h2>
+        <p class="lead">Tidak ada biaya tambahan untuk aksesori. Satu harga untuk tiga hari, dari ambil sampai kembali.</p>
         <ul class="pkg-list">
           <li>Kebaya full payet</li><li>Rok songket</li><li>Hijab</li><li>Manset</li>
           <li>Long torso</li><li>Ciput tile</li><li>Veil lepas pasang</li><li>Free laundry &amp; resize</li>
         </ul>
-        <a class="btn btn-gold" href="#katalog">Pilih kebaya <svg width="16" height="16"><use href="#i-arrow"/></svg></a>
+        <a class="btn btn-gold" href="#katalog">Pilih kebaya <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow"/></svg></a>
       </div>
     </div>
   </section>
 
   <!-- CARA SEWA -->
-  <section id="cara-sewa" class="section wrap">
-    <div class="reveal">
-      <p class="eyebrow">Cara sewa</p>
-      <h2>Lima langkah <em>menuju hari H.</em></h2>
+  <section id="cara-sewa" class="section how">
+    <div class="wrap">
+      <div class="head center reveal">
+        <p class="eyebrow">Cara sewa</p>
+        <h2>Mudah, <em>lima langkah saja.</em></h2>
+      </div>
+      <ol class="how-steps reveal">
+        <li><span class="how-ic"><svg aria-hidden="true"><use href="#i-search"/></svg></span><i>01</i><b>Pilih kebaya</b><span>Lihat katalog dan cek tanggal di kalender ketersediaan.</span></li>
+        <li><span class="how-ic"><svg aria-hidden="true"><use href="#i-chat"/></svg></span><i>02</i><b>Chat WhatsApp</b><span>Tekan “Booking via WhatsApp”, pesan sudah terisi otomatis.</span></li>
+        <li><span class="how-ic"><svg aria-hidden="true"><use href="#i-wallet"/></svg></span><i>03</i><b>Bayar DP</b><span>Minimal Rp100.000 ke BCA. Booking terkonfirmasi setelah DP masuk.</span></li>
+        <li><span class="how-ic"><svg aria-hidden="true"><use href="#i-card"/></svg></span><i>04</i><b>Pelunasan</b><span>Lunas paling lambat H-1 pengambilan, sertakan foto KTP asli.</span></li>
+        <li><span class="how-ic"><svg aria-hidden="true"><use href="#i-hanger"/></svg></span><i>05</i><b>Ambil atau kirim</b><span>Ambil di Sukabumi H-1, atau dikirim dan tiba H-1.</span></li>
+      </ol>
     </div>
-    <ol class="steps reveal">
-      <li><b>Pilih kebaya</b><span>Buka detail kebaya, cek tanggal di kalender ketersediaan.</span></li>
-      <li><b>Chat WhatsApp</b><span>Tekan “Booking via WhatsApp”. Pesan sudah terisi otomatis.</span></li>
-      <li><b>Bayar DP</b><span>Minimal Rp100.000 ke BCA. Booking terkonfirmasi setelah DP masuk.</span></li>
-      <li><b>Pelunasan</b><span>Lunas paling lambat H-1 pengambilan, sertakan foto KTP asli.</span></li>
-      <li><b>Ambil atau kirim</b><span>Ambil di Sukabumi H-1, atau dikirim dan tiba H-1.</span></li>
-    </ol>
   </section>
 
-  <!-- LUAR KOTA -->
-  <section id="luar-kota" class="section ship">
+  <!-- KIRIM SE-PULAU JAWA -->
+  <section id="luar-kota" class="section ship dark">
     <div class="wrap">
-      <div class="ship-head reveal">
+      <div class="head reveal">
         <p class="eyebrow">Kirim se-Pulau Jawa</p>
         <h2>Dari Sukabumi ke <em>seluruh Pulau Jawa.</em></h2>
         <p class="muted">Tidak tinggal di Sukabumi? Kebaya tetap bisa disewa. Kami kirim ke enam provinsi di Pulau Jawa, dan kebaya tiba sehari sebelum acara Anda.</p>
       </div>
 
-      <!-- Wilayah pengiriman -->
       <ol class="route reveal" aria-label="Wilayah pengiriman">
         <li class="origin"><i></i><b>Sukabumi</b><span>Gallery Mojang.kebaya</span></li>
         <li><i></i><b>Banten</b><span>Serang · Tangerang · Cilegon</span></li>
@@ -274,7 +293,7 @@
       </ol>
 
       <div class="ship-grid">
-        <div class="ship-flow reveal">
+        <div class="reveal">
           <h3>Alur sewa luar kota</h3>
           <ol class="flow">
             <li><i>Booking</i><b>Pilih kebaya &amp; bayar DP</b><span>Cek tanggal di katalog, lalu DP minimal Rp100.000 via BCA.</span></li>
@@ -284,8 +303,7 @@
             <li><i>H+1</i><b>Kirim kembali</b><span>Paling lambat pukul 12.00 WIB. Tidak perlu dicuci.</span></li>
           </ol>
         </div>
-
-        <div class="ship-side reveal">
+        <div class="reveal" style="--d:1">
           <form class="ship-form" id="shipForm">
             <h3>Cek ongkir ke kota Anda</h3>
             <p class="muted">Isi kota tujuan, kami balas estimasi ongkir lewat WhatsApp.</p>
@@ -295,7 +313,7 @@
             <input id="sDate" type="date">
             <label class="label" for="sKebaya">Kebaya (opsional)</label>
             <select id="sKebaya"><option value="">Belum memilih</option></select>
-            <button class="btn btn-gold" type="submit"><svg width="18" height="18"><use href="#i-wa"/></svg> Tanya ongkir via WhatsApp</button>
+            <button class="btn btn-gold" type="submit"><svg width="18" height="18" aria-hidden="true"><use href="#i-wa"/></svg> Tanya ongkir via WhatsApp</button>
           </form>
           <ul class="ship-notes">
             <li><b>Ongkir</b><span>Ditanggung penyewa</span></li>
@@ -311,91 +329,93 @@
   <!-- FOTO CUSTOMER -->
   <section class="section cust" aria-labelledby="custTitle">
     <div class="wrap head-row reveal">
-      <div>
+      <div class="head">
         <p class="eyebrow">Dipakai customer kami</p>
         <h2 id="custTitle">Dikenakan di <em>hari terbaik.</em></h2>
       </div>
       <div class="social-links">
-        <a class="pill js-ig" href="https://instagram.com/mojang.kebaya" target="_blank" rel="noopener"><svg width="16" height="16"><use href="#i-ig"/></svg> Instagram</a>
-        <a class="pill js-tt" href="https://www.tiktok.com/@mojang.kebaya" target="_blank" rel="noopener"><svg width="14" height="14"><use href="#i-tt"/></svg> TikTok</a>
+        <a class="pill js-ig" href="https://instagram.com/mojang.kebaya" target="_blank" rel="noopener"><svg width="16" height="16" aria-hidden="true"><use href="#i-ig"/></svg> Instagram</a>
+        <a class="pill js-tt" href="https://www.tiktok.com/@mojang.kebaya" target="_blank" rel="noopener"><svg width="14" height="14" aria-hidden="true"><use href="#i-tt"/></svg> TikTok</a>
       </div>
     </div>
     <ul class="reel" id="reel"></ul>
   </section>
 
   <!-- FAQ + S&K -->
-  <section id="faq" class="section wrap split">
-    <div class="reveal">
-      <p class="eyebrow">FAQ</p>
-      <h2>Pertanyaan <em>umum.</em></h2>
-      <p class="muted">Belum menemukan jawabannya? <a class="link js-wa" href="https://wa.me/628985555506" target="_blank" rel="noopener">Tanya via WhatsApp ↗</a></p>
-    </div>
-    <div class="faq">
-      <details><summary>Berapa lama masa sewa?</summary><p><b>3 hari</b>: H-1 ambil, hari H pakai, H+1 kembali. Batas kembali Sukabumi 16.00 WIB, luar kota 12.00 WIB.</p></details>
-      <details><summary>Bagaimana kalau ukurannya tidak pas?</summary><p><b>Resize gratis.</b> Cek ukuran Lingkar Dada (LD) di detail kebaya, lalu konfirmasi resize minimal 3 hari sebelum tanggal sewa.</p></details>
-      <details><summary>Bisa pesan dari luar kota?</summary><p>Bisa. Fitting via foto + ukuran LD di WhatsApp. Kebaya tiba H-1, ongkir ditanggung penyewa.</p></details>
-      <details><summary>Kalau batal, DP kembali?</summary><p>Tidak. DP tidak dapat dikembalikan jika penyewa membatalkan. Perubahan jadwal bisa 1 kali.</p></details>
-      <details><summary>Bagaimana jika kebaya rusak?</summary><p>Penyewa bertanggung jawab penuh. Kerusakan atau kehilangan dikenakan ganti rugi 2× harga kebaya.</p></details>
-      <details id="syarat" class="terms">
-        <summary>Syarat &amp; ketentuan lengkap</summary>
-        <h3>Pemesanan &amp; pembayaran</h3>
-        <ul>
-          <li>Booking hanya via WhatsApp 0898 5555 506</li>
-          <li>Dikonfirmasi setelah DP minimal Rp100.000 diterima</li>
-          <li>Pelunasan 100% paling lambat H-1 pengambilan</li>
-          <li>Transfer via BCA 0382828273 a.n Uzhma Ilham Firdani</li>
-          <li>DP tidak dapat dikembalikan jika penyewa membatalkan</li>
-          <li>Wajib sertakan foto KTP asli</li>
-        </ul>
-        <h3>Durasi &amp; pengambilan</h3>
-        <ul>
-          <li>Masa sewa 3 hari: H-1 ambil, hari H pakai, H+1 kembali</li>
-          <li>Luar kota: kebaya tiba H-1 sebelum hari pakai</li>
-          <li>Pengembalian luar kota maks. 12.00 WIB, Sukabumi maks. 16.00 WIB</li>
-          <li>Biaya pengiriman ditanggung penyewa</li>
-        </ul>
-        <h3>Perawatan &amp; tanggung jawab</h3>
-        <ul>
-          <li>Penyewa bertanggung jawab penuh atas kondisi kebaya</li>
-          <li>Dilarang mencuci atau meresize sendiri</li>
-          <li>Kerusakan/hilang: ganti rugi 2× harga kebaya. Noda berat termasuk kerusakan</li>
-          <li>Dilarang memakai hairspray pada kerudung</li>
-        </ul>
-        <h3>Fitting &amp; ukuran</h3>
-        <ul>
-          <li>Fitting sangat disarankan sebelum tanggal sewa</li>
-          <li>Pastikan ukuran Lingkar Dada (LD) sesuai spesifikasi</li>
-          <li>Permintaan resize dikonfirmasi min. 3 hari sebelum</li>
-          <li>Perubahan jadwal maks. 1 kali dengan surat resmi</li>
-        </ul>
-        <p class="muted">Dengan melakukan booking, penyewa menyetujui seluruh syarat &amp; ketentuan di atas. Mojang.kebaya berhak menolak booking jika jadwal penuh.</p>
-      </details>
+  <section id="faq" class="section">
+    <div class="wrap split">
+      <div class="head reveal">
+        <p class="eyebrow">FAQ</p>
+        <h2>Pertanyaan <em>yang sering ditanyakan.</em></h2>
+        <p class="muted">Belum menemukan jawabannya? <a class="link js-wa" href="https://wa.me/628985555506" target="_blank" rel="noopener">Tanya via WhatsApp</a></p>
+      </div>
+      <div class="faq reveal" style="--d:1">
+        <details><summary>Berapa lama masa sewa?</summary><p><b>3 hari</b>: H-1 ambil, hari H pakai, H+1 kembali. Batas kembali Sukabumi 16.00 WIB, luar kota 12.00 WIB.</p></details>
+        <details><summary>Bagaimana kalau ukurannya tidak pas?</summary><p><b>Resize gratis.</b> Cek ukuran Lingkar Dada (LD) di detail kebaya, lalu konfirmasi resize minimal 3 hari sebelum tanggal sewa.</p></details>
+        <details><summary>Bisa pesan dari luar kota?</summary><p>Bisa. Fitting via foto + ukuran LD di WhatsApp. Kebaya tiba H-1, ongkir ditanggung penyewa.</p></details>
+        <details><summary>Kalau batal, DP kembali?</summary><p>Tidak. DP tidak dapat dikembalikan jika penyewa membatalkan. Perubahan jadwal bisa 1 kali.</p></details>
+        <details><summary>Bagaimana jika kebaya rusak?</summary><p>Penyewa bertanggung jawab penuh. Kerusakan atau kehilangan dikenakan ganti rugi 2× harga kebaya.</p></details>
+        <details id="syarat" class="terms">
+          <summary>Syarat &amp; ketentuan lengkap</summary>
+          <h3>Pemesanan &amp; pembayaran</h3>
+          <ul>
+            <li>Booking hanya via WhatsApp 0898 5555 506</li>
+            <li>Dikonfirmasi setelah DP minimal Rp100.000 diterima</li>
+            <li>Pelunasan 100% paling lambat H-1 pengambilan</li>
+            <li>Transfer via BCA 0382828273 a.n Uzhma Ilham Firdani</li>
+            <li>DP tidak dapat dikembalikan jika penyewa membatalkan</li>
+            <li>Wajib sertakan foto KTP asli</li>
+          </ul>
+          <h3>Durasi &amp; pengambilan</h3>
+          <ul>
+            <li>Masa sewa 3 hari: H-1 ambil, hari H pakai, H+1 kembali</li>
+            <li>Luar kota: kebaya tiba H-1 sebelum hari pakai</li>
+            <li>Pengembalian luar kota maks. 12.00 WIB, Sukabumi maks. 16.00 WIB</li>
+            <li>Biaya pengiriman ditanggung penyewa</li>
+          </ul>
+          <h3>Perawatan &amp; tanggung jawab</h3>
+          <ul>
+            <li>Penyewa bertanggung jawab penuh atas kondisi kebaya</li>
+            <li>Dilarang mencuci atau meresize sendiri</li>
+            <li>Kerusakan/hilang: ganti rugi 2× harga kebaya. Noda berat termasuk kerusakan</li>
+            <li>Dilarang memakai hairspray pada kerudung</li>
+          </ul>
+          <h3>Fitting &amp; ukuran</h3>
+          <ul>
+            <li>Fitting sangat disarankan sebelum tanggal sewa</li>
+            <li>Pastikan ukuran Lingkar Dada (LD) sesuai spesifikasi</li>
+            <li>Permintaan resize dikonfirmasi min. 3 hari sebelum</li>
+            <li>Perubahan jadwal maks. 1 kali dengan surat resmi</li>
+          </ul>
+          <p class="muted">Dengan melakukan booking, penyewa menyetujui seluruh syarat &amp; ketentuan di atas. Mojang.kebaya berhak menolak booking jika jadwal penuh.</p>
+        </details>
+      </div>
     </div>
   </section>
 
   <!-- AJAKAN -->
-  <section class="cta">
+  <section class="cta dark">
     <div class="wrap cta-in reveal">
-      <img src="image/logo/mojang-logo-gold.png" alt="" width="72" height="72" loading="lazy">
+      <img src="image/logo/mojang-logo-gold-160.png" alt="" width="64" height="72" loading="lazy">
       <h2>Siap tampil cantik <em>di hari Anda?</em></h2>
-      <p>Cek tanggal, chat WhatsApp, bayar DP. Kebaya siap diambil di Sukabumi atau dikirim ke kota Anda.</p>
-      <div class="hero-cta">
-        <a class="btn btn-gold js-wa" href="https://wa.me/628985555506" target="_blank" rel="noopener"><svg width="18" height="18"><use href="#i-wa"/></svg> Booking via WhatsApp</a>
+      <p class="lead">Cek tanggal, chat WhatsApp, bayar DP. Kebaya siap diambil di Sukabumi atau dikirim ke kota Anda.</p>
+      <div class="cta-row">
+        <a class="btn btn-gold js-wa" href="https://wa.me/628985555506" target="_blank" rel="noopener"><svg width="18" height="18" aria-hidden="true"><use href="#i-wa"/></svg> Booking via WhatsApp</a>
         <a class="btn btn-ghost" href="#katalog">Lihat katalog</a>
       </div>
     </div>
   </section>
 </main>
 
-<footer class="foot">
+<footer class="foot dark">
   <div class="wrap foot-in">
     <div class="foot-brand">
       <a class="brand" href="#"><img src="image/logo/mojang-logo-gold-160.png" alt="" width="36" height="40" loading="lazy"><span>Mojang.kebaya</span></a>
       <p>Sewa kebaya full payet dari Sukabumi, dikirim ke seluruh Pulau Jawa.</p>
       <div class="foot-social">
-        <a class="js-wa" href="https://wa.me/628985555506" target="_blank" rel="noopener" aria-label="WhatsApp"><svg width="20" height="20"><use href="#i-wa"/></svg></a>
-        <a class="js-ig" href="https://instagram.com/mojang.kebaya" target="_blank" rel="noopener" aria-label="Instagram"><svg width="20" height="20"><use href="#i-ig"/></svg></a>
-        <a class="js-tt" href="https://www.tiktok.com/@mojang.kebaya" target="_blank" rel="noopener" aria-label="TikTok"><svg width="18" height="18"><use href="#i-tt"/></svg></a>
+        <a class="js-wa" href="https://wa.me/628985555506" target="_blank" rel="noopener" aria-label="WhatsApp"><svg width="20" height="20" aria-hidden="true"><use href="#i-wa"/></svg></a>
+        <a class="js-ig" href="https://instagram.com/mojang.kebaya" target="_blank" rel="noopener" aria-label="Instagram"><svg width="20" height="20" aria-hidden="true"><use href="#i-ig"/></svg></a>
+        <a class="js-tt" href="https://www.tiktok.com/@mojang.kebaya" target="_blank" rel="noopener" aria-label="TikTok"><svg width="18" height="18" aria-hidden="true"><use href="#i-tt"/></svg></a>
       </div>
     </div>
     <div>
@@ -406,7 +426,7 @@
       <h3>Informasi</h3>
       <ul class="foot-list">
         <li><a href="#cara-sewa">Cara sewa</a></li>
-        <li><a href="#luar-kota">Sewa luar kota</a></li>
+        <li><a href="#luar-kota">Kirim se-Pulau Jawa</a></li>
         <li><a href="#faq">FAQ</a></li>
         <li><a href="#syarat" id="footTerms">Syarat &amp; ketentuan</a></li>
       </ul>
@@ -426,7 +446,7 @@
 </footer>
 
 <a class="fab js-wa" href="https://wa.me/628985555506" target="_blank" rel="noopener" aria-label="Chat WhatsApp">
-  <svg width="22" height="22"><use href="#i-wa"/></svg>
+  <svg width="22" height="22" aria-hidden="true"><use href="#i-wa"/></svg>
   <span>Chat</span>
 </a>
 
@@ -444,12 +464,10 @@
       <p class="d-price"><span id="dPrice"></span> <small>/ 3 hari</small></p>
       <p class="d-ld" id="dLd"></p>
       <p class="muted" id="dDesc"></p>
-
       <div class="d-colors" id="dColorsWrap">
         <p class="label">Warna lain di series ini</p>
         <div id="dColors"></div>
       </div>
-
       <form class="d-book" id="dBook">
         <label class="label" for="dDate">Tanggal acara</label>
         <input type="date" id="dDate" required>
@@ -458,22 +476,19 @@
           <option>Wisuda</option><option>Lamaran</option><option>Resepsi</option><option>Lainnya</option>
         </select>
         <div class="d-actions">
-          <button class="btn btn-wa" type="submit"><svg width="18" height="18"><use href="#i-wa"/></svg> Booking via WhatsApp</button>
+          <button class="btn btn-wa" type="submit"><svg width="18" height="18" aria-hidden="true"><use href="#i-wa"/></svg> Booking via WhatsApp</button>
           <button class="btn btn-line" type="button" id="dCalBtn">Cek ketersediaan</button>
         </div>
         <p class="tiny">Booking terkonfirmasi setelah DP min. Rp100.000 diterima.</p>
       </form>
-
       <div class="d-cal" id="dCal" hidden>
         <iframe id="dCalFrame" title="Kalender ketersediaan" loading="lazy"></iframe>
         <p class="tiny">Tanggal yang terisi berarti kebaya sudah dipesan.</p>
       </div>
-
       <details class="d-pkg" open>
         <summary>Isi paket</summary>
         <ul id="dPkg"></ul>
       </details>
-
       <div class="d-cust" id="dCustWrap">
         <p class="label">Foto customer</p>
         <div class="d-cust-row" id="dCust"></div>

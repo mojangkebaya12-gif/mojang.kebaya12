@@ -277,6 +277,50 @@ document.addEventListener('click', e => {
   $('#katalog').scrollIntoView({ behavior: 'smooth' });
 });
 
+/* ── Hero: bingkai utama berganti kebaya otomatis ──
+   Urutan: kebaya "Baru" dulu, lalu pilihan di HERO_PICKS. */
+const HERO_PICKS = ['geulis-rose-gold', 'aruni-emerald', 'kinasih-maroon', 'geulis-butter-yellow'];
+const heroItems = [...ITEMS.filter(i => i.isNew), ...HERO_PICKS.map(k => ITEMS.find(i => i.key === k)).filter(Boolean)];
+const hSlides = $('#heroSlides');
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let hIdx = 0, hTimer;
+
+hSlides.innerHTML = heroItems.map((i, n) =>
+  `<img ${n ? 'data-src' : 'src'}="${i.photos[0]}" alt="Kebaya ${esc(i.name)}" class="${n ? '' : 'on'}" decoding="async">`).join('');
+$('#heroDots').innerHTML = heroItems.map((i, n) =>
+  `<button type="button" role="tab" data-hero="${n}" aria-label="${esc(i.name)}" aria-selected="${n === 0}"></button>`).join('');
+
+const loadSlide = n => {
+  const img = hSlides.children[n];
+  if (img && img.dataset.src) { img.src = img.dataset.src; delete img.dataset.src; }
+};
+function showHero(n) {
+  hIdx = (n + heroItems.length) % heroItems.length;
+  const i = heroItems[hIdx];
+  const next = heroItems[(hIdx + 1) % heroItems.length];
+  loadSlide(hIdx);
+  loadSlide((hIdx + 1) % heroItems.length);
+  [...hSlides.children].forEach((img, k) => img.classList.toggle('on', k === hIdx));
+  $('#heroMain').dataset.key = i.key;
+  $('#heroMain').setAttribute('aria-label', `Lihat detail ${i.name}`);
+  $('#heroTag').textContent = i.isNew ? 'Baru' : `Series ${i.series}`;
+  $('#heroName').textContent = i.name;
+  $('#heroPrice').textContent = i.priceTxt;
+  $('#heroNextImg').src = next.thumb;
+  $('#heroDots').querySelectorAll('button').forEach((b, k) => b.setAttribute('aria-selected', k === hIdx));
+}
+function playHero() {
+  clearInterval(hTimer);
+  if (!reduceMotion) hTimer = setInterval(() => showHero(hIdx + 1), 5000);
+}
+$('#heroNext').addEventListener('click', () => { showHero(hIdx + 1); playHero(); });
+$('#heroDots').addEventListener('click', e => {
+  const b = e.target.closest('[data-hero]'); if (b) { showHero(+b.dataset.hero); playHero(); }
+});
+$('.hero-media').addEventListener('mouseenter', () => clearInterval(hTimer));
+$('.hero-media').addEventListener('mouseleave', playHero);
+window.addEventListener('load', () => { loadSlide(1); playHero(); });
+
 /* ── Angka di hero ── */
 $('#statCount').textContent = ITEMS.length;
 $('#statSeries').textContent = seriesInfo.length;
@@ -294,12 +338,17 @@ $('#footTerms').addEventListener('click', () => { $('#syarat').open = true; });
 $('#year').textContent = new Date().getFullYear();
 
 /* ── Animasi muncul saat digulir ── */
-if ('IntersectionObserver' in window) {
-  const io = new IntersectionObserver(entries => entries.forEach(en => {
-    if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
-  }), { rootMargin: '0px 0px -8% 0px' });
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+function revealCheck() {
+  document.querySelectorAll('.reveal:not(.in)').forEach(el => {
+    if (el.getBoundingClientRect().top < innerHeight * .92) el.classList.add('in');
+  });
+}
+revealCheck();
+addEventListener('scroll', revealCheck, { passive: true });
+addEventListener('resize', revealCheck);
+addEventListener('load', revealCheck);
 
+if ('IntersectionObserver' in window) {
   // tombol Chat melayang disembunyikan saat ajakan & footer terlihat (tombolnya sudah ada di sana)
   const fab = $('.fab');
   const seen = new Set();
@@ -308,8 +357,6 @@ if ('IntersectionObserver' in window) {
     fab.classList.toggle('hide', seen.size > 0);
   });
   document.querySelectorAll('.cta, .foot').forEach(el => fo.observe(el));
-} else {
-  document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
 }
 
 /* ── Mulai ── */

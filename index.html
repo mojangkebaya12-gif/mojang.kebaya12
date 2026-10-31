@@ -83,8 +83,42 @@
       <a class="js-tt" href="https://www.tiktok.com/@mojang.kebaya" target="_blank" rel="noopener" aria-label="TikTok"><svg width="18" height="18"><use href="#i-tt"/></svg></a>
     </div>
     <a class="btn btn-gold btn-sm js-wa" href="https://wa.me/628985555506" target="_blank" rel="noopener">Booking</a>
+    <button class="burger" id="menuBtn" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="drawer">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </header>
+
+<!-- MENU GARIS TIGA -->
+<div class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-bg" data-close></div>
+  <nav class="drawer-panel" aria-label="Menu utama" tabindex="-1">
+    <div class="drawer-head">
+      <a class="brand" href="#" data-close><img src="image/logo/mojang-logo-gold-160.png" alt="" width="32" height="36" loading="lazy"><span>Mojang.kebaya</span></a>
+      <button class="drawer-x" type="button" data-close aria-label="Tutup menu">×</button>
+    </div>
+
+    <ul class="drawer-nav">
+      <li><a href="#katalog" data-close><span>01</span>Katalog</a></li>
+      <li><a href="#series" data-close><span>02</span>Series</a></li>
+      <li><a href="#cara-sewa" data-close><span>03</span>Cara sewa</a></li>
+      <li><a href="#luar-kota" data-close><span>04</span>Kirim se-Pulau Jawa</a></li>
+      <li><a href="#faq" data-close><span>05</span>FAQ &amp; ketentuan</a></li>
+    </ul>
+
+    <p class="label">Lihat per series</p>
+    <ul class="drawer-series" id="drawerSeries"></ul>
+
+    <div class="drawer-cta">
+      <a class="btn btn-gold js-wa" href="https://wa.me/628985555506" target="_blank" rel="noopener"><svg width="18" height="18"><use href="#i-wa"/></svg> Booking via WhatsApp</a>
+      <div class="drawer-social">
+        <a class="pill js-ig" href="https://instagram.com/mojang.kebaya" target="_blank" rel="noopener"><svg width="16" height="16"><use href="#i-ig"/></svg> Instagram</a>
+        <a class="pill js-tt" href="https://www.tiktok.com/@mojang.kebaya" target="_blank" rel="noopener"><svg width="14" height="14"><use href="#i-tt"/></svg> TikTok</a>
+      </div>
+      <p class="tiny">Jl. Pelabuan 2, Gg. Dayeuhluhur, Warudoyong, Sukabumi · Setiap hari 09.00–21.00</p>
+    </div>
+  </nav>
+</div>
 
 <main>
   <!-- HERO -->
@@ -140,34 +174,6 @@
       <li><b>Paket lengkap</b><span>Rok songket, hijab, veil</span></li>
       <li><b>Kirim se-Pulau Jawa</b><span>Tiba H-1 sebelum acara</span></li>
     </ul>
-  </section>
-
-  <!-- SERIES UNGGULAN (diatur lewat "unggulan: true" di data.js) -->
-  <section id="unggulan" class="spot">
-    <div class="wrap spot-in">
-      <div class="spot-media reveal">
-        <button class="spot-main" id="spotMain" type="button" aria-label="Lihat detail">
-          <span class="spot-imgs" id="spotImgs"></span>
-          <span class="spot-badge">✦ Series unggulan</span>
-        </button>
-      </div>
-      <div class="spot-text reveal">
-        <p class="eyebrow">Series unggulan</p>
-        <h2>Series <em id="spotName">Geulis</em></h2>
-        <p class="spot-story" id="spotStory"></p>
-        <dl class="spot-facts">
-          <div><dt id="spotCount">5</dt><dd>pilihan warna</dd></div>
-          <div><dt id="spotRange">390–400rb</dt><dd>per 3 hari</dd></div>
-          <div><dt id="spotLd">LD 94–98</dt><dd>ukuran, resize gratis</dd></div>
-        </dl>
-        <p class="label">Pilih warna</p>
-        <div class="spot-picks" id="spotPicks" role="group" aria-label="Pilih warna"></div>
-        <div class="hero-cta spot-cta">
-          <button class="btn btn-gold" id="spotDetail" type="button">Lihat detail &amp; booking <svg width="16" height="16"><use href="#i-arrow"/></svg></button>
-          <a class="btn btn-ghost" id="spotAll" href="#katalog">Semua warna</a>
-        </div>
-      </div>
-    </div>
   </section>
 
   <!-- SERIES -->

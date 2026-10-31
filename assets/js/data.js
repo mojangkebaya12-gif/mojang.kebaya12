@@ -19,12 +19,10 @@ const KONTAK = {
    ld   : ukuran Lingkar Dada (kosongkan jika belum ada)
    veil : jenis veil di paket
    desc : satu kalimat penjelasan series
-   unggulan: true → tampil paling depan + bagian "Series Unggulan" di halaman utama
-             (pilih SATU series saja; story = paragraf panjang di bagian itu) */
+   unggulan: true → series ini tampil paling awal di katalog, filter & menu (✦)
+             (pilih SATU series saja) */
 const SERIES = {
-  geulis:  { name: 'Geulis',  ld: 'LD 94 max 98',  veil: 'Veil Lepas Pasang',        desc: 'Series terlengkap, dari baby pink dan butter yellow hingga burgundy.',
-             unggulan: true,
-             story: '“Geulis” dalam bahasa Sunda berarti cantik. Series andalan kami dengan pilihan warna terlengkap, full payet dengan veil lepas pasang. Dari baby pink yang manis untuk lamaran, sampai burgundy yang anggun untuk wisuda.' },
+  geulis:  { name: 'Geulis',  ld: 'LD 94 max 98',  veil: 'Veil Lepas Pasang',        desc: 'Series terlengkap, dari baby pink dan butter yellow hingga burgundy.', unggulan: true },
   aruni:   { name: 'Aruni',   ld: 'LD 98 max 105', veil: 'Veil/Ceruti Lepas Pasang', desc: 'Siluet klasik dengan payet rapat dan veil/ceruti lepas pasang.' },
   kinasih: { name: 'Kinasih', ld: 'LD 98 max 105', veil: 'Veil/Ceruti Lepas Pasang', desc: 'Palet kalem: grey, ice blue dan maroon. Cocok untuk wisuda dan lamaran.' },
   niskala: { name: 'Niskala', ld: '',              veil: 'Veil Lepas Pasang',        desc: 'Detail payet berlapis dalam warna ice blue yang lembut.' },

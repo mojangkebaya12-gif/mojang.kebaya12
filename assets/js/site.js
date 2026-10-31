@@ -58,8 +58,8 @@ function filtered() {
     (!state.baru || i.isNew) &&
     (!state.series || i.s === state.series) &&
     (!state.fam.length || state.fam.includes(i.fam)));
-  const top = i => SERIES[i.s].unggulan ? 1 : 0;   // series unggulan tampil setelah kebaya baru
-  const by = { new: (a, b) => (b.isNew - a.isNew) || (top(b) - top(a)) || a.order - b.order,
+  const top = i => SERIES[i.s].unggulan ? 1 : 0;   // series unggulan (Geulis) selalu paling awal
+  const by = { new: (a, b) => (top(b) - top(a)) || (b.isNew - a.isNew) || a.order - b.order,
                low: (a, b) => a.price - b.price || a.order - b.order,
                high: (a, b) => b.price - a.price || a.order - b.order };
   return list.sort(by[state.sort]);
@@ -278,43 +278,31 @@ document.addEventListener('click', e => {
   $('#katalog').scrollIntoView({ behavior: 'smooth' });
 });
 
-/* ── Series unggulan: foto besar + pilihan warna ── */
-const topKey = Object.keys(SERIES).find(k => SERIES[k].unggulan);
-const topItems = ITEMS.filter(i => i.s === topKey);
-if (!topItems.length) {
-  $('#unggulan').remove();
-} else {
-  const ser = SERIES[topKey];
-  const prices = topItems.map(i => i.price);
-  const [lo, hi] = [Math.min(...prices), Math.max(...prices)];
-  $('#spotName').textContent = ser.name;
-  $('#spotStory').textContent = ser.story || ser.desc;
-  $('#spotCount').textContent = topItems.length;
-  $('#spotRange').textContent = lo === hi ? rb(lo) : `${lo}–${rb(hi)}`;
-  $('#spotLd').textContent = ser.ld ? ser.ld.replace(/ max /, '–') : 'Tanya LD';
-  $('#spotAll').dataset.goSeries = topKey;
-  $('#spotAll').textContent = `Semua warna ${ser.name}`;
-  $('#spotImgs').innerHTML = topItems.map((i, n) =>
-    `<img ${n ? 'loading="lazy"' : ''} src="${i.photos[0]}" alt="Kebaya ${esc(i.name)}" class="${n ? '' : 'on'}" decoding="async">`).join('');
-  $('#spotPicks').innerHTML = topItems.map((i, n) => `
-    <button type="button" data-spot="${n}" aria-pressed="${n === 0}">
-      <img src="${i.thumb}" alt="" loading="lazy">
-      <span><i style="background:${i.hex}"></i>${esc(i.color)}</span>
-      <small>${i.priceTxt}${i.isNew ? ' · Baru' : ''}</small>
-    </button>`).join('');
-  const pickSpot = n => {
-    const i = topItems[n];
-    $('#spotImgs').querySelectorAll('img').forEach((img, k) => img.classList.toggle('on', k === n));
-    $('#spotPicks').querySelectorAll('button').forEach((b, k) => b.setAttribute('aria-pressed', k === n));
-    $('#spotMain').dataset.key = $('#spotDetail').dataset.key = i.key;
-    $('#spotMain').setAttribute('aria-label', `Lihat detail ${i.name}`);
-  };
-  $('#spotPicks').addEventListener('click', e => { const b = e.target.closest('[data-spot]'); if (b) pickSpot(+b.dataset.spot); });
-  pickSpot(0);
+/* ── Menu garis tiga ── */
+const drawer = $('#drawer');
+const menuBtn = $('#menuBtn');
+$('#drawerSeries').innerHTML = seriesInfo.map(({ k, ser, list, min }) => `
+  <li><a href="?series=${k}#katalog" data-go-series="${k}" data-close>
+    <span class="ds-name">${ser.unggulan ? '✦ ' : ''}${esc(ser.name)}</span>
+    <span class="ds-dots">${list.map(i => `<i style="background:${i.hex}"></i>`).join('')}</span>
+    <small>${list.length} warna · mulai ${rb(min)}</small>
+  </a></li>`).join('');
+
+function setMenu(open) {
+  drawer.classList.toggle('open', open);
+  drawer.setAttribute('aria-hidden', !open);
+  menuBtn.setAttribute('aria-expanded', open);
+  menuBtn.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
+  document.body.classList.toggle('lock', open || sheet.open);
+  if (open) drawer.querySelector('.drawer-panel').focus();
 }
+menuBtn.addEventListener('click', () => setMenu(!drawer.classList.contains('open')));
+drawer.addEventListener('click', e => { if (e.target.closest('[data-close]')) setMenu(false); });
+addEventListener('keydown', e => { if (e.key === 'Escape' && drawer.classList.contains('open')) setMenu(false); });
 
 /* ── Hero: bingkai utama berganti kebaya otomatis ──
    Urutan: kebaya "Baru" dulu, lalu semua warna series unggulan, lalu HERO_PICKS. */
+const topItems = ITEMS.filter(i => SERIES[i.s].unggulan);
 const HERO_PICKS = ['aruni-emerald', 'kinasih-maroon'];
 const heroItems = [...new Set([
   ...ITEMS.filter(i => i.isNew), ...topItems,

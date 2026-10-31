@@ -1,37 +1,36 @@
 /* =============================================================
    MOJANG.KEBAYA — DATA
    Satu-satunya file yang perlu diubah untuk menambah / mengubah kebaya,
-   harga, atau kalender ketersediaan. Homepage & katalog ikut berubah.
+   harga, foto, atau kalender ketersediaan.
    ============================================================= */
 (function () {
 'use strict';
 
 /* ── KONTAK ─────────────────────────────────────────────────── */
 const KONTAK = {
-  wa: '628985555506',           // nomor WhatsApp 0898 5555 506 (format 62…)
+  wa: '628985555506',           // WhatsApp 0898 5555 506 (format 62…)
+  waTxt: '0898 5555 506',
   ig: 'mojang.kebaya',
 };
 
 /* ── SERIES ─────────────────────────────────────────────────────
-   Urutan di sini = urutan tampil di website.
-   ld     : ukuran Lingkar Dada (kosongkan jika belum ada)
-   veil   : jenis veil di paket
-   desc   : satu kalimat di halaman katalog
-   folder : nama folder foto di image/ — masih memakai nama lama
-            (edita, calla, …) supaya foto yang sudah ada tetap tampil.
-            Jika folder & file foto diganti ke nama baru, ubah di sini. */
+   Urutan di sini = urutan tombol filter di katalog.
+   ld   : ukuran Lingkar Dada (kosongkan jika belum ada)
+   veil : jenis veil di paket
+   desc : satu kalimat penjelasan series */
 const SERIES = {
-  aruni:   { name: 'Aruni',   folder: 'edita',  ld: 'LD 98 max 105', veil: 'Veil/Ceruti Lepas Pasang', desc: 'Siluet klasik dengan payet rapat dan veil/ceruti lepas pasang.' },
-  kinasih: { name: 'Kinasih', folder: 'calla',  ld: 'LD 98 max 105', veil: 'Veil/Ceruti Lepas Pasang', desc: 'Palet kalem — grey, ice blue dan maroon — cocok untuk wisuda dan lamaran.' },
-  niskala: { name: 'Niskala', folder: 'shreya', ld: '',              veil: 'Veil Lepas Pasang',        desc: 'Detail payet berlapis dalam warna ice blue yang lembut.' },
-  puspa:   { name: 'Puspa',   folder: 'aurora', ld: '',              veil: 'Veil Lepas Pasang',        desc: 'Satu warna mahogany yang dalam dan berkarakter.' },
-  geulis:  { name: 'Geulis',  folder: 'alanya', ld: 'LD 94 max 98',  veil: 'Veil Lepas Pasang',        desc: 'Series terlengkap — dari baby pink dan butter yellow hingga burgundy.' },
+  aruni:   { name: 'Aruni',   ld: 'LD 98 max 105', veil: 'Veil/Ceruti Lepas Pasang', desc: 'Siluet klasik dengan payet rapat dan veil/ceruti lepas pasang.' },
+  kinasih: { name: 'Kinasih', ld: 'LD 98 max 105', veil: 'Veil/Ceruti Lepas Pasang', desc: 'Palet kalem: grey, ice blue dan maroon. Cocok untuk wisuda dan lamaran.' },
+  niskala: { name: 'Niskala', ld: '',              veil: 'Veil Lepas Pasang',        desc: 'Detail payet berlapis dalam warna ice blue yang lembut.' },
+  puspa:   { name: 'Puspa',   ld: '',              veil: 'Veil Lepas Pasang',        desc: 'Satu warna mahogany yang dalam dan berkarakter.' },
+  geulis:  { name: 'Geulis',  ld: 'LD 94 max 98',  veil: 'Veil Lepas Pasang',        desc: 'Series terlengkap, dari baby pink dan butter yellow hingga burgundy.' },
 };
 
-/* ── KELUARGA WARNA (filter "Warna" di katalog) ─────────────── */
+/* ── KELUARGA WARNA (filter "Warna") ────────────────────────── */
 const FAMILIES = {
-  pink: 'Pink', nude: 'Nude & Cream', merah: 'Merah & Burgundy', biru: 'Biru',
-  hijau: 'Hijau', kuning: 'Kuning', netral: 'Coklat & Abu',
+  pink: ['Pink', '#EBB9C2'], nude: ['Nude & Cream', '#E5D0B9'], merah: ['Merah', '#6B1E2B'],
+  biru: ['Biru', '#9DBFD6'], hijau: ['Hijau', '#11605E'], kuning: ['Kuning', '#EFD98F'],
+  netral: ['Coklat & Abu', '#8E7A70'],
 };
 
 /* ── KEBAYA ─────────────────────────────────────────────────────
@@ -39,40 +38,38 @@ const FAMILIES = {
    ['series', 'Nama Warna', harga (ribu), '#kodeWarna', 'keluarga', { opsi }]
 
    opsi (boleh dikosongkan):
-     new: true    → label "Baru" + tampil di "Koleksi Baru"
-     fav: 1..n    → urutan di "Foto customer" homepage
-     detail: true → tampil di bab "Detail" homepage (pilih SATU kebaya saja)
-     foto: '…'    → jika nama file foto tidak mengikuti aturan di bawah,
-                    tulis '<folder>/<nama-file>' tanpa .png
-     ld: '…'      → jika ukuran LD kebaya ini berbeda dari series-nya
+     new: true  → label "Baru", tampil paling atas
+     extra: n   → jumlah foto tambahan di detail
+     cust: n    → jumlah foto customer
+     ld: '…'    → jika ukuran LD kebaya ini berbeda dari series-nya
 
-   Nama file foto mengikuti nama warna (huruf kecil, spasi → "-"):
-     Foto produk  : image/<folder>/<folder>-<warna>.png
-                    contoh: image/alanya/alanya-rose-gold.png
-     Foto customer: image/foto-customer/<folder>-<warna>/1.jpeg … 5.jpeg */
+   Nama file foto = <series>-<warna> (huruf kecil, spasi → "-"):
+     Foto utama     : image/kebaya/geulis-rose-gold.jpg
+     Foto katalog   : image/kebaya/thumb/geulis-rose-gold.jpg   (lebar ±640px)
+     Foto tambahan  : image/kebaya/geulis-rose-gold-2.jpg, -3.jpg, …
+     Foto customer  : image/customer/geulis-rose-gold-1.jpg, -2.jpg, …
+   Kompres foto ke JPG lebar ±1200px (±250 KB) supaya cepat di HP. */
 const KEBAYA = [
-  ['geulis',  'Burgundy',      400, '#6B1E2B', 'merah',  { new: true }],
-  ['aruni',   'Blush Pink',    350, '#E7B7BC', 'pink',   { new: true, foto: 'edita/edita-blush-pink-2' }],
-  ['aruni',   'Creamy Nude',   350, '#E3CDB5', 'nude',   { fav: 1 }],
-  ['aruni',   'Navy',          350, '#1F2A4A', 'biru'],
-  ['aruni',   'Nude Pink',     350, '#DDB3A7', 'pink'],
-  ['aruni',   'Emerald',       350, '#11605E', 'hijau',  { foto: 'edita/edita-emerald-blue' }],
-  ['kinasih', 'Grey',          350, '#9A9A98', 'netral'],
-  ['kinasih', 'Ice Blue',      350, '#B9D3E2', 'biru'],
-  ['kinasih', 'Maroon',        350, '#5E1A22', 'merah'],
-  ['niskala', 'Ice Blue',      350, '#BED6E4', 'biru'],
-  ['puspa',   'Mahogany',      350, '#5A2A1E', 'netral'],
-  ['geulis',  'Baby Pink',     390, '#F2C6D0', 'pink',   { foto: 'elysian/elysian-baby-pink' }],
-  ['geulis',  'Rose Gold',     400, '#C99A86', 'nude',   { detail: true }],
-  ['geulis',  'Butter Yellow', 390, '#EFD98F', 'kuning'],
-  ['geulis',  'Creamy Nude',   390, '#E6D2BC', 'nude'],
+  ['geulis',  'Burgundy',      400, '#6B1E2B', 'merah',  { new: true, extra: 3 }],
+  ['aruni',   'Blush Pink',    350, '#E7B7BC', 'pink',   { new: true, extra: 3 }],
+  ['aruni',   'Creamy Nude',   350, '#E3CDB5', 'nude',   { extra: 4, cust: 7 }],
+  ['aruni',   'Navy',          350, '#1F2A4A', 'biru',   { extra: 2, cust: 4 }],
+  ['aruni',   'Nude Pink',     350, '#DDB3A7', 'pink',   { extra: 4, cust: 5 }],
+  ['aruni',   'Emerald',       350, '#11605E', 'hijau',  { extra: 3 }],
+  ['kinasih', 'Grey',          350, '#9A9A98', 'netral', { cust: 5 }],
+  ['kinasih', 'Ice Blue',      350, '#B9D3E2', 'biru',   { cust: 4 }],
+  ['kinasih', 'Maroon',        350, '#5E1A22', 'merah',  { cust: 4 }],
+  ['niskala', 'Ice Blue',      350, '#BED6E4', 'biru',   { extra: 1, cust: 4 }],
+  ['puspa',   'Mahogany',      350, '#5A2A1E', 'netral', { cust: 5 }],
+  ['geulis',  'Baby Pink',     390, '#F2C6D0', 'pink',   { extra: 1, cust: 6 }],
+  ['geulis',  'Rose Gold',     400, '#C99A86', 'nude',   { extra: 3 }],
+  ['geulis',  'Butter Yellow', 390, '#EFD98F', 'kuning', { extra: 1, cust: 1 }],
+  ['geulis',  'Creamy Nude',   390, '#E6D2BC', 'nude',   { extra: 1 }],
 ];
 
 /* ── KALENDER KETERSEDIAAN (Google Calendar) ───────────────────
-   Kunci = '<nama series> <nama warna>' huruf kecil, sama seperti di
-   Apps Script, mis. 'geulis rose gold'.
-   Jika kebaya tidak ada di sini, tombolnya otomatis menjadi
-   "Tanya Ketersediaan" via WhatsApp. */
+   Kunci = '<series> <warna>' huruf kecil, mis. 'geulis rose gold'.
+   Jika kebaya tidak ada di sini, tombolnya menjadi "Tanya Ketersediaan". */
 const CALENDAR_MAP = {
   'aruni blush pink': '6e46ad371724c45469cc35261f26bbfc57c13120536a99dcef831d439eaabd94@group.calendar.google.com',
   'aruni creamy nude': '9127ebbeeabe2a326848dd7ac5db701e083a6c43bf02776a4093efe6bb9104d7@group.calendar.google.com',
@@ -94,32 +91,25 @@ const CALENDAR_MAP = {
 
 /* ── (tidak perlu diubah) menyusun data lengkap tiap kebaya ─── */
 const slugify = t => t.toLowerCase().replace(/[()]/g, '').trim().replace(/\s+/g, '-');
-const calKey  = t => t.toLowerCase().replace(/\s+/g, ' ').trim();
+const range = n => Array.from({ length: n }, (_, i) => i);
 
-const ITEMS = KEBAYA.map(([s, color, price, hex, fam, o = {}], id) => {
+const ITEMS = KEBAYA.map(([s, color, price, hex, fam, o = {}], order) => {
   const ser = SERIES[s];
-  const folder = ser.folder || s;
-  const foto = o.foto || `${folder}/${folder}-${slugify(color)}`;   // mis. 'alanya/alanya-rose-gold'
-  const file = foto.split('/').pop();
+  const key = `${s}-${slugify(color)}`;
   const ld = o.ld || ser.ld;
   return {
-    id, s, color, price, hex, fam, ld,
-    key: `${s}-${slugify(color)}`,
+    order, s, color, price, hex, fam, ld, key,
     series: ser.name,
+    name: `${ser.name} ${color}`,
     isNew: !!o.new,
-    fav: o.fav || 0,
-    detail: !!o.detail,
     priceTxt: 'Rp ' + (price * 1000).toLocaleString('id-ID'),
-    img: `image/${foto}.png`,
-    photos: [1, 2, 3, 4, 5].map(n => `image/foto-customer/${file}/${n}.jpeg`),
-    pkg: [ld, 'Kebaya Full Payet', 'Rok Songket', 'Hijab', 'Manset', 'Long torso', 'Ciput Tile', ser.veil, 'Free laundry', 'Free Resize'].filter(Boolean),
-    cal: CALENDAR_MAP[calKey(`${ser.name} ${color}`)] || '',
+    thumb: `image/kebaya/thumb/${key}.jpg`,
+    photos: [`image/kebaya/${key}.jpg`, ...range(o.extra || 0).map(i => `image/kebaya/${key}-${i + 2}.jpg`)],
+    cust: range(o.cust || 0).map(i => `image/customer/${key}-${i + 1}.jpg`),
+    pkg: ['Kebaya Full Payet', 'Rok Songket', 'Hijab', 'Manset', 'Long Torso', 'Ciput Tile', ser.veil, 'Free Laundry', 'Free Resize'],
+    cal: CALENDAR_MAP[`${ser.name} ${color}`.toLowerCase()] || '',
   };
 });
-
-/* Pengingat di console browser jika ada kunci kalender yang tidak cocok dengan kebaya mana pun */
-const unused = Object.keys(CALENDAR_MAP).filter(k => !ITEMS.some(i => calKey(`${i.series} ${i.color}`) === k));
-if (unused.length) console.warn('Mojang.kebaya: kalender tanpa kebaya →', unused.join(', '));
 
 window.MOJANG_DATA = { KONTAK, SERIES, FAMILIES, ITEMS };
 })();

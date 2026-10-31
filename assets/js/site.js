@@ -321,6 +321,19 @@ $('.hero-media').addEventListener('mouseenter', () => clearInterval(hTimer));
 $('.hero-media').addEventListener('mouseleave', playHero);
 window.addEventListener('load', () => { loadSlide(1); playHero(); });
 
+/* ── Cek ongkir luar kota → WhatsApp ── */
+$('#sKebaya').innerHTML += ITEMS.map(i => `<option>${esc(i.name)}</option>`).join('');
+$('#sDate').min = dDate.min;
+$('#shipForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const msg = `Halo Mojang.kebaya, saya mau sewa kebaya untuk dikirim ke luar kota.\n` +
+    `Kota tujuan: ${$('#sCity').value.trim()}\n` +
+    `Tanggal acara: ${fmtDate($('#sDate').value)}\n` +
+    `Kebaya: ${$('#sKebaya').value || 'belum memilih'}\n` +
+    `Mohon info estimasi ongkirnya. Terima kasih.`;
+  window.open(waLink(msg), '_blank', 'noopener');
+});
+
 /* ── Angka di hero ── */
 $('#statCount').textContent = ITEMS.length;
 $('#statSeries').textContent = seriesInfo.length;

@@ -75,7 +75,7 @@
       <a href="#katalog">Katalog</a>
       <a href="#series">Series</a>
       <a href="#cara-sewa">Cara Sewa</a>
-      <a href="#luar-kota">Luar Kota</a>
+      <a href="#luar-kota">Kirim se-Jawa</a>
       <a href="#faq">FAQ</a>
     </nav>
     <div class="top-social">
@@ -97,7 +97,7 @@
       </div>
 
       <div class="hero-media">
-        <svg class="ring" viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="98"/><circle cx="100" cy="100" r="88"/></svg>
+        <span class="frame-deco" aria-hidden="true"></span>
         <button class="arch arch-main" id="heroMain" type="button" data-key="geulis-burgundy" aria-label="Lihat detail kebaya">
           <span class="hero-slides" id="heroSlides">
             <img class="on" src="image/kebaya/geulis-burgundy.jpg" alt="Kebaya Geulis Burgundy" fetchpriority="high">
@@ -220,18 +220,58 @@
   </section>
 
   <!-- LUAR KOTA -->
-  <section id="luar-kota" class="section wrap split">
-    <div class="reveal">
-      <p class="eyebrow">Sewa luar kota</p>
-      <h2>Dari Sukabumi ke <em>seluruh Pulau Jawa.</em></h2>
-      <p class="muted">Banten, DKI Jakarta, Jawa Barat, Jawa Tengah, DI Yogyakarta dan Jawa Timur.</p>
-      <a class="btn btn-line js-wa" data-msg="Halo Mojang.kebaya, saya mau sewa kebaya untuk dikirim ke luar kota.%0AKota tujuan: ...%0ATanggal acara: ...%0AUkuran LD: ..." href="https://wa.me/628985555506" target="_blank" rel="noopener">Tanya ongkir ke kota Anda</a>
+  <section id="luar-kota" class="section ship">
+    <div class="wrap">
+      <div class="ship-head reveal">
+        <p class="eyebrow">Kirim se-Pulau Jawa</p>
+        <h2>Dari Sukabumi ke <em>seluruh Pulau Jawa.</em></h2>
+        <p class="muted">Tidak tinggal di Sukabumi? Kebaya tetap bisa disewa. Kami kirim ke enam provinsi di Pulau Jawa, dan kebaya tiba sehari sebelum acara Anda.</p>
+      </div>
+
+      <!-- Wilayah pengiriman -->
+      <ol class="route reveal" aria-label="Wilayah pengiriman">
+        <li class="origin"><i></i><b>Sukabumi</b><span>Gallery Mojang.kebaya</span></li>
+        <li><i></i><b>Banten</b><span>Serang · Tangerang · Cilegon</span></li>
+        <li><i></i><b>DKI Jakarta</b><span>Seluruh wilayah Jakarta</span></li>
+        <li><i></i><b>Jawa Barat</b><span>Bandung · Bogor · Bekasi · Depok</span></li>
+        <li><i></i><b>Jawa Tengah</b><span>Semarang · Solo · Purwokerto</span></li>
+        <li><i></i><b>DI Yogyakarta</b><span>Yogyakarta · Sleman · Bantul</span></li>
+        <li><i></i><b>Jawa Timur</b><span>Surabaya · Malang · Kediri</span></li>
+      </ol>
+
+      <div class="ship-grid">
+        <div class="ship-flow reveal">
+          <h3>Alur sewa luar kota</h3>
+          <ol class="flow">
+            <li><i>Booking</i><b>Pilih kebaya &amp; bayar DP</b><span>Cek tanggal di katalog, lalu DP minimal Rp100.000 via BCA.</span></li>
+            <li><i>Min. H-3</i><b>Fitting jarak jauh</b><span>Kirim foto + ukuran Lingkar Dada (LD) via WhatsApp. Resize gratis.</span></li>
+            <li><i>H-1</i><b>Kebaya tiba di rumah Anda</b><span>Dikirim lengkap satu paket, tiba sehari sebelum acara.</span></li>
+            <li><i>Hari H</i><b>Tampil cantik</b><span>Kebaya, rok songket, hijab, manset dan veil siap dipakai.</span></li>
+            <li><i>H+1</i><b>Kirim kembali</b><span>Paling lambat pukul 12.00 WIB. Tidak perlu dicuci.</span></li>
+          </ol>
+        </div>
+
+        <div class="ship-side reveal">
+          <form class="ship-form" id="shipForm">
+            <h3>Cek ongkir ke kota Anda</h3>
+            <p class="muted">Isi kota tujuan, kami balas estimasi ongkir lewat WhatsApp.</p>
+            <label class="label" for="sCity">Kota tujuan</label>
+            <input id="sCity" type="text" placeholder="Contoh: Bandung" required autocomplete="address-level2">
+            <label class="label" for="sDate">Tanggal acara</label>
+            <input id="sDate" type="date">
+            <label class="label" for="sKebaya">Kebaya (opsional)</label>
+            <select id="sKebaya"><option value="">Belum memilih</option></select>
+            <button class="btn btn-gold" type="submit"><svg width="18" height="18"><use href="#i-wa"/></svg> Tanya ongkir via WhatsApp</button>
+          </form>
+          <ul class="ship-notes">
+            <li><b>Ongkir</b><span>Ditanggung penyewa</span></li>
+            <li><b>Laundry</b><span>Gratis, tidak perlu dicuci</span></li>
+            <li><b>Resize</b><span>Gratis, konfirmasi min. H-3</span></li>
+            <li><b>Pelunasan</b><span>Paling lambat H-1</span></li>
+          </ul>
+        </div>
+      </div>
     </div>
-    <dl class="facts reveal">
-      <div><dt><i>01</i>Fitting jarak jauh</dt><dd>Kirim foto + ukuran LD via WhatsApp. Kami cocokkan ukurannya, resize gratis (konfirmasi min. 3 hari sebelum).</dd></div>
-      <div><dt><i>02</i>Pengiriman</dt><dd>Kebaya tiba H-1 sebelum hari pakai. Ongkir ditanggung penyewa.</dd></div>
-      <div><dt><i>03</i>Pengembalian</dt><dd>Dikirim balik H+1, maks. pukul 12.00 WIB. Tidak perlu dicuci.</dd></div>
-    </dl>
   </section>
 
   <!-- FOTO CUSTOMER -->

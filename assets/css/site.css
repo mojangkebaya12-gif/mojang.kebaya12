@@ -24,7 +24,8 @@
   --serif: 'Instrument Serif', Georgia, serif;
   --sans:  'Inter Tight', system-ui, -apple-system, sans-serif;
   --r: 14px;
-  --arch: 999px 999px 16px 16px;   /* bentuk bingkai lengkung khas Mojang */
+  --arch: 999px 999px 16px 16px;   /* bentuk bingkai lengkung khas Mojang (hero & paket) */
+  --soft: 20px;                     /* sudut lembut kotak foto di grid katalog & series */
   --gut: 16px;
   --top-h: 64px;
   --ease: cubic-bezier(.2, .7, .2, 1);
@@ -226,8 +227,8 @@ figure { margin: 0; }
 .series::-webkit-scrollbar { display: none; }
 .series li { flex: none; width: 60vw; max-width: 250px; scroll-snap-align: start; }
 .series button { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; text-align: center; }
-.s-img { display: block; position: relative; aspect-ratio: 3 / 4.3; border-radius: var(--arch); overflow: hidden; background: var(--surface); box-shadow: 0 0 0 1px var(--line); transition: box-shadow .4s, transform .5s var(--ease); }
-.s-img::after { content: ''; position: absolute; inset: 7px; border: 1px solid rgba(246,227,184,.4); border-radius: inherit; pointer-events: none; transition: border-color .4s; }
+.s-img { display: block; position: relative; aspect-ratio: 3 / 4; border-radius: var(--soft); overflow: hidden; background: var(--surface); box-shadow: 0 0 0 1px var(--line); transition: box-shadow .4s, transform .5s var(--ease); }
+.s-img::after { content: ''; position: absolute; inset: 7px; border: 1px solid rgba(246,227,184,.4); border-radius: calc(var(--soft) - 7px); pointer-events: none; transition: border-color .4s; }
 .s-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .9s var(--ease); }
 .series button:hover .s-img { transform: translateY(-6px); box-shadow: 0 0 0 1px var(--gold), 0 24px 50px rgba(0,0,0,.5), 0 0 40px rgba(226,191,134,.15); }
 .series button:hover .s-img::after { border-color: var(--gold-hi); }
@@ -287,19 +288,19 @@ figure { margin: 0; }
 .card:nth-child(4n+4) { animation-delay: .18s; }
 .card-btn { display: block; width: 100%; padding: 0; border: 0; background: none; text-align: center; cursor: pointer; }
 .card-img {
-  position: relative; aspect-ratio: 3 / 4.3; border-radius: var(--arch); overflow: hidden; background: var(--surface);
+  position: relative; aspect-ratio: 3 / 4; border-radius: var(--soft); overflow: hidden; background: var(--surface);
   box-shadow: 0 0 0 1px var(--line), 0 18px 40px rgba(0,0,0,.35);
   transition: transform .5s var(--ease), box-shadow .5s;
 }
 .card-img::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(transparent 60%, rgba(20,14,12,.75)); pointer-events: none; }
-.card-img::after { content: ''; position: absolute; inset: 7px; z-index: 2; border: 1px solid rgba(246,227,184,.38); border-radius: inherit; pointer-events: none; transition: border-color .4s, inset .4s var(--ease); }
+.card-img::after { content: ''; position: absolute; inset: 7px; z-index: 2; border: 1px solid rgba(246,227,184,.38); border-radius: calc(var(--soft) - 7px); pointer-events: none; transition: border-color .4s, inset .4s var(--ease), border-radius .4s; }
 .card-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity .7s var(--ease), transform 1s var(--ease); }
 .card-img .alt { opacity: 0; }
 .card-btn:hover .card-img { transform: translateY(-8px); box-shadow: 0 0 0 1px var(--gold), 0 30px 60px rgba(0,0,0,.55), 0 0 50px rgba(226,191,134,.16); }
-.card-btn:hover .card-img::after { border-color: var(--gold-hi); inset: 10px; }
+.card-btn:hover .card-img::after { border-color: var(--gold-hi); inset: 10px; border-radius: calc(var(--soft) - 10px); }
 .card-btn:hover .card-img img { transform: scale(1.05); }
 .card-btn:hover .card-img .alt { opacity: 1; }
-.badge { position: absolute; top: 22px; left: 50%; transform: translateX(-50%); z-index: 3; padding: 4px 11px; border-radius: 999px; background: var(--gold-grad); color: #1A120E; font-size: 10px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; white-space: nowrap; box-shadow: 0 4px 14px rgba(0,0,0,.35); }
+.badge { position: absolute; top: 16px; left: 50%; transform: translateX(-50%); z-index: 3; padding: 4px 11px; border-radius: 999px; background: var(--gold-grad); color: #1A120E; font-size: 10px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; white-space: nowrap; box-shadow: 0 4px 14px rgba(0,0,0,.35); }
 .badge.deal { background: var(--burgundy); color: var(--gold-hi); box-shadow: 0 0 0 1px var(--gold), 0 4px 14px rgba(0,0,0,.35); }
 .count { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); z-index: 3; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold-hi); white-space: nowrap; transition: opacity .3s; }
 .card-view { position: absolute; left: 50%; bottom: 14px; z-index: 3; transform: translate(-50%, 10px); padding: 9px 18px; border-radius: 999px; background: var(--gold-grad); color: #1A120E; font-size: 12px; font-weight: 600; letter-spacing: .06em; white-space: nowrap; opacity: 0; transition: opacity .35s var(--ease), transform .35s var(--ease); }
@@ -314,7 +315,7 @@ figure { margin: 0; }
 .card-price { font-weight: 500; font-size: 15px; color: var(--gold-hi); letter-spacing: .02em; }
 .card-price small { font-weight: 400; color: var(--text-3); }
 .card-ld { font-size: 12px; color: var(--text-3); margin-top: 2px; }
-@media (max-width: 420px) { .card-name { font-size: 24px; } .badge { top: 18px; font-size: 9px; padding: 3px 9px; } .card-series { letter-spacing: .16em; } }
+@media (max-width: 420px) { .card-name { font-size: 24px; } .badge { top: 14px; font-size: 9px; padding: 3px 9px; } .card-series { letter-spacing: .16em; } }
 .empty { text-align: center; padding: 40px 0 96px; color: var(--text-2); }
 
 /* ── Band: isi paket ── */

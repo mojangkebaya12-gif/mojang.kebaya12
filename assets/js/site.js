@@ -39,7 +39,7 @@ function syncUrl(extra) {
 /* ── Filter ── */
 function renderFilters() {
   const count = s => ITEMS.filter(i => !s || i.s === s).length;
-  const chips = [['', 'Semua'], ['baru', 'Baru'], ...Object.entries(SERIES).map(([k, v]) => [k, v.name])];
+  const chips = [['', 'Semua'], ['baru', 'Baru'], ...Object.entries(SERIES).map(([k, v]) => [k, (v.unggulan ? '✦ ' : '') + v.name])];
   $('#fSeries').innerHTML = chips.map(([k, label]) => {
     const on = k === 'baru' ? state.baru : (!state.baru && state.series === k);
     const n = k === 'baru' ? ITEMS.filter(i => i.isNew).length : count(k);
@@ -58,7 +58,8 @@ function filtered() {
     (!state.baru || i.isNew) &&
     (!state.series || i.s === state.series) &&
     (!state.fam.length || state.fam.includes(i.fam)));
-  const by = { new: (a, b) => (b.isNew - a.isNew) || a.order - b.order,
+  const top = i => SERIES[i.s].unggulan ? 1 : 0;   // series unggulan tampil setelah kebaya baru
+  const by = { new: (a, b) => (b.isNew - a.isNew) || (top(b) - top(a)) || a.order - b.order,
                low: (a, b) => a.price - b.price || a.order - b.order,
                high: (a, b) => b.price - a.price || a.order - b.order };
   return list.sort(by[state.sort]);
@@ -77,7 +78,7 @@ function renderGrid() {
           <span class="card-view">Lihat detail</span>
         </div>
         <div class="card-meta">
-          <div class="card-series"><i style="background:${i.hex}"></i>${esc(i.series)}</div>
+          <div class="card-series"><i style="background:${i.hex}"></i>${SERIES[i.s].unggulan ? '✦ ' : ''}${esc(i.series)}</div>
           <div class="card-name">${esc(i.color)}</div>
           <div class="card-price">${i.priceTxt} <small>/ 3 hari</small></div>
           ${i.ld ? `<div class="card-ld">${esc(i.ld)}</div>` : ''}
@@ -259,8 +260,8 @@ const seriesInfo = Object.entries(SERIES).map(([k, ser], n) => {
 }).filter(x => x.list.length);
 
 $('#seriesList').innerHTML = seriesInfo.map(({ k, ser, n, list, cover, min }) => `
-  <li class="reveal"><button type="button" data-go-series="${k}" aria-label="Lihat series ${esc(ser.name)}">
-    <span class="s-img"><img src="${cover.thumb}" alt="" loading="lazy" decoding="async"></span>
+  <li class="reveal${ser.unggulan ? ' is-top' : ''}"><button type="button" data-go-series="${k}" aria-label="Lihat series ${esc(ser.name)}">
+    <span class="s-img"><img src="${cover.thumb}" alt="" loading="lazy" decoding="async">${ser.unggulan ? '<span class="badge">✦ Unggulan</span>' : ''}</span>
     <span class="s-no">0${n + 1}</span>
     <span class="s-name">${esc(ser.name)}</span>
     <span class="s-meta">${list.length} warna · mulai ${rb(min)}</span>
@@ -277,10 +278,48 @@ document.addEventListener('click', e => {
   $('#katalog').scrollIntoView({ behavior: 'smooth' });
 });
 
+/* ── Series unggulan: foto besar + pilihan warna ── */
+const topKey = Object.keys(SERIES).find(k => SERIES[k].unggulan);
+const topItems = ITEMS.filter(i => i.s === topKey);
+if (!topItems.length) {
+  $('#unggulan').remove();
+} else {
+  const ser = SERIES[topKey];
+  const prices = topItems.map(i => i.price);
+  const [lo, hi] = [Math.min(...prices), Math.max(...prices)];
+  $('#spotName').textContent = ser.name;
+  $('#spotStory').textContent = ser.story || ser.desc;
+  $('#spotCount').textContent = topItems.length;
+  $('#spotRange').textContent = lo === hi ? rb(lo) : `${lo}–${rb(hi)}`;
+  $('#spotLd').textContent = ser.ld ? ser.ld.replace(/ max /, '–') : 'Tanya LD';
+  $('#spotAll').dataset.goSeries = topKey;
+  $('#spotAll').textContent = `Semua warna ${ser.name}`;
+  $('#spotImgs').innerHTML = topItems.map((i, n) =>
+    `<img ${n ? 'loading="lazy"' : ''} src="${i.photos[0]}" alt="Kebaya ${esc(i.name)}" class="${n ? '' : 'on'}" decoding="async">`).join('');
+  $('#spotPicks').innerHTML = topItems.map((i, n) => `
+    <button type="button" data-spot="${n}" aria-pressed="${n === 0}">
+      <img src="${i.thumb}" alt="" loading="lazy">
+      <span><i style="background:${i.hex}"></i>${esc(i.color)}</span>
+      <small>${i.priceTxt}${i.isNew ? ' · Baru' : ''}</small>
+    </button>`).join('');
+  const pickSpot = n => {
+    const i = topItems[n];
+    $('#spotImgs').querySelectorAll('img').forEach((img, k) => img.classList.toggle('on', k === n));
+    $('#spotPicks').querySelectorAll('button').forEach((b, k) => b.setAttribute('aria-pressed', k === n));
+    $('#spotMain').dataset.key = $('#spotDetail').dataset.key = i.key;
+    $('#spotMain').setAttribute('aria-label', `Lihat detail ${i.name}`);
+  };
+  $('#spotPicks').addEventListener('click', e => { const b = e.target.closest('[data-spot]'); if (b) pickSpot(+b.dataset.spot); });
+  pickSpot(0);
+}
+
 /* ── Hero: bingkai utama berganti kebaya otomatis ──
-   Urutan: kebaya "Baru" dulu, lalu pilihan di HERO_PICKS. */
-const HERO_PICKS = ['geulis-rose-gold', 'aruni-emerald', 'kinasih-maroon', 'geulis-butter-yellow'];
-const heroItems = [...ITEMS.filter(i => i.isNew), ...HERO_PICKS.map(k => ITEMS.find(i => i.key === k)).filter(Boolean)];
+   Urutan: kebaya "Baru" dulu, lalu semua warna series unggulan, lalu HERO_PICKS. */
+const HERO_PICKS = ['aruni-emerald', 'kinasih-maroon'];
+const heroItems = [...new Set([
+  ...ITEMS.filter(i => i.isNew), ...topItems,
+  ...HERO_PICKS.map(k => ITEMS.find(i => i.key === k)).filter(Boolean),
+])];
 const hSlides = $('#heroSlides');
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let hIdx = 0, hTimer;

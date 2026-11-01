@@ -68,7 +68,7 @@ function filtered() {
 function renderGrid() {
   const list = filtered();
   $('#grid').innerHTML = list.map((i, n) => `
-    <li class="card" style="--i:${Math.min(n, 8)}">
+    <li class="card${n % 7 === 0 ? ' feat' + (Math.floor(n / 7) % 2 ? ' right' : '') : ''}" style="--i:${Math.min(n % 8, 7)}">
       <button class="card-btn" type="button" data-key="${i.key}" aria-label="Lihat detail ${esc(i.name)}, ${i.priceTxt}">
         <div class="card-img">
           <img src="${i.thumb}" alt="Kebaya ${esc(i.name)}" width="480" height="640" ${n > 3 ? 'loading="lazy"' : ''} decoding="async">
@@ -77,6 +77,7 @@ function renderGrid() {
           ${i.photos.length + i.cust.length > 1 ? `<span class="count">${i.photos.length + i.cust.length} foto</span>` : ''}
         </div>
         <div class="card-meta">
+          <span class="card-no">No. ${String(n + 1).padStart(2, '0')}</span>
           <div class="card-series"><i style="background:${i.hex}"></i>${SERIES[i.s].unggulan ? '✦ ' : ''}${esc(i.series)}</div>
           <div class="card-name">${esc(i.color)}</div>
           <div class="card-price">${i.priceTxt} <small>/ 3 hari</small></div>
@@ -260,13 +261,27 @@ const seriesInfo = Object.entries(SERIES).map(([k, ser], n) => {
 }).filter(x => x.list.length);
 
 $('#seriesList').innerHTML = seriesInfo.map(({ k, ser, n, list, cover, min }) => `
-  <li class="reveal${ser.unggulan ? ' is-top' : ''}"><button type="button" data-go-series="${k}" aria-label="Lihat series ${esc(ser.name)}">
-    <span class="s-img"><img src="${cover.thumb}" alt="" loading="lazy" decoding="async">${ser.unggulan ? '<span class="badge">✦ Unggulan</span>' : ''}</span>
+  <li class="reveal"><button type="button" data-go-series="${k}" data-peek="${cover.thumb}" aria-label="Lihat series ${esc(ser.name)}, ${list.length} warna">
     <span class="s-no">0${n + 1}</span>
-    <span class="s-name">${esc(ser.name)}</span>
-    <span class="s-meta">${list.length} warna · mulai ${rb(min)}</span>
-    <span class="s-dots">${list.map(i => `<i style="background:${i.hex}"></i>`).join('')}</span>
+    <span class="s-name">${esc(ser.name)}${ser.unggulan ? '<span class="s-badge">✦ Unggulan</span>' : ''}</span>
+    <span class="s-meta">${list.length} warna · mulai ${rb(min)} <span class="s-dots">${list.map(i => `<i style="background:${i.hex}"></i>`).join('')}</span></span>
+    <img class="s-thumb" src="${cover.thumb}" alt="" loading="lazy" decoding="async">
+    <span class="s-arrow"><svg width="18" height="18" aria-hidden="true"><use href="#i-arrow"/></svg></span>
   </button></li>`).join('');
+
+/* foto pratinjau series mengikuti kursor (desktop) */
+const peek = $('#peek'), peekImg = peek.querySelector('img'), seriesSec = $('#series');
+$('#seriesList').addEventListener('mousemove', e => {
+  const b = e.target.closest('[data-peek]');
+  if (!b) { peek.classList.remove('on'); return; }
+  if (peekImg.getAttribute('src') !== b.dataset.peek) peekImg.src = b.dataset.peek;
+  const r = seriesSec.getBoundingClientRect();
+  peek.style.setProperty('--x', `${e.clientX - r.left - 115}px`);
+  peek.style.setProperty('--y', `${e.clientY - r.top - 160}px`);
+  peek.classList.add('on');
+});
+$('#seriesList').addEventListener('mouseleave', () => peek.classList.remove('on'));
+
 $('#footSeries').innerHTML = seriesInfo.map(({ k, ser }) =>
   `<li><a href="?series=${k}#katalog" data-go-series="${k}">${esc(ser.name)}</a></li>`).join('');
 
@@ -330,7 +345,7 @@ function showHero(n) {
   [...hSlides.children].forEach((img, k) => img.classList.toggle('on', k === hIdx));
   $('#heroMain').dataset.key = i.key;
   $('#heroMain').setAttribute('aria-label', `Lihat detail ${i.name}`);
-  $('#heroTag').textContent = i.isNew ? 'Baru' : `Series ${i.series}`;
+  $('#heroTag').textContent = i.isNew ? 'Koleksi baru' : `Series ${i.series}`;
   $('#heroName').textContent = i.name;
   $('#heroPrice').textContent = i.priceTxt;
   $('#heroNextImg').src = next.thumb;
@@ -383,15 +398,15 @@ document.querySelectorAll('[data-count]').forEach(el => {
   const end = +el.textContent;
   el.dataset.end = end;
   if (reduceAll || !end) return;
-  const t0 = performance.now() + 700, dur = 1200;
+  // memakai timer biasa (bukan requestAnimationFrame) supaya angka akhir selalu tercapai
+  const t0 = Date.now() + 700, dur = 1200;
   el.textContent = '0';
-  const tick = now => {
-    const p = Math.min(1, Math.max(0, (now - t0) / dur));
+  const tick = () => {
+    const p = Math.min(1, Math.max(0, (Date.now() - t0) / dur));
     el.textContent = Math.round(end * (1 - Math.pow(1 - p, 3)));
-    if (p < 1) requestAnimationFrame(tick);
+    if (p < 1) setTimeout(tick, 30);
   };
-  requestAnimationFrame(tick);
-  setTimeout(() => { el.textContent = end; }, 700 + dur + 150);   // pastikan angka akhir selalu tampil
+  setTimeout(tick, 700);
 });
 
 /* ── Header & garis progres baca ── */
@@ -414,9 +429,34 @@ setTimeout(() => {
   }
 }, 1800);
 
+/* ── Judul dipecah per kata untuk animasi ── */
+document.querySelectorAll('[data-split]').forEach(el => {
+  let wi = 0;
+  const walk = node => [...node.childNodes].forEach(ch => {
+    if (ch.nodeType === 3) {
+      const frag = document.createDocumentFragment();
+      ch.textContent.split(/(\s+)/).forEach(part => {
+        if (!part) return;
+        if (/^\s+$/.test(part)) { frag.append(' '); return; }
+        const w = document.createElement('span'); w.className = 'w';
+        const inner = document.createElement('span'); inner.textContent = part; inner.style.setProperty('--wi', wi++);
+        w.append(inner); frag.append(w);
+      });
+      ch.replaceWith(frag);
+    } else if (ch.nodeType === 1) walk(ch);
+  });
+  walk(el);
+});
+
+/* ── Parallax halus pada foto sampul ── */
+const coverSlides = $('#heroSlides');
+addEventListener('scroll', () => {
+  if (scrollY < innerHeight * 1.2) coverSlides.style.setProperty('--py', `${scrollY * 0.06}px`);
+}, { passive: true });
+
 /* ── Animasi muncul saat digulir ── */
 function revealCheck() {
-  document.querySelectorAll('.reveal:not(.in)').forEach(el => {
+  document.querySelectorAll('.reveal:not(.in), .mask:not(.in)').forEach(el => {
     if (el.getBoundingClientRect().top < innerHeight * .92) el.classList.add('in');
   });
 }

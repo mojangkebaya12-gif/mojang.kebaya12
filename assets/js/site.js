@@ -16,15 +16,15 @@ const rb = p => `${p}rb`;
 const scrollToEl = el => (window.MOJANG_SCROLL ? window.MOJANG_SCROLL(el) : el.scrollIntoView({ behavior: 'smooth' }));
 const altPhoto = i => i.photos[1] ? i.photos[1].replace('image/kebaya/', 'image/kebaya/thumb/') : (i.cust[0] || '');
 
-/* ── Kartu produk: kebaya di atas latar abu-abu, berganti ke foto customer saat disentuh ── */
+/* ── Kartu produk: foto asli kebaya, berganti ke foto customer saat disentuh ── */
 function cardHTML(i, eager) {
   const sibs = ITEMS.filter(x => x.s === i.s);
-  const alt = i.cust[0] || i.photos[0];
+  const alt = i.cust[0] || (i.photos[1] ? i.photos[1].replace('image/kebaya/', 'image/kebaya/thumb/') : '');
   return `<li class="card">
     <button class="card-btn" type="button" data-key="${i.key}" aria-label="Lihat detail ${esc(i.name)}, ${i.priceTxt}">
       <span class="card-img">
-        <img class="cut" src="${i.cut}" style="-webkit-mask-image:url(${i.cutMask});mask-image:url(${i.cutMask})" alt="Kebaya ${esc(i.name)}" ${eager ? '' : 'loading="lazy"'} decoding="async">
-        <img class="alt" src="${alt}" alt="" loading="lazy" decoding="async">
+        <img class="main" src="${i.thumb}" alt="Kebaya ${esc(i.name)}" ${eager ? '' : 'loading="lazy"'} decoding="async">
+        ${alt ? `<img class="alt" src="${alt}" alt="" loading="lazy" decoding="async">` : ''}
         ${i.isNew ? '<span class="card-flag">Baru</span>' : i.price === minPrice ? '<span class="card-flag deal">Harga terbaik</span>' : ''}
       </span>
       <span class="card-row"><span class="card-name">${esc(i.name)}</span><span class="card-price">${i.priceTxt}</span></span>
@@ -132,13 +132,11 @@ function openDetail(key, push = true) {
   $('#dLd').textContent = i.ld ? `Ukuran ${i.ld} · bisa resize gratis` : 'Tanya ukuran LD via WhatsApp · bisa resize gratis';
   $('#dDesc').textContent = ser.desc;
 
-  // foto pertama = kebaya tanpa latar di atas abu-abu, lalu foto asli & foto customer
-  const photos = [i.cut, ...i.photos, ...i.cust];
-  $('#dSlides').innerHTML = photos.map((src, n) => n === 0
-    ? `<img class="d-cut" src="${src}" style="-webkit-mask-image:url(${i.cutMask});mask-image:url(${i.cutMask})" alt="Kebaya ${esc(i.name)}" decoding="async">`
-    : `<img data-photo src="${src}" alt="${esc(i.name)} foto ${n + 1}" loading="lazy" decoding="async">`).join('');
+  const photos = [...i.photos, ...i.cust];
+  $('#dSlides').innerHTML = photos.map((src, n) =>
+    `<img data-photo src="${src}" alt="${esc(i.name)} foto ${n + 1}" ${n ? 'loading="lazy"' : ''} decoding="async">`).join('');
   $('#dThumbs').innerHTML = photos.length > 1 ? photos.map((src, n) =>
-    `<button data-photo type="button" data-n="${n}" aria-label="Foto ${n + 1}" aria-current="${n === 0}"><img src="${n === 0 ? i.thumb : src.replace('image/kebaya/', 'image/kebaya/thumb/')}" alt="" loading="lazy"></button>`).join('') : '';
+    `<button data-photo type="button" data-n="${n}" aria-label="Foto ${n + 1}" aria-current="${n === 0}"><img src="${src.replace('image/kebaya/', 'image/kebaya/thumb/')}" alt="" loading="lazy"></button>`).join('') : '';
   $('#dThumbs').hidden = photos.length < 2;
   sheet.querySelectorAll('[data-photo] img, img[data-photo]').forEach(hideBroken);
   $('#dSlides').scrollLeft = 0;

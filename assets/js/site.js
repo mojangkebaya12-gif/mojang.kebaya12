@@ -16,6 +16,24 @@ const rb = p => `${p}rb`;
 const scrollToEl = el => (window.MOJANG_SCROLL ? window.MOJANG_SCROLL(el) : el.scrollIntoView({ behavior: 'smooth' }));
 const altPhoto = i => i.photos[1] ? i.photos[1].replace('image/kebaya/', 'image/kebaya/thumb/') : (i.cust[0] || '');
 
+/* ── Kartu produk: kebaya di atas latar abu-abu, berganti ke foto customer saat disentuh ── */
+function cardHTML(i, eager) {
+  const sibs = ITEMS.filter(x => x.s === i.s);
+  const alt = i.cust[0] || i.photos[0];
+  return `<li class="card">
+    <button class="card-btn" type="button" data-key="${i.key}" aria-label="Lihat detail ${esc(i.name)}, ${i.priceTxt}">
+      <span class="card-img">
+        <img class="cut" src="${i.cut}" style="-webkit-mask-image:url(${i.cutMask});mask-image:url(${i.cutMask})" alt="Kebaya ${esc(i.name)}" ${eager ? '' : 'loading="lazy"'} decoding="async">
+        <img class="alt" src="${alt}" alt="" loading="lazy" decoding="async">
+        ${i.isNew ? '<span class="card-flag">Baru</span>' : i.price === minPrice ? '<span class="card-flag deal">Harga terbaik</span>' : ''}
+      </span>
+      <span class="card-row"><span class="card-name">${esc(i.name)}</span><span class="card-price">${i.priceTxt}</span></span>
+      <span class="card-row sub"><span>${i.ld ? esc(i.ld) : 'Tanya ukuran LD'}</span><span class="card-dots">${sibs.map(x => `<i class="${x.key === i.key ? 'on' : ''}" style="background:${x.hex}"></i>`).join('')}</span></span>
+      <span class="card-mat">Full payet · sewa 3 hari</span>
+    </button>
+  </li>`;
+}
+
 /* ── State filter (ikut tersimpan di URL supaya bisa dibagikan) ─
    Tetap mendukung link lama: ?series=aruni  ?warna=nude,pink  ?baru=1 */
 const q = new URLSearchParams(location.search);
@@ -68,23 +86,7 @@ function filtered() {
 
 function renderGrid() {
   const list = filtered();
-  $('#grid').innerHTML = list.map((i, n) => `
-    <li class="card" style="--tint:${i.hex}">
-      <button class="card-btn" type="button" data-key="${i.key}" data-cursor="Lihat" aria-label="Lihat detail ${esc(i.name)}, ${i.priceTxt}">
-        <span class="card-stage">
-          <span class="card-fig"><img class="cut" src="${i.cut}" style="-webkit-mask-image:url(${i.cutMask});mask-image:url(${i.cutMask})" alt="Kebaya ${esc(i.name)}" ${n > 3 ? 'loading="lazy"' : ''} decoding="async"></span>
-          ${i.isNew ? '<span class="badge">Baru</span>' : i.price === minPrice ? '<span class="badge deal">Hemat</span>' : ''}
-          ${i.photos.length + i.cust.length > 1 ? `<span class="count">${i.photos.length + i.cust.length} foto</span>` : ''}
-          <span class="card-view">Lihat detail</span>
-        </span>
-        <span class="card-meta">
-          <span class="card-series"><i style="background:${i.hex}"></i>${SERIES[i.s].unggulan ? '✦ ' : ''}${esc(i.series)}</span>
-          <span class="card-name">${esc(i.color)}</span>
-          <span class="card-price">${i.priceTxt} <small>/ 3 hari</small></span>
-          ${i.ld ? `<span class="card-ld">${esc(i.ld)}</span>` : ''}
-        </span>
-      </button>
-    </li>`).join('');
+  $('#grid').innerHTML = list.map((i, n) => cardHTML(i, n < 4)).join('');
 
   const label = state.baru ? 'kebaya baru'
     : state.series ? `kebaya series ${SERIES[state.series].name}` : 'kebaya';
@@ -130,11 +132,13 @@ function openDetail(key, push = true) {
   $('#dLd').textContent = i.ld ? `Ukuran ${i.ld} · bisa resize gratis` : 'Tanya ukuran LD via WhatsApp · bisa resize gratis';
   $('#dDesc').textContent = ser.desc;
 
-  const photos = [...i.photos, ...i.cust];
-  $('#dSlides').innerHTML = photos.map((src, n) =>
-    `<img data-photo src="${src}" alt="${esc(i.name)} foto ${n + 1}" ${n ? 'loading="lazy"' : ''} decoding="async">`).join('');
+  // foto pertama = kebaya tanpa latar di atas abu-abu, lalu foto asli & foto customer
+  const photos = [i.cut, ...i.photos, ...i.cust];
+  $('#dSlides').innerHTML = photos.map((src, n) => n === 0
+    ? `<img class="d-cut" src="${src}" style="-webkit-mask-image:url(${i.cutMask});mask-image:url(${i.cutMask})" alt="Kebaya ${esc(i.name)}" decoding="async">`
+    : `<img data-photo src="${src}" alt="${esc(i.name)} foto ${n + 1}" loading="lazy" decoding="async">`).join('');
   $('#dThumbs').innerHTML = photos.length > 1 ? photos.map((src, n) =>
-    `<button data-photo type="button" data-n="${n}" aria-label="Foto ${n + 1}" aria-current="${n === 0}"><img src="${src.replace('image/kebaya/', 'image/kebaya/thumb/')}" alt="" loading="lazy"></button>`).join('') : '';
+    `<button data-photo type="button" data-n="${n}" aria-label="Foto ${n + 1}" aria-current="${n === 0}"><img src="${n === 0 ? i.thumb : src.replace('image/kebaya/', 'image/kebaya/thumb/')}" alt="" loading="lazy"></button>`).join('') : '';
   $('#dThumbs').hidden = photos.length < 2;
   sheet.querySelectorAll('[data-photo] img, img[data-photo]').forEach(hideBroken);
   $('#dSlides').scrollLeft = 0;
@@ -243,15 +247,6 @@ $('#dCalBtn').addEventListener('click', () => {
   }
 });
 
-/* ── Foto customer: dua baris berjalan (isi digandakan agar mulus) ── */
-const reelItems = ITEMS.filter(i => i.cust.length).flatMap(i => i.cust.slice(0, 2).map(src => ({ i, src })));
-const custBtn = ({ i, src }, dup) => `<button type="button" data-key="${i.key}" data-cursor="Lihat"${dup ? ' tabindex="-1" aria-hidden="true"' : ''}>
-    <img src="${src}" alt="${dup ? '' : `Customer memakai ${esc(i.name)}`}" loading="lazy" decoding="async" width="250" height="333"><span>${esc(i.name)}</span></button>`;
-$('#reel').innerHTML = [0, 1].map(r => {
-  const row = reelItems.filter((_, n) => n % 2 === r);
-  return `<div class="cust-row${r ? ' rev' : ''}">${row.map(x => custBtn(x)).join('')}${row.map(x => custBtn(x, true)).join('')}</div>`;
-}).join('');
-
 /* ── Series: kartu di halaman utama & daftar di footer ── */
 const seriesInfo = Object.entries(SERIES).map(([k, ser], n) => {
   const list = ITEMS.filter(i => i.s === k);
@@ -292,27 +287,36 @@ menuBtn.addEventListener('click', () => setMenu(!drawer.classList.contains('open
 drawer.addEventListener('click', e => { if (e.target.closest('[data-close]')) setMenu(false); });
 addEventListener('keydown', e => { if (e.key === 'Escape' && drawer.classList.contains('open')) setMenu(false); });
 
-/* ── Koleksi: panggung horizontal (series unggulan dulu, lalu kebaya baru) ── */
+/* ── Deret koleksi (series unggulan dulu, lalu kebaya baru) ── */
 const topOf = i => SERIES[i.s].unggulan ? 1 : 0;
 const showcase = [...ITEMS].sort((a, b) => (topOf(b) - topOf(a)) || (b.isNew - a.isNew) || a.order - b.order);
-$('#hTrack').innerHTML = showcase.map((i, n) => `
-  <li class="panel" style="--tint:${i.hex}">
-    <button class="panel-btn" type="button" data-key="${i.key}" data-cursor="Lihat" aria-label="Lihat detail ${esc(i.name)}, ${i.priceTxt}">
-      <span class="panel-word" aria-hidden="true">${esc(i.series)}</span>
-      ${i.isNew ? '<span class="panel-badge">Baru</span>' : ''}
-      <span class="panel-fig"><img class="cut" src="${i.cut}" style="-webkit-mask-image:url(${i.cutMask});mask-image:url(${i.cutMask})" alt="Kebaya ${esc(i.name)}" ${n > 2 ? 'loading="lazy"' : ''} decoding="async"></span>
-      <span class="panel-meta">
-        <span class="panel-no">No. ${String(n + 1).padStart(2, '0')} / ${showcase.length} · Series ${esc(i.series)}</span>
-        <span class="panel-name">${esc(i.series)} <em>${esc(i.color)}</em></span>
-        <span class="panel-price">mulai<b>${i.priceTxt}</b></span>
-      </span>
-    </button>
-  </li>`).join('');
-const hView = $('#hViewport');
-hView.addEventListener('scroll', () => {
-  const max = hView.scrollWidth - hView.clientWidth;
-  $('#hBar').style.transform = `scaleX(${max > 0 ? hView.scrollLeft / max : 0})`;
-}, { passive: true });
+$('#hTrack').innerHTML = showcase.map((i, n) => cardHTML(i, n < 4)).join('');
+const rail = $('#hViewport');
+const railStep = () => (rail.querySelector('li')?.getBoundingClientRect().width || 300) + 12;
+function railButtons() {
+  const max = rail.scrollWidth - rail.clientWidth - 2;
+  $('#railPrev').disabled = rail.scrollLeft <= 2;
+  $('#railNext').disabled = rail.scrollLeft >= max;
+}
+$('#railPrev').addEventListener('click', () => rail.scrollBy({ left: -railStep(), behavior: 'smooth' }));
+$('#railNext').addEventListener('click', () => rail.scrollBy({ left: railStep(), behavior: 'smooth' }));
+rail.addEventListener('scroll', railButtons, { passive: true });
+addEventListener('resize', railButtons);
+railButtons();
+
+/* ── Tautan yang membuka bagian info tertentu ── */
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-open]'); if (!a) return;
+  const d = document.getElementById('acc-' + a.dataset.open);
+  if (d) { d.open = true; e.preventDefault(); setTimeout(() => d.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50); }
+});
+
+/* ── Booking cepat ── */
+$('#quickForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const t = $('#quickText').value.trim();
+  window.open(waLink(`Halo Mojang.kebaya, saya mau booking kebaya.${t ? `\n${t}` : ''}`), '_blank', 'noopener');
+});
 
 /* ── Cek ongkir luar kota → WhatsApp ── */
 $('#sKebaya').innerHTML += ITEMS.map(i => `<option>${esc(i.name)}</option>`).join('');
@@ -328,9 +332,9 @@ $('#shipForm').addEventListener('submit', e => {
 });
 
 /* ── Angka di hero ── */
-$('#statCount').textContent = ITEMS.length;
-$('#statSeries').textContent = seriesInfo.length;
-$('#statMin').textContent = minPrice;
+if ($('#statCount')) $('#statCount').textContent = ITEMS.length;
+if ($('#statSeries')) $('#statSeries').textContent = seriesInfo.length;
+if ($('#statMin')) $('#statMin').textContent = minPrice;
 
 /* ── Link WhatsApp, Instagram & TikTok ── */
 document.querySelectorAll('.js-wa').forEach(a => {
@@ -364,8 +368,8 @@ document.querySelectorAll('[data-count]').forEach(el => {
 const topBar = $('#top'), prog = $('#progress');
 function onScroll() {
   const max = document.documentElement.scrollHeight - innerHeight;
-  prog.style.transform = `scaleX(${max > 0 ? scrollY / max : 0})`;
-  topBar.classList.toggle('scrolled', scrollY > 40);
+  if (prog) prog.style.transform = `scaleX(${max > 0 ? scrollY / max : 0})`;
+  topBar.classList.toggle('scrolled', scrollY > 20);
 }
 onScroll();
 addEventListener('scroll', onScroll, { passive: true });

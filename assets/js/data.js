@@ -51,6 +51,8 @@ const FAMILIES = {
      Foto katalog   : image/kebaya/thumb/geulis-rose-gold.jpg   (lebar ±640px)
      Foto tambahan  : image/kebaya/geulis-rose-gold-2.jpg, -3.jpg, …
      Foto customer  : image/customer/geulis-rose-gold-1.jpg, -2.jpg, …
+     Foto tanpa latar: image/cutout/geulis-rose-gold.jpg + geulis-rose-gold-m.png
+                      (dibuat dari foto utama dengan alat potong otomatis macOS)
    Kompres foto ke JPG lebar ±1200px (±250 KB) supaya cepat di HP. */
 const KEBAYA = [
   ['geulis',  'Burgundy',      400, '#6B1E2B', 'merah',  { new: true, extra: 3 }],
@@ -107,6 +109,8 @@ const ITEMS = KEBAYA.map(([s, color, price, hex, fam, o = {}], order) => {
     isNew: !!o.new,
     priceTxt: 'Rp ' + (price * 1000).toLocaleString('id-ID'),
     thumb: `image/kebaya/thumb/${key}.jpg`,
+    cut: `image/cutout/${key}.jpg`,        // foto tanpa latar (dibuat otomatis)
+    cutMask: `image/cutout/${key}-m.png`,  // topeng transparan untuk foto di atas
     photos: [`image/kebaya/${key}.jpg`, ...range(o.extra || 0).map(i => `image/kebaya/${key}-${i + 2}.jpg`)],
     cust: range(o.cust || 0).map(i => `image/customer/${key}-${i + 1}.jpg`),
     pkg: ['Kebaya Full Payet', 'Rok Songket', 'Hijab', 'Manset', 'Long Torso', 'Ciput Tile', ser.veil, 'Free Laundry', 'Free Resize'],

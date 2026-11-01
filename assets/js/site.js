@@ -13,6 +13,7 @@ const hideBroken = img => { img.onerror = () => img.closest('[data-photo]')?.rem
 const minPrice = Math.min(...ITEMS.map(i => i.price));
 const rb = p => `${p}rb`;
 // foto kedua yang muncul saat kursor diarahkan ke kartu (desktop)
+const scrollToEl = el => (window.MOJANG_SCROLL ? window.MOJANG_SCROLL(el) : el.scrollIntoView({ behavior: 'smooth' }));
 const altPhoto = i => i.photos[1] ? i.photos[1].replace('image/kebaya/', 'image/kebaya/thumb/') : (i.cust[0] || '');
 
 /* ── State filter (ikut tersimpan di URL supaya bisa dibagikan) ─
@@ -68,22 +69,20 @@ function filtered() {
 function renderGrid() {
   const list = filtered();
   $('#grid').innerHTML = list.map((i, n) => `
-    <li class="card${n % 7 === 0 ? ' feat' + (Math.floor(n / 7) % 2 ? ' right' : '') : ''}" style="--i:${Math.min(n % 8, 7)}">
-      <button class="card-btn" type="button" data-key="${i.key}" aria-label="Lihat detail ${esc(i.name)}, ${i.priceTxt}">
-        <div class="card-img">
-          <img src="${i.thumb}" alt="Kebaya ${esc(i.name)}" width="480" height="640" ${n > 3 ? 'loading="lazy"' : ''} decoding="async">
-          ${altPhoto(i) ? `<img class="alt" src="${altPhoto(i)}" alt="" loading="lazy" decoding="async">` : ''}
+    <li class="card" style="--tint:${i.hex}">
+      <button class="card-btn" type="button" data-key="${i.key}" data-cursor="Lihat" aria-label="Lihat detail ${esc(i.name)}, ${i.priceTxt}">
+        <span class="card-stage">
+          <span class="card-fig"><img class="cut" src="${i.cut}" style="-webkit-mask-image:url(${i.cutMask});mask-image:url(${i.cutMask})" alt="Kebaya ${esc(i.name)}" ${n > 3 ? 'loading="lazy"' : ''} decoding="async"></span>
           ${i.isNew ? '<span class="badge">Baru</span>' : i.price === minPrice ? '<span class="badge deal">Hemat</span>' : ''}
           ${i.photos.length + i.cust.length > 1 ? `<span class="count">${i.photos.length + i.cust.length} foto</span>` : ''}
-        </div>
-        <div class="card-meta">
-          <span class="card-no">No. ${String(n + 1).padStart(2, '0')}</span>
-          <div class="card-series"><i style="background:${i.hex}"></i>${SERIES[i.s].unggulan ? '✦ ' : ''}${esc(i.series)}</div>
-          <div class="card-name">${esc(i.color)}</div>
-          <div class="card-price">${i.priceTxt} <small>/ 3 hari</small></div>
-          ${i.ld ? `<div class="card-ld">${esc(i.ld)}</div>` : ''}
-          <span class="card-cta">Lihat detail <svg width="12" height="12" aria-hidden="true"><use href="#i-arrow"/></svg></span>
-        </div>
+          <span class="card-view">Lihat detail</span>
+        </span>
+        <span class="card-meta">
+          <span class="card-series"><i style="background:${i.hex}"></i>${SERIES[i.s].unggulan ? '✦ ' : ''}${esc(i.series)}</span>
+          <span class="card-name">${esc(i.color)}</span>
+          <span class="card-price">${i.priceTxt} <small>/ 3 hari</small></span>
+          ${i.ld ? `<span class="card-ld">${esc(i.ld)}</span>` : ''}
+        </span>
       </button>
     </li>`).join('');
 
@@ -244,14 +243,14 @@ $('#dCalBtn').addEventListener('click', () => {
   }
 });
 
-/* ── Foto customer di halaman utama ── */
+/* ── Foto customer: dua baris berjalan (isi digandakan agar mulus) ── */
 const reelItems = ITEMS.filter(i => i.cust.length).flatMap(i => i.cust.slice(0, 2).map(src => ({ i, src })));
-$('#reel').innerHTML = reelItems.map(({ i, src }) => `
-  <li data-photo><button type="button" data-key="${i.key}">
-    <span class="r-img"><img src="${src}" alt="Customer memakai ${esc(i.name)}" loading="lazy" decoding="async" width="260" height="347"></span>
-    <span class="r-name">${esc(i.name)}</span>
-  </button></li>`).join('');
-$('#reel').querySelectorAll('img').forEach(hideBroken);
+const custBtn = ({ i, src }, dup) => `<button type="button" data-key="${i.key}" data-cursor="Lihat"${dup ? ' tabindex="-1" aria-hidden="true"' : ''}>
+    <img src="${src}" alt="${dup ? '' : `Customer memakai ${esc(i.name)}`}" loading="lazy" decoding="async" width="250" height="333"><span>${esc(i.name)}</span></button>`;
+$('#reel').innerHTML = [0, 1].map(r => {
+  const row = reelItems.filter((_, n) => n % 2 === r);
+  return `<div class="cust-row${r ? ' rev' : ''}">${row.map(x => custBtn(x)).join('')}${row.map(x => custBtn(x, true)).join('')}</div>`;
+}).join('');
 
 /* ── Series: kartu di halaman utama & daftar di footer ── */
 const seriesInfo = Object.entries(SERIES).map(([k, ser], n) => {
@@ -259,28 +258,6 @@ const seriesInfo = Object.entries(SERIES).map(([k, ser], n) => {
   const cover = list.find(i => i.isNew) || list[0];
   return { k, ser, n, list, cover, min: Math.min(...list.map(i => i.price)) };
 }).filter(x => x.list.length);
-
-$('#seriesList').innerHTML = seriesInfo.map(({ k, ser, n, list, cover, min }) => `
-  <li class="reveal"><button type="button" data-go-series="${k}" data-peek="${cover.thumb}" aria-label="Lihat series ${esc(ser.name)}, ${list.length} warna">
-    <span class="s-no">0${n + 1}</span>
-    <span class="s-name">${esc(ser.name)}${ser.unggulan ? '<span class="s-badge">✦ Unggulan</span>' : ''}</span>
-    <span class="s-meta">${list.length} warna · mulai ${rb(min)} <span class="s-dots">${list.map(i => `<i style="background:${i.hex}"></i>`).join('')}</span></span>
-    <img class="s-thumb" src="${cover.thumb}" alt="" loading="lazy" decoding="async">
-    <span class="s-arrow"><svg width="18" height="18" aria-hidden="true"><use href="#i-arrow"/></svg></span>
-  </button></li>`).join('');
-
-/* foto pratinjau series mengikuti kursor (desktop) */
-const peek = $('#peek'), peekImg = peek.querySelector('img'), seriesSec = $('#series');
-$('#seriesList').addEventListener('mousemove', e => {
-  const b = e.target.closest('[data-peek]');
-  if (!b) { peek.classList.remove('on'); return; }
-  if (peekImg.getAttribute('src') !== b.dataset.peek) peekImg.src = b.dataset.peek;
-  const r = seriesSec.getBoundingClientRect();
-  peek.style.setProperty('--x', `${e.clientX - r.left - 115}px`);
-  peek.style.setProperty('--y', `${e.clientY - r.top - 160}px`);
-  peek.classList.add('on');
-});
-$('#seriesList').addEventListener('mouseleave', () => peek.classList.remove('on'));
 
 $('#footSeries').innerHTML = seriesInfo.map(({ k, ser }) =>
   `<li><a href="?series=${k}#katalog" data-go-series="${k}">${esc(ser.name)}</a></li>`).join('');
@@ -290,7 +267,7 @@ document.addEventListener('click', e => {
   e.preventDefault();
   Object.assign(state, { series: b.dataset.goSeries, fam: [], baru: false });
   update();
-  $('#katalog').scrollIntoView({ behavior: 'smooth' });
+  scrollToEl($('#katalog'));
 });
 
 /* ── Menu garis tiga ── */
@@ -315,53 +292,27 @@ menuBtn.addEventListener('click', () => setMenu(!drawer.classList.contains('open
 drawer.addEventListener('click', e => { if (e.target.closest('[data-close]')) setMenu(false); });
 addEventListener('keydown', e => { if (e.key === 'Escape' && drawer.classList.contains('open')) setMenu(false); });
 
-/* ── Hero: bingkai utama berganti kebaya otomatis ──
-   Urutan: kebaya "Baru" dulu, lalu semua warna series unggulan, lalu HERO_PICKS. */
-const topItems = ITEMS.filter(i => SERIES[i.s].unggulan);
-const HERO_PICKS = ['aruni-emerald', 'kinasih-maroon'];
-const heroItems = [...new Set([
-  ...ITEMS.filter(i => i.isNew), ...topItems,
-  ...HERO_PICKS.map(k => ITEMS.find(i => i.key === k)).filter(Boolean),
-])];
-const hSlides = $('#heroSlides');
-const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-let hIdx = 0, hTimer;
-
-hSlides.innerHTML = heroItems.map((i, n) =>
-  `<img ${n ? 'data-src' : 'src'}="${i.photos[0]}" alt="Kebaya ${esc(i.name)}" class="${n ? '' : 'on'}" decoding="async">`).join('');
-$('#heroDots').innerHTML = heroItems.map((i, n) =>
-  `<button type="button" role="tab" data-hero="${n}" aria-label="${esc(i.name)}" aria-selected="${n === 0}"></button>`).join('');
-
-const loadSlide = n => {
-  const img = hSlides.children[n];
-  if (img && img.dataset.src) { img.src = img.dataset.src; delete img.dataset.src; }
-};
-function showHero(n) {
-  hIdx = (n + heroItems.length) % heroItems.length;
-  const i = heroItems[hIdx];
-  const next = heroItems[(hIdx + 1) % heroItems.length];
-  loadSlide(hIdx);
-  loadSlide((hIdx + 1) % heroItems.length);
-  [...hSlides.children].forEach((img, k) => img.classList.toggle('on', k === hIdx));
-  $('#heroMain').dataset.key = i.key;
-  $('#heroMain').setAttribute('aria-label', `Lihat detail ${i.name}`);
-  $('#heroTag').textContent = i.isNew ? 'Koleksi baru' : `Series ${i.series}`;
-  $('#heroName').textContent = i.name;
-  $('#heroPrice').textContent = i.priceTxt;
-  $('#heroNextImg').src = next.thumb;
-  $('#heroDots').querySelectorAll('button').forEach((b, k) => b.setAttribute('aria-selected', k === hIdx));
-}
-function playHero() {
-  clearInterval(hTimer);
-  if (!reduceMotion) hTimer = setInterval(() => showHero(hIdx + 1), 5000);
-}
-$('#heroNext').addEventListener('click', () => { showHero(hIdx + 1); playHero(); });
-$('#heroDots').addEventListener('click', e => {
-  const b = e.target.closest('[data-hero]'); if (b) { showHero(+b.dataset.hero); playHero(); }
-});
-$('.hero-media').addEventListener('mouseenter', () => clearInterval(hTimer));
-$('.hero-media').addEventListener('mouseleave', playHero);
-window.addEventListener('load', () => { loadSlide(1); playHero(); });
+/* ── Koleksi: panggung horizontal (series unggulan dulu, lalu kebaya baru) ── */
+const topOf = i => SERIES[i.s].unggulan ? 1 : 0;
+const showcase = [...ITEMS].sort((a, b) => (topOf(b) - topOf(a)) || (b.isNew - a.isNew) || a.order - b.order);
+$('#hTrack').innerHTML = showcase.map((i, n) => `
+  <li class="panel" style="--tint:${i.hex}">
+    <button class="panel-btn" type="button" data-key="${i.key}" data-cursor="Lihat" aria-label="Lihat detail ${esc(i.name)}, ${i.priceTxt}">
+      <span class="panel-word" aria-hidden="true">${esc(i.series)}</span>
+      ${i.isNew ? '<span class="panel-badge">Baru</span>' : ''}
+      <span class="panel-fig"><img class="cut" src="${i.cut}" style="-webkit-mask-image:url(${i.cutMask});mask-image:url(${i.cutMask})" alt="Kebaya ${esc(i.name)}" ${n > 2 ? 'loading="lazy"' : ''} decoding="async"></span>
+      <span class="panel-meta">
+        <span class="panel-no">No. ${String(n + 1).padStart(2, '0')} / ${showcase.length} · Series ${esc(i.series)}</span>
+        <span class="panel-name">${esc(i.series)} <em>${esc(i.color)}</em></span>
+        <span class="panel-price">mulai<b>${i.priceTxt}</b></span>
+      </span>
+    </button>
+  </li>`).join('');
+const hView = $('#hViewport');
+hView.addEventListener('scroll', () => {
+  const max = hView.scrollWidth - hView.clientWidth;
+  $('#hBar').style.transform = `scaleX(${max > 0 ? hView.scrollLeft / max : 0})`;
+}, { passive: true });
 
 /* ── Cek ongkir luar kota → WhatsApp ── */
 $('#sKebaya').innerHTML += ITEMS.map(i => `<option>${esc(i.name)}</option>`).join('');
@@ -428,31 +379,6 @@ setTimeout(() => {
     document.querySelectorAll('[data-count]').forEach(el => { el.textContent = el.dataset.end; });
   }
 }, 1800);
-
-/* ── Judul dipecah per kata untuk animasi ── */
-document.querySelectorAll('[data-split]').forEach(el => {
-  let wi = 0;
-  const walk = node => [...node.childNodes].forEach(ch => {
-    if (ch.nodeType === 3) {
-      const frag = document.createDocumentFragment();
-      ch.textContent.split(/(\s+)/).forEach(part => {
-        if (!part) return;
-        if (/^\s+$/.test(part)) { frag.append(' '); return; }
-        const w = document.createElement('span'); w.className = 'w';
-        const inner = document.createElement('span'); inner.textContent = part; inner.style.setProperty('--wi', wi++);
-        w.append(inner); frag.append(w);
-      });
-      ch.replaceWith(frag);
-    } else if (ch.nodeType === 1) walk(ch);
-  });
-  walk(el);
-});
-
-/* ── Parallax halus pada foto sampul ── */
-const coverSlides = $('#heroSlides');
-addEventListener('scroll', () => {
-  if (scrollY < innerHeight * 1.2) coverSlides.style.setProperty('--py', `${scrollY * 0.06}px`);
-}, { passive: true });
 
 /* ── Animasi muncul saat digulir ── */
 function revealCheck() {

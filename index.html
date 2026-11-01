@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Mojang.kebaya – Sewa Kebaya Full Payet Sukabumi, Kirim se-Pulau Jawa</title>
   <meta name="description" content="Sewa kebaya full payet Mojang.kebaya Sukabumi: 15 pilihan warna mulai Rp300.000, free laundry & free resize. Ambil di Sukabumi atau kirim ke seluruh Pulau Jawa.">
-  <meta name="theme-color" content="#F6EFE6">
+  <meta name="theme-color" content="#3A0B16">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Mojang.kebaya">
   <meta property="og:locale" content="id_ID">
@@ -16,11 +16,13 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Libre+Bodoni:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="preload" as="image" href="image/kebaya/geulis-burgundy.jpg" fetchpriority="high">
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400;1,6..96,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="image/cutout/geulis-burgundy.jpg" fetchpriority="high">
   <link rel="stylesheet" href="assets/css/site.css">
-  <!-- animasi hanya aktif jika browser benar-benar memutarnya; konten tetap tampil tanpa animasi -->
-  <script>if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('anim');</script>
+  <script>
+    // animasi hanya bila pengguna tidak meminta "kurangi gerakan"
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('anim');
+  </script>
 
   <link rel="icon" type="image/svg+xml" href="image/logo/favicon.svg">
   <link rel="icon" type="image/png" sizes="48x48" href="image/logo/favicon-48.png">
@@ -52,62 +54,51 @@
 </head>
 <body>
 
-<!-- Ikon garis (SVG) -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></symbol>
-  <symbol id="i-ig" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/></g><circle cx="17.4" cy="6.6" r="1.2" fill="currentColor"/></symbol>
-  <symbol id="i-tt" viewBox="0 0 24 24"><path fill="currentColor" d="M12.5.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></symbol>
-  <symbol id="i-arrow" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+  <symbol id="i-ig" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/></g><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor"/></symbol>
+  <symbol id="i-tt" viewBox="0 0 24 24"><path fill="currentColor" d="M12.5.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.130 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" d="M4 12h16m-6-6 6 6-6 6"/></symbol>
 </svg>
 
 <a class="skip" href="#katalog">Langsung ke katalog</a>
+
+<!-- LAYAR PEMBUKA -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader-in">
+    <img src="image/logo/mojang-logo-gold-160.png" alt="" width="64" height="72">
+    <p class="loader-word"><span>M</span><span>O</span><span>J</span><span>A</span><span>N</span><span>G</span></p>
+    <p class="loader-count"><span id="loadNum">0</span></p>
+  </div>
+</div>
+
+<!-- KURSOR KHUSUS (desktop) -->
+<div class="cursor" id="cursor" aria-hidden="true"><span class="cursor-dot"></span><span class="cursor-ring"><b id="cursorLabel">Lihat</b></span></div>
 <div class="progress" aria-hidden="true"><span id="progress"></span></div>
 
-<!-- PITA INFORMASI -->
-<a class="announce" href="?baru=1#katalog" aria-label="Koleksi baru Geulis Burgundy dan Aruni Blush Pink. Free laundry dan resize, kirim ke seluruh Pulau Jawa">
-  <div class="marquee" aria-hidden="true">
-    <div class="marquee-track">
-      <span>Koleksi baru · Geulis Burgundy &amp; Aruni Blush Pink</span><i>✦</i>
-      <span>Free laundry &amp; free resize</span><i>✦</i>
-      <span>Kirim ke seluruh Pulau Jawa</span><i>✦</i>
-      <span>Mulai Rp300.000 / 3 hari</span><i>✦</i>
-      <span>Koleksi baru · Geulis Burgundy &amp; Aruni Blush Pink</span><i>✦</i>
-      <span>Free laundry &amp; free resize</span><i>✦</i>
-      <span>Kirim ke seluruh Pulau Jawa</span><i>✦</i>
-      <span>Mulai Rp300.000 / 3 hari</span><i>✦</i>
-    </div>
-  </div>
-</a>
-
-<!-- HEADER BERGAYA MAJALAH -->
 <header class="top" id="top">
-  <div class="wrap top-in">
+  <div class="top-in">
     <button class="burger" id="menuBtn" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="drawer">
-      <span class="burger-lines"><span></span><span></span><span></span></span>
+      <span class="burger-lines"><span></span><span></span></span>
       <span class="burger-txt">Menu</span>
     </button>
-    <a class="masthead-sm" href="#" aria-label="Mojang.kebaya, ke atas">MOJANG<small>.kebaya</small></a>
-    <nav class="nav" aria-label="Menu">
-      <a href="#katalog">Katalog</a>
-      <a href="#cara-sewa">Cara sewa</a>
-      <a href="#luar-kota">Kirim se-Jawa</a>
-    </nav>
-    <a class="btn btn-wine btn-sm js-wa" href="https://wa.me/628985555506" target="_blank" rel="noopener">Booking</a>
+    <a class="wordmark" href="#" aria-label="Mojang.kebaya, ke atas">MOJANG</a>
+    <a class="btn btn-gold btn-sm js-wa magnetic" href="https://wa.me/628985555506" target="_blank" rel="noopener">Booking</a>
   </div>
 </header>
 
-<!-- MENU SAMPING -->
+<!-- MENU -->
 <div class="drawer" id="drawer" aria-hidden="true">
   <div class="drawer-bg" data-close></div>
   <nav class="drawer-panel" aria-label="Menu utama" tabindex="-1">
     <div class="drawer-head">
-      <span class="masthead-sm">MOJANG<small>.kebaya</small></span>
+      <span class="wordmark">MOJANG</span>
       <button class="drawer-x" type="button" data-close aria-label="Tutup menu">×</button>
     </div>
     <ul class="drawer-nav">
-      <li><a href="#isi" data-close><span>01</span>Di edisi ini</a></li>
-      <li><a href="#series" data-close><span>02</span>Series</a></li>
-      <li><a href="#katalog" data-close><span>03</span>Lookbook &amp; katalog</a></li>
+      <li><a href="#koleksi" data-close><span>01</span>Koleksi</a></li>
+      <li><a href="#katalog" data-close><span>02</span>Katalog</a></li>
+      <li><a href="#paket" data-close><span>03</span>Isi paket</a></li>
       <li><a href="#cara-sewa" data-close><span>04</span>Cara sewa</a></li>
       <li><a href="#luar-kota" data-close><span>05</span>Kirim se-Pulau Jawa</a></li>
       <li><a href="#faq" data-close><span>06</span>Tanya jawab</a></li>
@@ -126,126 +117,59 @@
 </div>
 
 <main>
-  <!-- SAMPUL MAJALAH -->
-  <section class="cover" aria-label="Sampul">
+  <!-- PANGGUNG UTAMA -->
+  <section class="stage" id="stage" aria-label="Mojang.kebaya">
+    <div class="stage-bg" aria-hidden="true"><span class="spot"></span><span class="grain"></span></div>
+    <h1 class="stage-title" id="stageTitle" aria-label="Mojang"><span aria-hidden="true"><i>M</i><i>o</i><i>j</i><i>a</i><i>n</i><i>g</i></span></h1>
+    <button class="stage-kebaya" id="heroMain" type="button" data-key="geulis-burgundy" data-cursor="Lihat" aria-label="Lihat detail Geulis Burgundy">
+      <img class="cut" src="image/cutout/geulis-burgundy.jpg" style="-webkit-mask-image:url(image/cutout/geulis-burgundy-m.png);mask-image:url(image/cutout/geulis-burgundy-m.png)" alt="Kebaya Geulis Burgundy" fetchpriority="high">
+      <span class="floor" aria-hidden="true"></span>
+    </button>
+    <div class="stage-meta left">
+      <p class="eyebrow">Rumah sewa kebaya · Sukabumi</p>
+      <p class="stage-lead">Kebaya full payet untuk wisuda, lamaran &amp; hari istimewa. Dikirim ke seluruh Pulau Jawa.</p>
+    </div>
+    <div class="stage-meta right">
+      <p class="stage-tag"><span>Koleksi baru</span><em>Geulis Burgundy</em></p>
+      <p class="stage-price">Mulai <b>Rp300rb</b> / 3 hari</p>
+      <a class="btn btn-gold magnetic" href="#koleksi">Jelajahi koleksi <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    </div>
+    <a class="scroll-cue" href="#cerita" aria-label="Gulir ke bawah"><span>Gulir</span><i></i></a>
+  </section>
+
+  <!-- PERNYATAAN -->
+  <section class="statement" id="cerita">
     <div class="wrap">
-      <div class="cover-meta">
-        <span>Vol. 01 — Edisi Kebaya</span>
-        <span class="hide-sm">Sukabumi · Pulau Jawa</span>
-        <span>2026</span>
-      </div>
-
-      <h1 class="masthead" aria-label="Mojang">
-        <span aria-hidden="true"><i>M</i><i>O</i><i>J</i><i>A</i><i>N</i><i>G</i></span>
-      </h1>
-
-      <div class="cover-grid">
-        <!-- judul-judul sampul kiri -->
-        <div class="cover-lines left">
-          <div class="cl">
-            <p class="kicker" id="heroTag">Koleksi baru</p>
-            <p class="cl-big"><em id="heroName">Geulis Burgundy</em></p>
-            <p class="cl-small"><span id="heroPrice">Rp 400.000</span> · sewa 3 hari</p>
-          </div>
-          <div class="cl">
-            <p class="cl-num"><span data-count id="statCount">15</span></p>
-            <p class="cl-small">kebaya full payet dalam <span data-count id="statSeries">5</span> series</p>
-          </div>
-          <div class="cl hide-sm">
-            <p class="kicker">Juga di edisi ini</p>
-            <p class="cl-small">Panduan sewa luar kota, isi paket, dan tanya jawab.</p>
-          </div>
-        </div>
-
-        <!-- foto sampul -->
-        <div class="hero-media">
-          <button class="cover-photo" id="heroMain" type="button" data-key="geulis-burgundy" aria-label="Lihat detail kebaya">
-            <span class="hero-slides" id="heroSlides">
-              <img class="on" src="image/kebaya/geulis-burgundy.jpg" alt="Kebaya Geulis Burgundy" fetchpriority="high">
-            </span>
-          </button>
-          <button class="cover-next" id="heroNext" type="button" aria-label="Kebaya berikutnya">
-            <img id="heroNextImg" src="image/kebaya/thumb/aruni-blush-pink.jpg" alt="">
-            <span>Berikutnya →</span>
-          </button>
-          <div class="hero-dots" id="heroDots" role="tablist" aria-label="Pilih kebaya"></div>
-        </div>
-
-        <!-- judul-judul sampul kanan -->
-        <div class="cover-lines right">
-          <div class="cl">
-            <p class="kicker">Mulai</p>
-            <p class="cl-num">Rp<span data-count id="statMin">300</span>rb</p>
-            <p class="cl-small">per 3 hari, paket lengkap</p>
-          </div>
-          <div class="cl">
-            <p class="cl-big">Free laundry <em>&amp;</em> resize</p>
-          </div>
-          <div class="cl">
-            <p class="cl-big">Kirim ke <em><span data-count>6</span> provinsi</em> di Jawa</p>
-          </div>
-          <div class="cover-cta">
-            <a class="btn btn-wine" href="#katalog">Buka lookbook <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-            <a class="btn btn-line js-wa" href="https://wa.me/628985555506" target="_blank" rel="noopener"><svg width="18" height="18" aria-hidden="true"><use href="#i-wa"/></svg> Booking</a>
-          </div>
-        </div>
-      </div>
+      <p class="eyebrow center">Mojang.kebaya</p>
+      <p class="statement-text" id="statementText">Setiap kebaya kami pilih untuk satu tujuan: membuat Anda bersinar di hari yang hanya sekali. Sudah dicuci, disesuaikan ukurannya, dan lengkap dari rok songket hingga veil. Anda cukup datang, dan tampil memukau.</p>
+      <dl class="facts">
+        <div><dt><span data-count id="statCount">15</span></dt><dd>pilihan warna</dd></div>
+        <div><dt><span data-count id="statSeries">5</span></dt><dd>series eksklusif</dd></div>
+        <div><dt>Rp<span data-count id="statMin">300</span>rb</dt><dd>mulai / 3 hari</dd></div>
+        <div><dt><span data-count>6</span></dt><dd>provinsi di Jawa</dd></div>
+      </dl>
     </div>
   </section>
 
-  <!-- TEKS BERJALAN RAKSASA -->
-  <div class="bigtype" aria-hidden="true">
-    <div class="bigtype-track">
-      <span>Kebaya</span><i>✦</i><span><em>full payet</em></span><i>✦</i><span>Wisuda</span><i>✦</i><span><em>lamaran</em></span><i>✦</i><span>Sukabumi</span><i>✦</i>
-      <span>Kebaya</span><i>✦</i><span><em>full payet</em></span><i>✦</i><span>Wisuda</span><i>✦</i><span><em>lamaran</em></span><i>✦</i><span>Sukabumi</span><i>✦</i>
+  <!-- KOLEKSI: galeri panggung horizontal -->
+  <section class="collection" id="koleksi" aria-label="Koleksi">
+    <div class="collection-head">
+      <p class="eyebrow">Koleksi 2026</p>
+      <h2>Satu panggung, <em>lima belas cerita.</em></h2>
+      <p class="hint"><span class="hide-touch">Gulir untuk menjelajah</span><span class="show-touch">Geser untuk menjelajah</span> →</p>
     </div>
-  </div>
-
-  <!-- DAFTAR ISI -->
-  <section id="isi" class="section toc">
-    <div class="wrap toc-in">
-      <div class="toc-head reveal">
-        <p class="eyebrow">Daftar isi</p>
-        <h2 data-split>Di edisi <em>ini.</em></h2>
-        <p class="lede dropcap">Mojang dalam bahasa Sunda berarti gadis. Di edisi ini kami menyiapkan kebaya full payet untuk hari paling istimewa Anda: wisuda, lamaran, dan resepsi. Pilih kebaya, cek tanggal, lalu booking lewat WhatsApp. Semudah membalik halaman.</p>
-      </div>
-      <ol class="toc-list reveal">
-        <li><a href="#series"><span class="pg">02</span><b>Series</b><span class="dots"></span><small>Lima siluet, satu signature</small></a></li>
-        <li><a href="#katalog"><span class="pg">03</span><b>Lookbook</b><span class="dots"></span><small>15 kebaya, mulai Rp300rb</small></a></li>
-        <li><a href="#paket"><span class="pg">04</span><b>Isi paket</b><span class="dots"></span><small>Semua sudah termasuk</small></a></li>
-        <li><a href="#cara-sewa"><span class="pg">05</span><b>Cara sewa</b><span class="dots"></span><small>Lima langkah saja</small></a></li>
-        <li><a href="#luar-kota"><span class="pg">06</span><b>Kirim se-Jawa</b><span class="dots"></span><small>Tiba H-1 sebelum acara</small></a></li>
-        <li><a href="#faq"><span class="pg">07</span><b>Tanya jawab</b><span class="dots"></span><small>Ukuran, DP, pengembalian</small></a></li>
-      </ol>
+    <div class="collection-viewport" id="hViewport">
+      <ul class="collection-track" id="hTrack"></ul>
     </div>
+    <div class="collection-bar" aria-hidden="true"><span id="hBar"></span></div>
   </section>
 
-  <!-- SERIES: daftar nama besar dengan pratinjau foto -->
-  <section id="series" class="section series-sec dark">
-    <div class="wrap">
-      <div class="sec-head reveal">
-        <span class="sec-no">02</span>
-        <div>
-          <p class="eyebrow">Series</p>
-          <h2 data-split>Lima siluet, <em>satu signature.</em></h2>
-        </div>
-      </div>
-      <ul class="series" id="seriesList"></ul>
-    </div>
-    <div class="peek" id="peek" aria-hidden="true"><img alt=""></div>
-  </section>
-
-  <!-- LOOKBOOK / KATALOG -->
+  <!-- KATALOG -->
   <section id="katalog" class="catalog" aria-labelledby="katalogTitle">
-    <div class="wrap">
-      <div class="sec-head reveal">
-        <span class="sec-no">03</span>
-        <div>
-          <p class="eyebrow">Lookbook</p>
-          <h2 id="katalogTitle" data-split>Temukan <em>kebayamu.</em></h2>
-          <p class="muted">Ketuk kebaya untuk melihat foto, ukuran, cek tanggal, lalu booking lewat WhatsApp.</p>
-        </div>
-      </div>
+    <div class="wrap catalog-head" data-r>
+      <p class="eyebrow">Katalog lengkap</p>
+      <h2 id="katalogTitle">Temukan <em>kebayamu.</em></h2>
+      <p class="muted">Pilih series atau warna, ketuk kebaya untuk melihat foto, ukuran, cek tanggal, lalu booking lewat WhatsApp.</p>
     </div>
     <div class="filters">
       <div class="wrap filters-in">
@@ -274,68 +198,55 @@
   </section>
 
   <!-- ISI PAKET -->
-  <section id="paket" class="section pkg-sec dark">
-    <div class="wrap pkg">
-      <figure class="pkg-fig">
-        <span class="mask"><img src="image/kebaya/geulis-rose-gold-2.jpg" alt="Detail payet kebaya Geulis Rose Gold" loading="lazy"></span>
-        <figcaption>Detail payet — Geulis Rose Gold</figcaption>
+  <section id="paket" class="pkg">
+    <div class="wrap pkg-in">
+      <figure class="pkg-fig" data-clip>
+        <img src="image/kebaya/geulis-rose-gold-2.jpg" alt="Detail payet kebaya Geulis Rose Gold" loading="lazy">
+        <figcaption>Detail payet · Geulis Rose Gold</figcaption>
       </figure>
       <div class="pkg-text">
-        <div class="sec-head reveal">
-          <span class="sec-no">04</span>
-          <div>
-            <p class="eyebrow">Isi paket</p>
-            <h2 data-split>Satu harga, <em>semua sudah termasuk.</em></h2>
-          </div>
-        </div>
-        <ul class="pkg-list reveal">
-          <li><b>Kebaya full payet</b><span class="dots"></span><i>✦</i></li>
-          <li><b>Rok songket</b><span class="dots"></span><i>✦</i></li>
-          <li><b>Hijab &amp; ciput tile</b><span class="dots"></span><i>✦</i></li>
-          <li><b>Manset &amp; long torso</b><span class="dots"></span><i>✦</i></li>
-          <li><b>Veil lepas pasang</b><span class="dots"></span><i>✦</i></li>
-          <li><b>Laundry</b><span class="dots"></span><i>Gratis</i></li>
-          <li><b>Resize</b><span class="dots"></span><i>Gratis</i></li>
+        <p class="eyebrow" data-r>Isi satu paket</p>
+        <h2 data-r>Satu harga, <em>semua sudah termasuk.</em></h2>
+        <ul class="pkg-list">
+          <li data-r><b>Kebaya full payet</b><span></span><i>✦</i></li>
+          <li data-r><b>Rok songket</b><span></span><i>✦</i></li>
+          <li data-r><b>Hijab &amp; ciput tile</b><span></span><i>✦</i></li>
+          <li data-r><b>Manset &amp; long torso</b><span></span><i>✦</i></li>
+          <li data-r><b>Veil lepas pasang</b><span></span><i>✦</i></li>
+          <li data-r><b>Laundry</b><span></span><i>Gratis</i></li>
+          <li data-r><b>Resize</b><span></span><i>Gratis</i></li>
         </ul>
-        <blockquote class="pull reveal">“Tidak ada biaya tambahan untuk aksesori. Satu harga untuk tiga hari.”</blockquote>
-        <a class="btn btn-gold reveal" href="#katalog">Pilih kebaya <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        <a class="btn btn-gold magnetic" href="#katalog" data-r>Pilih kebaya <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow"/></svg></a>
       </div>
     </div>
   </section>
 
   <!-- CARA SEWA -->
-  <section id="cara-sewa" class="section how">
+  <section id="cara-sewa" class="how">
     <div class="wrap">
-      <div class="sec-head reveal">
-        <span class="sec-no">05</span>
-        <div>
-          <p class="eyebrow">Panduan</p>
-          <h2 data-split>Cara sewa, <em>lima langkah saja.</em></h2>
-        </div>
+      <div class="how-head" data-r>
+        <p class="eyebrow">Cara sewa</p>
+        <h2>Lima langkah <em>menuju hari H.</em></h2>
       </div>
-      <ol class="how-steps reveal">
-        <li><span class="big">1</span><b>Pilih kebaya</b><span>Lihat lookbook dan cek tanggal di kalender ketersediaan.</span></li>
-        <li><span class="big">2</span><b>Chat WhatsApp</b><span>Tekan “Booking via WhatsApp”, pesan sudah terisi otomatis.</span></li>
-        <li><span class="big">3</span><b>Bayar DP</b><span>Minimal Rp100.000 ke BCA. Booking terkonfirmasi setelah DP masuk.</span></li>
-        <li><span class="big">4</span><b>Pelunasan</b><span>Lunas paling lambat H-1 pengambilan, sertakan foto KTP asli.</span></li>
-        <li><span class="big">5</span><b>Ambil atau kirim</b><span>Ambil di Sukabumi H-1, atau dikirim dan tiba H-1.</span></li>
+      <ol class="how-steps" id="howSteps">
+        <li><span class="how-n">01</span><b>Pilih kebaya</b><span>Lihat katalog dan cek tanggal di kalender ketersediaan.</span></li>
+        <li><span class="how-n">02</span><b>Chat WhatsApp</b><span>Tekan “Booking via WhatsApp”, pesan sudah terisi otomatis.</span></li>
+        <li><span class="how-n">03</span><b>Bayar DP</b><span>Minimal Rp100.000 ke BCA. Booking terkonfirmasi setelah DP masuk.</span></li>
+        <li><span class="how-n">04</span><b>Pelunasan</b><span>Lunas paling lambat H-1 pengambilan, sertakan foto KTP asli.</span></li>
+        <li><span class="how-n">05</span><b>Ambil atau kirim</b><span>Ambil di Sukabumi H-1, atau dikirim dan tiba H-1.</span></li>
       </ol>
     </div>
   </section>
 
   <!-- KIRIM SE-PULAU JAWA -->
-  <section id="luar-kota" class="section ship">
+  <section id="luar-kota" class="ship">
     <div class="wrap">
-      <div class="sec-head reveal">
-        <span class="sec-no">06</span>
-        <div>
-          <p class="eyebrow">Kirim se-Pulau Jawa</p>
-          <h2 data-split>Dari Sukabumi ke <em>seluruh Pulau Jawa.</em></h2>
-          <p class="muted">Tidak tinggal di Sukabumi? Kebaya tetap bisa disewa. Kami kirim ke enam provinsi di Pulau Jawa, dan kebaya tiba sehari sebelum acara Anda.</p>
-        </div>
+      <div class="ship-head" data-r>
+        <p class="eyebrow">Kirim se-Pulau Jawa</p>
+        <h2>Dari Sukabumi ke <em>seluruh Pulau Jawa.</em></h2>
+        <p class="muted">Tidak tinggal di Sukabumi? Kebaya tetap bisa disewa. Kami kirim ke enam provinsi di Pulau Jawa, dan kebaya tiba sehari sebelum acara Anda.</p>
       </div>
-
-      <ol class="route reveal" aria-label="Wilayah pengiriman">
+      <ol class="route" id="route" aria-label="Wilayah pengiriman">
         <li class="origin"><i></i><b>Sukabumi</b><span>Gallery Mojang.kebaya</span></li>
         <li><i></i><b>Banten</b><span>Serang · Tangerang · Cilegon</span></li>
         <li><i></i><b>DKI Jakarta</b><span>Seluruh wilayah Jakarta</span></li>
@@ -344,9 +255,8 @@
         <li><i></i><b>DI Yogyakarta</b><span>Yogyakarta · Sleman · Bantul</span></li>
         <li><i></i><b>Jawa Timur</b><span>Surabaya · Malang · Kediri</span></li>
       </ol>
-
       <div class="ship-grid">
-        <div class="reveal">
+        <div data-r>
           <h3>Alur sewa luar kota</h3>
           <ol class="flow">
             <li><i>Booking</i><b>Pilih kebaya &amp; bayar DP</b><span>Cek tanggal di katalog, lalu DP minimal Rp100.000 via BCA.</span></li>
@@ -356,7 +266,7 @@
             <li><i>H+1</i><b>Kirim kembali</b><span>Paling lambat pukul 12.00 WIB. Tidak perlu dicuci.</span></li>
           </ol>
         </div>
-        <div class="reveal">
+        <div data-r>
           <form class="ship-form" id="shipForm">
             <h3>Cek ongkir ke kota Anda</h3>
             <p class="muted">Isi kota tujuan, kami balas estimasi ongkir lewat WhatsApp.</p>
@@ -379,33 +289,30 @@
     </div>
   </section>
 
-  <!-- FOTO CUSTOMER -->
-  <section class="section cust dark" aria-labelledby="custTitle">
-    <div class="wrap head-row reveal">
+  <!-- FOTO CUSTOMER: dua baris berjalan -->
+  <section class="cust" aria-labelledby="custTitle">
+    <div class="wrap cust-head" data-r>
       <div>
-        <p class="eyebrow">Dikenakan oleh</p>
-        <h2 id="custTitle" data-split>Customer kami, <em>di hari terbaiknya.</em></h2>
+        <p class="eyebrow">Dikenakan oleh customer kami</p>
+        <h2 id="custTitle">Hari terbaik, <em>kebaya terbaik.</em></h2>
       </div>
       <div class="social-links">
         <a class="pill js-ig" href="https://instagram.com/mojang.kebaya" target="_blank" rel="noopener"><svg width="16" height="16" aria-hidden="true"><use href="#i-ig"/></svg> Instagram</a>
         <a class="pill js-tt" href="https://www.tiktok.com/@mojang.kebaya" target="_blank" rel="noopener"><svg width="14" height="14" aria-hidden="true"><use href="#i-tt"/></svg> TikTok</a>
       </div>
     </div>
-    <ul class="reel" id="reel"></ul>
+    <div class="cust-rows" id="reel"></div>
   </section>
 
   <!-- TANYA JAWAB -->
-  <section id="faq" class="section">
-    <div class="wrap split">
-      <div class="sec-head reveal">
-        <span class="sec-no">07</span>
-        <div>
-          <p class="eyebrow">Tanya jawab</p>
-          <h2 data-split>Yang sering <em>ditanyakan.</em></h2>
-          <p class="muted">Belum menemukan jawabannya? <a class="link js-wa" href="https://wa.me/628985555506" target="_blank" rel="noopener">Tanya via WhatsApp</a></p>
-        </div>
+  <section id="faq" class="faq-sec">
+    <div class="wrap faq-in">
+      <div data-r>
+        <p class="eyebrow">Tanya jawab</p>
+        <h2>Yang sering <em>ditanyakan.</em></h2>
+        <p class="muted">Belum menemukan jawabannya? <a class="link js-wa" href="https://wa.me/628985555506" target="_blank" rel="noopener">Tanya via WhatsApp</a></p>
       </div>
-      <div class="faq reveal">
+      <div class="faq" data-r>
         <details><summary>Berapa lama masa sewa?</summary><p><b>3 hari</b>: H-1 ambil, hari H pakai, H+1 kembali. Batas kembali Sukabumi 16.00 WIB, luar kota 12.00 WIB.</p></details>
         <details><summary>Bagaimana kalau ukurannya tidak pas?</summary><p><b>Resize gratis.</b> Cek ukuran Lingkar Dada (LD) di detail kebaya, lalu konfirmasi resize minimal 3 hari sebelum tanggal sewa.</p></details>
         <details><summary>Bisa pesan dari luar kota?</summary><p>Bisa. Fitting via foto + ukuran LD di WhatsApp. Kebaya tiba H-1, ongkir ditanggung penyewa.</p></details>
@@ -450,20 +357,19 @@
   </section>
 
   <!-- AJAKAN -->
-  <section class="cta dark">
-    <div class="wrap cta-in reveal">
-      <p class="eyebrow">Halaman terakhir</p>
-      <h2 data-split>Giliran Anda <em>tampil di sampul.</em></h2>
-      <p class="lede">Cek tanggal, chat WhatsApp, bayar DP. Kebaya siap diambil di Sukabumi atau dikirim ke kota Anda.</p>
-      <div class="cta-row">
-        <a class="btn btn-gold js-wa" href="https://wa.me/628985555506" target="_blank" rel="noopener"><svg width="18" height="18" aria-hidden="true"><use href="#i-wa"/></svg> Booking via WhatsApp</a>
-        <a class="btn btn-ghost" href="#katalog">Buka lookbook</a>
-      </div>
+  <section class="cta">
+    <div class="stage-bg" aria-hidden="true"><span class="spot"></span><span class="grain"></span></div>
+    <div class="wrap cta-in">
+      <p class="eyebrow" data-r>Siap untuk hari Anda?</p>
+      <h2 class="cta-title" data-r>Tampil <em>memukau.</em></h2>
+      <a class="cta-btn magnetic js-wa" href="https://wa.me/628985555506" target="_blank" rel="noopener" data-cursor="Chat" data-r>
+        <span><svg width="22" height="22" aria-hidden="true"><use href="#i-wa"/></svg> Booking via WhatsApp</span>
+      </a>
     </div>
   </section>
 </main>
 
-<footer class="foot dark">
+<footer class="foot">
   <div class="wrap foot-in">
     <div class="foot-brand">
       <p>Sewa kebaya full payet dari Sukabumi, dikirim ke seluruh Pulau Jawa.</p>
@@ -497,13 +403,12 @@
       </ul>
     </div>
   </div>
-  <p class="foot-mark" aria-hidden="true">MOJANG<em>.kebaya</em></p>
-  <div class="wrap copy"><span>© <span id="year">2026</span> Mojang.kebaya · Vol. 01</span><a href="#">Kembali ke sampul ↑</a></div>
+  <p class="foot-mark" aria-hidden="true">Mojang</p>
+  <div class="wrap copy"><span>© <span id="year">2026</span> Mojang.kebaya</span><a href="#">Kembali ke atas ↑</a></div>
 </footer>
 
 <a class="fab js-wa" href="https://wa.me/628985555506" target="_blank" rel="noopener" aria-label="Chat WhatsApp">
-  <svg width="22" height="22" aria-hidden="true"><use href="#i-wa"/></svg>
-  <span>Chat</span>
+  <svg width="22" height="22" aria-hidden="true"><use href="#i-wa"/></svg><span>Chat</span>
 </a>
 
 <!-- DETAIL KEBAYA -->
@@ -555,5 +460,10 @@
 
 <script src="assets/js/data.js"></script>
 <script src="assets/js/site.js"></script>
+<!-- mesin animasi: GSAP + ScrollTrigger + Lenis (scroll halus). Website tetap berfungsi bila gagal dimuat. -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
+<script src="assets/js/motion.js" defer></script>
 </body>
 </html>

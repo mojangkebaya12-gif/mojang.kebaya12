@@ -117,24 +117,18 @@
 </div>
 
 <main id="konten">
-  <!-- PEMBUKA: dua foto penuh + judul utama -->
+  <!-- PEMBUKA: satu foto penuh + judul utama -->
   <section class="hero" aria-labelledby="heroTitle">
     <div class="hero-half hero-main">
-      <img src="image/editorial/hero-navy.jpg" srcset="image/editorial/m/hero-navy.jpg 800w, image/editorial/hero-navy.jpg 1066w" sizes="(min-width: 900px) 50vw, 100vw" alt="Customer memakai kebaya Aruni Navy saat wisuda" fetchpriority="high">
+      <!-- latar buram (hanya di layar lebar) supaya foto utama tampil utuh tanpa diperbesar -->
+      <img class="hero-bg" src="image/editorial/m/hero-navy.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async">
+      <img class="hero-photo" src="image/editorial/hero-navy.jpg" srcset="image/editorial/m/hero-navy.jpg 800w, image/editorial/hero-navy.jpg 1066w" sizes="(min-width: 900px) 50vw, 100vw" alt="Customer memakai kebaya Aruni Navy saat wisuda" fetchpriority="high">
       <div class="hero-cap hero-intro">
         <p class="hero-eyebrow">Sukabumi · Kirim se-Pulau Jawa</p>
         <h1 class="hero-title" id="heroTitle">Cantik itu Kamu,<br> Kebayanya Kami.</h1>
         <p class="hero-occasion">Wisuda · Lamaran · Hari istimewa</p>
       </div>
     </div>
-    <a class="hero-half hide-sm-block" href="katalog.html">
-      <picture>
-        <!-- di HP foto kedua tidak tampil: pakai gambar kosong 1px supaya tidak ikut diunduh -->
-        <source media="(max-width: 899px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
-        <img src="image/editorial/hero-b.jpg" srcset="image/editorial/m/hero-b.jpg 800w, image/editorial/hero-b.jpg 1328w" sizes="50vw" alt="Customer memakai kebaya Puspa Mahogany">
-      </picture>
-      <span class="hero-cap"><em>Wisuda &amp; Lamaran</em><u>Semua kebaya</u></span>
-    </a>
   </section>
 
   <!-- CERITA (teks menempel + foto polaroid) -->

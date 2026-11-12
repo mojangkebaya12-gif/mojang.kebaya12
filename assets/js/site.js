@@ -446,16 +446,14 @@ const floatCta = $('#floatCta');
 if (floatCta) {
   const foot = $('.foot');
   const caps = [...document.querySelectorAll('.hero-cap')];
-  const heroBtn = $('.hero-btn');   // tombol "Lihat katalog" di foto pembuka: jangan tampil dobel
   const checkFloat = () => {
     const p = floatCta.getBoundingClientRect(), pad = 12;
     const coversCaption = caps.some(c => {
       const r = c.getBoundingClientRect();
       return r.bottom > p.top - pad && r.top < p.bottom + pad && r.right > p.left - pad && r.left < p.right + pad;
     });
-    const heroBtnInView = heroBtn && heroBtn.getBoundingClientRect().bottom > 0 && heroBtn.getBoundingClientRect().top < innerHeight;
     const atFoot = foot && foot.getBoundingClientRect().top < innerHeight - 40;
-    floatCta.classList.toggle('hide', coversCaption || !!heroBtnInView || !!atFoot);
+    floatCta.classList.toggle('hide', coversCaption || !!atFoot);
   };
   checkFloat();
   setTimeout(checkFloat, 0);   // cek ulang setelah katalog selesai digambar (bagian "Mulai" di bawah)

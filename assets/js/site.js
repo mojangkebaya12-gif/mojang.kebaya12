@@ -450,6 +450,31 @@ if (heroTrack && heroDots) {
   };
   heroTrack.addEventListener('scroll', syncDots, { passive: true });
   addEventListener('resize', syncDots);
+
+  /* Geser otomatis tiap 4,5 detik (hanya HP/tablet). Berhenti saat disentuh/digeser lalu
+     lanjut 6 detik kemudian; berhenti saat bagian ini tidak terlihat, tab di latar belakang,
+     atau pengunjung mematikan animasi di perangkatnya. */
+  const narrow = matchMedia('(max-width: 899px)');
+  const calm = matchMedia('(prefers-reduced-motion: reduce)');
+  let timer = null, resumeTimer = null, inView = true;
+  const stopAuto = () => { clearInterval(timer); timer = null; };
+  const nextSlide = () => {
+    const count = heroTrack.children.length, w = heroTrack.clientWidth;
+    const n = Math.round(heroTrack.scrollLeft / Math.max(1, w));
+    heroTrack.scrollTo({ left: ((n + 1) % count) * w, behavior: 'smooth' });
+  };
+  const startAuto = () => {
+    stopAuto();
+    if (narrow.matches && !calm.matches && inView && !document.hidden) timer = setInterval(nextSlide, 4500);
+  };
+  const userActive = () => { stopAuto(); clearTimeout(resumeTimer); resumeTimer = setTimeout(startAuto, 6000); };
+  ['touchstart', 'pointerdown', 'wheel', 'keydown'].forEach(ev => heroTrack.addEventListener(ev, userActive, { passive: true }));
+  document.addEventListener('visibilitychange', startAuto);
+  if (narrow.addEventListener) narrow.addEventListener('change', startAuto);
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([en]) => { inView = en.isIntersecting; startAuto(); }, { threshold: 0.4 }).observe(heroTrack);
+  }
+  startAuto();
 }
 
 /* ── Tombol melayang "Lihat katalog" (beranda): menyingkir sementara saat akan

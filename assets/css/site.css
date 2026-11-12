@@ -119,8 +119,7 @@ figure { margin: 0; }
 .hero-cap u { text-decoration: none; padding-bottom: 2px; border-bottom: 1px solid currentColor; font-size: 13px; }
 .hero-half picture { display: contents; }
 /* judul utama di foto pembuka */
-.hero-main:hover img { transform: none; }
-.hero-intro { right: var(--gut); bottom: 32px; gap: 10px; max-width: 540px; color: #fff; }
+.hero-intro { right: var(--gut); bottom: 32px; gap: 10px; max-width: 540px; color: #fff; pointer-events: none; }   /* tulisan tembus: foto di bawahnya tetap bisa diklik & digeser */
 @media (max-width: 599px) { .hero-intro { bottom: calc(88px + env(safe-area-inset-bottom)); } }   /* HP: sisakan ruang untuk tombol melayang "Lihat katalog" */
 .hero-eyebrow { margin: 0; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
 .hero-occasion { margin: 8px 0 0; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; }

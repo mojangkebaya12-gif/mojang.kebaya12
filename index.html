@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Hanken+Grotesk:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="preload" as="image" href="image/editorial/hero-navy.jpg" imagesrcset="image/editorial/m/hero-navy.jpg 800w, image/editorial/hero-navy.jpg 1066w" imagesizes="(min-width: 900px) 50vw, 100vw" fetchpriority="high">
+  <link rel="preload" as="image" href="image/editorial/hero-navy.jpg" imagesrcset="image/editorial/m/hero-navy.jpg 800w, image/editorial/hero-navy.jpg 1066w" imagesizes="(min-width: 900px) 34vw, 100vw" fetchpriority="high">
   <link rel="stylesheet" href="assets/css/site.css">
 
   <link rel="icon" type="image/svg+xml" href="image/logo/favicon.svg">
@@ -117,24 +117,29 @@
 </div>
 
 <main id="konten">
-  <!-- PEMBUKA: dua foto penuh + judul utama -->
+  <!-- PEMBUKA: di HP satu foto; di desktop tiga foto berjajar dengan judul di tengah bawah -->
   <section class="hero" aria-labelledby="heroTitle">
-    <div class="hero-half hero-main">
-      <img src="image/editorial/hero-navy.jpg" srcset="image/editorial/m/hero-navy.jpg 800w, image/editorial/hero-navy.jpg 1066w" sizes="(min-width: 900px) 50vw, 100vw" alt="Customer memakai kebaya Aruni Navy saat wisuda" fetchpriority="high">
-      <div class="hero-cap hero-intro">
-        <p class="hero-eyebrow">Sukabumi · Kirim se-Pulau Jawa</p>
-        <h1 class="hero-title" id="heroTitle">Cantik itu Kamu,<br> Kebayanya Kami.</h1>
-        <p class="hero-occasion">Wisuda · Lamaran · Hari istimewa</p>
-      </div>
-    </div>
-    <a class="hero-half hide-sm-block" href="katalog.html">
+    <a class="hero-half hero-side hide-sm-block" href="katalog.html?series=geulis" aria-label="Lihat kebaya series Geulis">
       <picture>
-        <!-- di HP foto kedua tidak tampil: pakai gambar kosong 1px supaya tidak ikut diunduh -->
+        <!-- foto samping hanya untuk desktop: di HP pakai gambar kosong 1px supaya tidak ikut diunduh -->
         <source media="(max-width: 899px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
-        <img src="image/editorial/hero-b.jpg" srcset="image/editorial/m/hero-b.jpg 800w, image/editorial/hero-b.jpg 1328w" sizes="50vw" alt="Customer memakai kebaya Puspa Mahogany">
+        <img src="image/editorial/ban-b.jpg" srcset="image/editorial/m/ban-b.jpg 800w, image/editorial/ban-b.jpg 1201w" sizes="34vw" alt="Customer memakai kebaya Geulis Baby Pink">
       </picture>
-      <span class="hero-cap"><em>Wisuda &amp; Lamaran</em><u>Semua kebaya</u></span>
     </a>
+    <div class="hero-half hero-main">
+      <img src="image/editorial/hero-navy.jpg" srcset="image/editorial/m/hero-navy.jpg 800w, image/editorial/hero-navy.jpg 1066w" sizes="(min-width: 900px) 34vw, 100vw" alt="Customer memakai kebaya Aruni Navy saat wisuda" fetchpriority="high">
+    </div>
+    <a class="hero-half hero-side hide-sm-block" href="katalog.html?series=puspa" aria-label="Lihat kebaya series Puspa">
+      <picture>
+        <source media="(max-width: 899px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+        <img src="image/editorial/hero-b.jpg" srcset="image/editorial/m/hero-b.jpg 800w, image/editorial/hero-b.jpg 1328w" sizes="34vw" alt="Customer memakai kebaya Puspa Mahogany">
+      </picture>
+    </a>
+    <div class="hero-cap hero-intro">
+      <p class="hero-eyebrow">Sukabumi · Kirim se-Pulau Jawa</p>
+      <h1 class="hero-title" id="heroTitle">Cantik itu Kamu,<br> Kebayanya Kami.</h1>
+      <p class="hero-occasion">Wisuda · Lamaran · Hari istimewa</p>
+    </div>
   </section>
 
   <!-- CERITA (teks menempel + foto polaroid) -->

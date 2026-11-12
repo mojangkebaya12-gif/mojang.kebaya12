@@ -1,7 +1,12 @@
 /* =============================================================
    MOJANG.KEBAYA — DATA
    Satu-satunya file yang perlu diubah untuk menambah / mengubah kebaya,
-   harga, foto, atau kalender ketersediaan.
+   harga, foto, ulasan, atau kalender ketersediaan.
+
+   SETELAH MENGUBAH FILE INI, jalankan sekali di folder proyek:
+       node tools/buat-halaman.mjs
+   supaya halaman tiap kebaya (folder kebaya/), sitemap.xml, daftar katalog
+   untuk Google dan halaman 404 ikut diperbarui.
    ============================================================= */
 (function () {
 'use strict';
@@ -73,7 +78,19 @@ const KEBAYA = [
   ['geulis',  'Creamy Nude',   390, '#E6D2BC', 'nude',   { extra: 1 }],
 ];
 
+/* ── ULASAN CUSTOMER ──────────────────────────────────────────
+   Salin ulasan ASLI dari Google Maps / WhatsApp (dengan izin customer).
+   Bagian ulasan di beranda otomatis muncul begitu ada isinya.
+   Contoh:
+     { nama: 'Nadia', kota: 'Bandung', kebaya: 'Aruni Navy', bintang: 5,
+       teks: 'Kebayanya cantik banget, pas di badan, pengiriman tepat waktu.' },
+*/
+const ULASAN = [
+];
+
 /* ── KALENDER KETERSEDIAAN (Google Calendar) ───────────────────
+   PENTING: kalender ini bisa dilihat siapa saja. Tulis judul acara
+   cukup "Dipesan" — jangan cantumkan nama atau nomor WA customer.
    Kunci = '<series> <warna>' huruf kecil, mis. 'geulis rose gold'.
    Jika kebaya tidak ada di sini, tombolnya menjadi "Tanya Ketersediaan". */
 const CALENDAR_MAP = {
@@ -119,5 +136,5 @@ const ITEMS = KEBAYA.map(([s, color, price, hex, fam, o = {}], order) => {
   };
 });
 
-window.MOJANG_DATA = { KONTAK, SERIES, FAMILIES, ITEMS };
+window.MOJANG_DATA = { KONTAK, SERIES, FAMILIES, ITEMS, ULASAN };
 })();

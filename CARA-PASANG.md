@@ -1,42 +1,48 @@
-# Mojang.kebaya — paket lengkap (tinggal pasang)
+# Mojang.Kebaya — panduan website
 
-## Cara pasang (±2 menit)
-1. Ekstrak zip ini ke folder proyek website (folder yang berisi `index.html`). Timpa semua file yang ditanya.
-2. Salin foto kebaya Anda ke folder `image/` — daftar nama file yang dibaca website ada di `image/BACA-FOTO.txt`.
-3. Commit & push ke GitHub → Vercel deploy otomatis. Tidak ada build step, tidak perlu install apa pun.
+Website statis (HTML + CSS + JavaScript, tanpa build). Setiap push ke branch
+`main` di GitHub otomatis tayang di https://mojangkebaya.vercel.app lewat Vercel.
 
-Coba dulu di komputer: buka `index.html` langsung di browser (klik 2x), atau jalankan `npx serve` di folder proyek.
-
-## Isi paket
-| File | Fungsi |
+## Isi folder
+| File / folder | Fungsi |
 |---|---|
-| `index.html` | Homepage: galeri 3D yang bergerak mengikuti scroll |
-| `katalog.html` | Katalog: filter series, warna, harga, pencarian, urutan, tampilan |
-| `assets/css/loader.css` | Animasi loading logo (garis emas digambar → terisi) |
-| `assets/css/experience.css` | Tampilan bersama: warna, huruf, header, footer, bingkai, galeri, jendela detail |
-| `assets/css/katalog.css` | Tampilan khusus katalog |
-| `assets/js/loader.js` | Logika loader (1x per sesi, maks 3,2 detik) |
-| `assets/js/data.js` | **Semua data produk** — harga, warna, ukuran, kalender. Satu-satunya file yang perlu diubah untuk produk |
-| `assets/js/main.js` | Jendela detail, kalender ketersediaan, link WhatsApp |
-| `assets/js/katalog.js` | Logika filter katalog |
-| `assets/js/home-experience.js` | Isi homepage: bingkai series, titik emas, koleksi baru, foto customer, formulir WA |
-| `assets/js/journey.js` | Kamera 3D (GSAP ScrollTrigger + mesin cadangan bila CDN gagal) |
-| `image/logo/` | Logo vektor + favicon |
-| `image/BACA-FOTO.txt` | Daftar nama foto yang dibutuhkan |
+| `index.html` | Beranda: foto pembuka + judul, cerita, series, foto customer, booking cepat, info sewa & syarat |
+| `katalog.html` | Katalog: semua kebaya, filter series & warna, urutan harga, detail kebaya, cek tanggal, booking |
+| `kebaya/*.html` | Satu halaman per kebaya (untuk Google & dibagikan di WhatsApp). **Dibuat otomatis** |
+| `404.html`, `sitemap.xml`, `robots.txt` | Halaman "tidak ditemukan" & data untuk Google. **Dibuat otomatis** |
+| `assets/js/data.js` | **Semua data**: kontak, series, kebaya & harga, ulasan, kalender ketersediaan |
+| `assets/js/site.js` | Logika katalog, detail, menu, link WhatsApp, statistik klik |
+| `assets/css/site.css` | Semua tampilan |
+| `tools/buat-halaman.mjs` | Pembuat halaman otomatis (lihat di bawah) |
+| `vercel.json` | Pengaturan Vercel: cache foto, header keamanan, favicon |
+| `image/` | Foto: `editorial/` (beranda; versi HP di `editorial/m/`), `kebaya/` (+ `thumb/`), `customer/`, `cutout/`, `logo/` |
 
-`data.js`, `main.js` dan `katalog.js` identik dengan versi live (dicek per karakter).
-File lama `assets/css/style.css` dan `assets/js/home.js` tidak dipakai lagi — boleh dihapus.
+## Mengubah kebaya, harga, foto atau ulasan
+1. Ubah `assets/js/data.js` (petunjuk lengkap ada di dalam file itu).
+2. Jalankan sekali di folder ini: `node tools/buat-halaman.mjs`
+   → halaman `kebaya/`, sitemap, 404 dan daftar katalog untuk Google ikut diperbarui.
+3. Commit & push (mis. lewat GitHub Desktop → **Push origin**).
 
-## Mengubah tampilan
-- Sudut bingkai foto: `--fr` di bagian atas `experience.css` (18px desktop, 14px HP). `0px` = kotak tajam.
-- Warna: token `--ivory`, `--espresso`, `--burgundy`, `--rose`, `--champagne`, `--gold` di `experience.css`.
-- Panjang scroll galeri: `VH_PER_SECOND` (desktop) dan `VH_PER_SECOND_P` (HP) di `journey.js`.
-- Titik henti scroll di HP: hapus baris `scroll-snap-type` di `experience.css` jika tidak diinginkan.
-- Foto hero = kebaya pertama bertanda `new: true` di `data.js`. Jika berganti, ubah juga `<link rel="preload">` di `index.html`.
+## Foto
+- Foto kebaya: JPG lebar ±1200px, ±250 KB. Foto katalog (`thumb/`): lebar ±640px.
+- Foto beranda: simpan versi besar di `image/editorial/` dan versi HP (lebar 800px)
+  di `image/editorial/m/` dengan nama sama. Contoh (Mac):
+  `sips -s format jpeg -s formatOptions 50 --resampleWidth 800 image/editorial/foto.jpg --out image/editorial/m/foto.jpg`
+- Foto di-cache browser 1 hari. Jika mengganti foto dengan nama yang sama, pengunjung
+  lama bisa melihat foto lama sampai 1 hari; untuk perubahan langsung, pakai nama file baru.
+- Foto series yang belum tayang disimpan di luar website: `../foto-belum-tayang/`.
 
-## Perilaku
-- Desktop & HP: kamera 3D (CSS perspective, tanpa WebGL) — Potret → Galeri → Koleksi → Detail → Momen → Sewa.
-- HP: objek ditempatkan otomatis di ruang kosong di atas teks bab (diukur per HP), scroll berhenti halus di tiap bab.
-- "Kurangi Gerakan" aktif / tanpa JS / HP sangat lemah: bab tampil berurutan dengan transisi foto ringan.
-- Foto yang belum ada → bingkai menampilkan warna kebaya + logo ("Foto segera hadir").
-- Booking tetap lewat WhatsApp 0898 5555 506 dengan format pesan yang sama seperti sebelumnya.
+## Statistik pengunjung
+Kode Vercel Web Analytics sudah terpasang. Aktifkan sekali di dashboard Vercel:
+proyek → **Analytics** → **Enable**. Klik WhatsApp & booking dicatat sebagai event
+(event khusus butuh paket Vercel Pro; jumlah pengunjung tetap tercatat di paket gratis).
+
+## Privasi
+- Kalender ketersediaan (Google Calendar) bisa dilihat siapa saja: tulis judul acara
+  cukup "Dipesan", jangan nama atau nomor WA customer.
+- Ulasan di `data.js` harus ulasan asli, dengan izin customer.
+
+## Domain sendiri
+Jika nanti memakai domain sendiri (mis. mojangkebaya.com), tambahkan di Vercel →
+Settings → Domains, lalu ganti alamat `mojangkebaya.vercel.app` di `index.html`,
+`katalog.html` dan `tools/buat-halaman.mjs` (konstanta `SITE`), dan jalankan pembuat halaman lagi.

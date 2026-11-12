@@ -6,12 +6,14 @@
   <!-- Link lama ke katalog (?series=, ?k=, #katalog, #koleksi) diteruskan ke katalog.html -->
   <script>(function (l) { if (/[?&](k|series|warna|baru|urut)=/.test(l.search) || l.hash === '#katalog' || l.hash === '#koleksi') l.replace('katalog.html' + l.search); })(location);</script>
   <title>Mojang.Kebaya – Sewa Kebaya Full Payet Sukabumi, Kirim se-Pulau Jawa</title>
-  <meta name="description" content="Sewa kebaya full payet Mojang.kebaya Sukabumi: 15 pilihan warna mulai Rp300.000, free laundry & free resize. Ambil di Sukabumi atau kirim ke seluruh Pulau Jawa.">
+  <meta name="description" content="Sewa kebaya full payet Mojang.Kebaya Sukabumi: 15 pilihan warna mulai Rp300.000, free laundry & free resize. Ambil di Sukabumi atau kirim ke seluruh Pulau Jawa.">
+  <link rel="canonical" href="https://mojangkebaya.vercel.app/">
   <meta name="theme-color" content="#FFFFFF">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Mojang.kebaya">
+  <meta property="og:site_name" content="Mojang.Kebaya">
   <meta property="og:locale" content="id_ID">
-  <meta property="og:title" content="MOJANG – Sewa Kebaya Full Payet Sukabumi">
+  <meta property="og:title" content="Mojang.Kebaya – Sewa Kebaya Full Payet Sukabumi">
+  <meta property="og:url" content="https://mojangkebaya.vercel.app/">
   <meta property="og:description" content="15 kebaya full payet mulai Rp300rb. Free laundry & resize, kirim se-Pulau Jawa.">
   <meta property="og:image" content="https://mojangkebaya.vercel.app/image/editorial/hero-navy.jpg">
   <meta name="twitter:card" content="summary_large_image">
@@ -19,20 +21,26 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Hanken+Grotesk:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="preload" as="image" href="image/editorial/hero-navy.jpg" fetchpriority="high">
+  <link rel="preload" as="image" href="image/editorial/hero-navy.jpg" imagesrcset="image/editorial/m/hero-navy.jpg 800w, image/editorial/hero-navy.jpg 1066w" imagesizes="(min-width: 900px) 50vw, 100vw" fetchpriority="high">
   <link rel="stylesheet" href="assets/css/site.css">
 
   <link rel="icon" type="image/svg+xml" href="image/logo/favicon.svg">
   <link rel="icon" type="image/png" sizes="48x48" href="image/logo/favicon-48.png">
   <link rel="apple-touch-icon" sizes="180x180" href="image/logo/apple-touch-icon.png">
+  <!-- Statistik pengunjung (Vercel Web Analytics; aktifkan di dashboard Vercel → Analytics) -->
+  <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  if (!/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) { var va = document.createElement('script'); va.defer = true; va.src = '/_vercel/insights/script.js'; document.head.appendChild(va); }</script>
 
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "ClothingStore",
-    "name": "Mojang.kebaya",
+    "name": "Mojang.Kebaya",
     "url": "https://mojangkebaya.vercel.app",
     "image": "https://mojangkebaya.vercel.app/image/editorial/hero-navy.jpg",
+    "logo": "https://mojangkebaya.vercel.app/image/logo/apple-touch-icon.png",
+    "description": "Sewa kebaya full payet untuk wisuda, lamaran dan hari istimewa. Free laundry & resize, kirim ke seluruh Pulau Jawa.",
+    "areaServed": ["Sukabumi", "Pulau Jawa"],
     "telephone": "+628985555506",
     "priceRange": "Rp300.000 - Rp400.000",
     "address": {
@@ -74,7 +82,7 @@
         <a class="js-maps" href="https://maps.app.goo.gl/3HWTA4Q6ufHqqMdx5" target="_blank" rel="noopener">Google Maps</a>
       </nav>
     </div>
-    <a class="logo" href="#" aria-label="Mojang.kebaya, ke atas"><span class="logo-mark" aria-hidden="true"></span><span class="logo-text">Mojang.kebaya</span></a>
+    <a class="logo" href="#" aria-label="Mojang.Kebaya, ke atas"><span class="logo-mark" aria-hidden="true"></span><span class="logo-text">Mojang.Kebaya</span></a>
     <div class="top-right">
       <a class="hide-sm js-ig" href="https://instagram.com/mojang.kebaya" target="_blank" rel="noopener">Instagram</a>
       <a class="hide-sm js-tt" href="https://www.tiktok.com/@mojang.kebaya" target="_blank" rel="noopener">TikTok</a>
@@ -88,7 +96,7 @@
   <div class="drawer-bg" data-close></div>
   <nav class="drawer-panel" aria-label="Menu utama" tabindex="-1">
     <div class="drawer-head">
-      <span class="logo"><span class="logo-mark" aria-hidden="true"></span><span class="logo-text">Mojang.kebaya</span></span>
+      <span class="logo"><span class="logo-mark" aria-hidden="true"></span><span class="logo-text">Mojang.Kebaya</span></span>
       <button class="drawer-x" type="button" data-close aria-label="Tutup menu">×</button>
     </div>
     <ul class="drawer-nav">
@@ -109,14 +117,26 @@
 </div>
 
 <main id="konten">
-  <!-- PEMBUKA: dua foto penuh -->
-  <section class="hero" aria-label="Koleksi baru">
-    <a class="hero-half" href="katalog.html?baru=1">
-      <img src="image/editorial/hero-navy.jpg" alt="Customer memakai kebaya Aruni Navy saat wisuda" fetchpriority="high">
-      <span class="hero-cap"><em>Koleksi Baru</em><u>Lihat sekarang</u></span>
-    </a>
+  <!-- PEMBUKA: dua foto penuh + judul utama (harga ikut data.js lewat #statMin) -->
+  <section class="hero" aria-labelledby="heroTitle">
+    <div class="hero-half hero-main">
+      <img src="image/editorial/hero-navy.jpg" srcset="image/editorial/m/hero-navy.jpg 800w, image/editorial/hero-navy.jpg 1066w" sizes="(min-width: 900px) 50vw, 100vw" alt="Customer memakai kebaya Aruni Navy saat wisuda" fetchpriority="high">
+      <div class="hero-cap hero-intro">
+        <p class="hero-eyebrow">Sukabumi · kirim se-Pulau Jawa</p>
+        <h1 class="hero-title" id="heroTitle">Sewa kebaya full payet</h1>
+        <p class="hero-sub">Mulai Rp<span id="statMin">300</span> ribu untuk 3 hari · free laundry &amp; resize</p>
+        <div class="hero-actions">
+          <a class="hero-btn" href="katalog.html">Lihat katalog</a>
+          <a class="hero-link js-wa" data-where="hero" href="https://wa.me/628985555506" target="_blank" rel="noopener">Booking via WhatsApp</a>
+        </div>
+      </div>
+    </div>
     <a class="hero-half hide-sm-block" href="katalog.html">
-      <img src="image/editorial/hero-b.jpg" alt="Customer memakai kebaya Puspa Mahogany" loading="lazy">
+      <picture>
+        <!-- di HP foto kedua tidak tampil: pakai gambar kosong 1px supaya tidak ikut diunduh -->
+        <source media="(max-width: 899px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+        <img src="image/editorial/hero-b.jpg" srcset="image/editorial/m/hero-b.jpg 800w, image/editorial/hero-b.jpg 1328w" sizes="50vw" alt="Customer memakai kebaya Puspa Mahogany">
+      </picture>
       <span class="hero-cap"><em>Wisuda &amp; Lamaran</em><u>Semua kebaya</u></span>
     </a>
   </section>
@@ -131,19 +151,19 @@
       </div>
     </div>
     <div class="story-photos">
-      <figure class="polaroid"><img src="image/editorial/ed-window.jpg" alt="Customer memakai kebaya Aruni Nude Pink di dekat jendela" loading="lazy"></figure>
-      <figure class="polaroid"><img src="image/editorial/ed-maroon.jpg" alt="Customer memakai kebaya Kinasih Maroon" loading="lazy"></figure>
+      <figure class="polaroid"><img src="image/editorial/ed-window.jpg" srcset="image/editorial/m/ed-window.jpg 800w, image/editorial/ed-window.jpg 1000w" sizes="(min-width: 900px) 45vw, 90vw" alt="Customer memakai kebaya Aruni Nude Pink di dekat jendela" loading="lazy"></figure>
+      <figure class="polaroid"><img src="image/editorial/ed-maroon.jpg" srcset="image/editorial/m/ed-maroon.jpg 800w, image/editorial/ed-maroon.jpg 1000w" sizes="(min-width: 900px) 45vw, 90vw" alt="Customer memakai kebaya Kinasih Maroon" loading="lazy"></figure>
     </div>
   </section>
 
   <!-- DUA SERIES -->
   <section class="duo" aria-label="Series pilihan">
     <a class="duo-half" href="katalog.html?series=kinasih" data-go-series="kinasih">
-      <img src="image/editorial/ban-a.jpg" alt="Customer memakai kebaya Kinasih Ice Blue" loading="lazy">
+      <img src="image/editorial/ban-a.jpg" srcset="image/editorial/m/ban-a.jpg 800w, image/editorial/ban-a.jpg 1200w" sizes="(min-width: 900px) 50vw, 100vw" alt="Customer memakai kebaya Kinasih Ice Blue" loading="lazy">
       <span class="hero-cap"><em>Series Kinasih</em><u>Lihat series</u></span>
     </a>
     <a class="duo-half" href="katalog.html?series=geulis" data-go-series="geulis">
-      <img src="image/editorial/ban-b.jpg" alt="Customer memakai kebaya Geulis Baby Pink" loading="lazy">
+      <img src="image/editorial/ban-b.jpg" srcset="image/editorial/m/ban-b.jpg 800w, image/editorial/ban-b.jpg 1200w" sizes="(min-width: 900px) 50vw, 100vw" alt="Customer memakai kebaya Geulis Baby Pink" loading="lazy">
       <span class="hero-cap"><em>Series Geulis</em><u>Lihat series</u></span>
     </a>
   </section>
@@ -151,14 +171,15 @@
   <!-- DIKENAKAN OLEH -->
   <section class="story story-rev">
     <div class="story-photos">
-      <figure class="polaroid"><img src="image/editorial/ed-ice.jpg" alt="Customer memakai kebaya Niskala Ice Blue" loading="lazy"></figure>
-      <figure class="polaroid"><img src="image/editorial/ed-navy.jpg" alt="Customer memakai kebaya Aruni Navy saat wisuda" loading="lazy"></figure>
+      <figure class="polaroid"><img src="image/editorial/ed-ice.jpg" srcset="image/editorial/m/ed-ice.jpg 800w, image/editorial/ed-ice.jpg 1000w" sizes="(min-width: 900px) 45vw, 90vw" alt="Customer memakai kebaya Niskala Ice Blue" loading="lazy"></figure>
+      <figure class="polaroid"><img src="image/editorial/ed-navy.jpg" srcset="image/editorial/m/ed-navy.jpg 800w, image/editorial/ed-navy.jpg 1000w" sizes="(min-width: 900px) 45vw, 90vw" alt="Customer memakai kebaya Aruni Navy saat wisuda" loading="lazy"></figure>
     </div>
     <div class="story-text">
       <div class="sticky">
         <h2 class="ital">Dikenakan oleh customer kami</h2>
-        <p>Dari wisuda di Bandung sampai lamaran di Jakarta. Lihat lebih banyak foto customer kami di Instagram dan TikTok.</p>
-        <p class="links"><a class="ulink js-ig" href="https://instagram.com/mojang.kebaya" target="_blank" rel="noopener">Instagram</a><a class="ulink js-tt" href="https://www.tiktok.com/@mojang.kebaya" target="_blank" rel="noopener">TikTok</a></p>
+        <p>Dari wisuda di Bandung sampai lamaran di Jakarta. Baca ulasan mereka di Google, dan lihat lebih banyak foto customer di Instagram dan TikTok.</p>
+        <div class="reviews" id="reviews" hidden></div>
+        <p class="links"><a class="ulink js-maps" href="https://maps.app.goo.gl/3HWTA4Q6ufHqqMdx5" target="_blank" rel="noopener">Ulasan di Google</a><a class="ulink js-ig" href="https://instagram.com/mojang.kebaya" target="_blank" rel="noopener">Instagram</a><a class="ulink js-tt" href="https://www.tiktok.com/@mojang.kebaya" target="_blank" rel="noopener">TikTok</a></p>
       </div>
     </div>
   </section>
@@ -234,6 +255,7 @@
           <li>Dikonfirmasi setelah DP minimal Rp100.000 diterima</li>
           <li>Pelunasan 100% paling lambat H-1 pengambilan</li>
           <li>Transfer via BCA 0382828273 a.n Uzhma Ilham Firdani</li>
+          <li>Kami tidak pernah meminta transfer ke rekening lain. Waspada penipuan yang mengatasnamakan Mojang.Kebaya</li>
           <li>DP tidak dapat dikembalikan jika penyewa membatalkan</li>
           <li>Wajib sertakan foto KTP asli</li></ul></div>
         <div><p class="caps">Durasi &amp; pengambilan</p><ul>
@@ -252,7 +274,7 @@
           <li>Permintaan resize dikonfirmasi min. 3 hari sebelum</li>
           <li>Perubahan jadwal maks. 1 kali dengan surat resmi</li></ul></div>
       </div>
-      <p class="small muted">Dengan melakukan booking, penyewa menyetujui seluruh syarat &amp; ketentuan di atas. Mojang.kebaya berhak menolak booking jika jadwal penuh.</p>
+      <p class="small muted">Dengan melakukan booking, penyewa menyetujui seluruh syarat &amp; ketentuan di atas. Mojang.Kebaya berhak menolak booking jika jadwal penuh.</p>
     </details>
   </section>
 </main>
@@ -260,7 +282,7 @@
 <footer class="foot">
   <div class="foot-in">
     <div>
-      <p class="caps">Mojang.kebaya</p>
+      <p class="caps">Mojang.Kebaya</p>
       <p><a class="foot-addr js-maps" href="https://maps.app.goo.gl/3HWTA4Q6ufHqqMdx5" target="_blank" rel="noopener">Jl. Pelabuan 2, Gg. Dayeuhluhur, Warudoyong, Sukabumi 43133</a><br>Setiap hari 09.00–21.00</p>
       <a class="ulink js-maps" href="https://maps.app.goo.gl/3HWTA4Q6ufHqqMdx5" target="_blank" rel="noopener">Lihat di Google Maps</a>
     </div>
@@ -288,7 +310,7 @@
     </div>
   </div>
   <p class="foot-logo" aria-hidden="true">Mojang.Kebaya</p>
-  <p class="copy">© <span id="year">2026</span> Mojang.kebaya</p>
+  <p class="copy">© <span id="year">2026</span> Mojang.Kebaya</p>
 </footer>
 
 <a class="fab js-wa" href="https://wa.me/628985555506" target="_blank" rel="noopener" aria-label="Chat WhatsApp"><svg width="22" height="22" aria-hidden="true"><use href="#i-wa"/></svg></a>

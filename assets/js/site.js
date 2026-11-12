@@ -7,7 +7,7 @@
 (function () {
 'use strict';
 
-const { KONTAK, SERIES, FAMILIES, ITEMS } = window.MOJANG_DATA;
+const { KONTAK, SERIES, FAMILIES, ITEMS, ULASAN = [] } = window.MOJANG_DATA;
 const $ = s => document.querySelector(s);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const waLink = msg => `https://wa.me/${KONTAK.wa}?text=${encodeURIComponent(msg)}`;
@@ -18,7 +18,18 @@ const scrollToEl = el => (window.MOJANG_SCROLL ? window.MOJANG_SCROLL(el) : el.s
 
 const grid = $('#grid');     // ada di katalog.html
 const sheet = $('#sheet');   // ada di katalog.html
-const KATALOG = 'katalog.html';
+// halaman di subfolder (kebaya/…, 404) memberi tahu letak akar situs lewat <html data-root="../">
+const ROOT = document.documentElement.dataset.root || '';
+const KATALOG = ROOT + 'katalog.html';
+const pageUrl = key => new URL(`${ROOT}kebaya/${key}.html`, location.href).href;   // halaman khusus tiap kebaya
+
+/* ── Statistik: catat klik penting (Vercel Analytics / Google Analytics bila terpasang) ── */
+function track(name, data) {
+  try {
+    if (window.va) window.va('event', { name, data });
+    if (window.gtag) window.gtag('event', name, data);
+  } catch (e) { /* statistik tidak boleh mengganggu halaman */ }
+}
 const baseTitle = document.title;
 
 const today = new Date(); today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
@@ -173,7 +184,7 @@ function openDetail(key, push = true) {
     document.body.classList.add('lock');
   }
   sheet.scrollTop = 0;
-  document.title = `${i.name} – Sewa Kebaya Mojang.kebaya`;
+  document.title = `${i.name} – Sewa Kebaya Mojang.Kebaya`;
   if (push) history.pushState({ k: i.key }, '', syncUrl(i.key));
   else history.replaceState({ k: i.key }, '', syncUrl(i.key));
 }
@@ -234,19 +245,20 @@ if (sheet) {
   $('#dBook').addEventListener('submit', e => {
     e.preventDefault();
     if (!current) return;
-    const msg = `Halo Mojang.kebaya, saya mau booking kebaya:\n` +
+    const msg = `Halo Mojang.Kebaya, saya mau booking kebaya:\n` +
       `Kebaya: ${current.name} (${current.priceTxt})\n` +
       `Tanggal acara: ${fmtDate(dDate.value)}\n` +
       `Acara: ${$('#dEvent').value}\n` +
       `Nama: ...\nAmbil di Sukabumi / kirim ke: ...\n\n` +
-      `Link: ${location.origin}${location.pathname}?k=${current.key}`;
+      `Link: ${pageUrl(current.key)}`;
+    track('Booking WhatsApp', { kebaya: current.name, dari: 'detail' });
     window.open(waLink(msg), '_blank', 'noopener');
   });
 
   $('#dCalBtn').addEventListener('click', () => {
     if (!current) return;
     if (!current.cal) {
-      window.open(waLink(`Halo Mojang.kebaya, apakah ${current.name} tersedia tanggal ${fmtDate(dDate.value)}?`), '_blank', 'noopener');
+      window.open(waLink(`Halo Mojang.Kebaya, apakah ${current.name} tersedia tanggal ${fmtDate(dDate.value)}?`), '_blank', 'noopener');
       return;
     }
     const box = $('#dCal');
@@ -316,7 +328,8 @@ if (hashTarget && hashTarget.tagName === 'DETAILS') {
 if ($('#quickForm')) $('#quickForm').addEventListener('submit', e => {
   e.preventDefault();
   const t = $('#quickText').value.trim();
-  window.open(waLink(`Halo Mojang.kebaya, saya mau booking kebaya.${t ? `\n${t}` : ''}`), '_blank', 'noopener');
+  track('Booking WhatsApp', { dari: 'booking cepat' });
+  window.open(waLink(`Halo Mojang.Kebaya, saya mau booking kebaya.${t ? `\n${t}` : ''}`), '_blank', 'noopener');
 });
 
 /* ── Cek ongkir luar kota → WhatsApp (beranda) ── */
@@ -325,11 +338,12 @@ if ($('#shipForm')) {
   $('#sDate').min = todayISO;
   $('#shipForm').addEventListener('submit', e => {
     e.preventDefault();
-    const msg = `Halo Mojang.kebaya, saya mau sewa kebaya untuk dikirim ke luar kota.\n` +
+    const msg = `Halo Mojang.Kebaya, saya mau sewa kebaya untuk dikirim ke luar kota.\n` +
       `Kota tujuan: ${$('#sCity').value.trim()}\n` +
       `Tanggal acara: ${fmtDate($('#sDate').value)}\n` +
       `Kebaya: ${$('#sKebaya').value || 'belum memilih'}\n` +
       `Mohon info estimasi ongkirnya. Terima kasih.`;
+    track('Tanya ongkir WhatsApp', { kota: $('#sCity').value.trim() });
     window.open(waLink(msg), '_blank', 'noopener');
   });
 }
@@ -341,12 +355,28 @@ if ($('#statMin')) $('#statMin').textContent = minPrice;
 
 /* ── Link WhatsApp, Instagram, TikTok & Google Maps ── */
 document.querySelectorAll('.js-wa').forEach(a => {
-  const msg = a.dataset.msg ? decodeURIComponent(a.dataset.msg) : 'Halo Mojang.kebaya, saya mau tanya sewa kebaya.';
+  const msg = a.dataset.msg ? decodeURIComponent(a.dataset.msg) : 'Halo Mojang.Kebaya, saya mau tanya sewa kebaya.';
   a.href = waLink(msg);
 });
 document.querySelectorAll('.js-ig').forEach(a => { a.href = `https://instagram.com/${KONTAK.ig}`; });
 document.querySelectorAll('.js-tt').forEach(a => { a.href = `https://www.tiktok.com/@${KONTAK.tiktok}`; });
 document.querySelectorAll('.js-maps').forEach(a => { if (KONTAK.maps) a.href = KONTAK.maps; });
+// catat setiap klik ke WhatsApp (tombol mana & di halaman apa)
+document.addEventListener('click', e => {
+  const a = e.target.closest('.js-wa'); if (!a) return;
+  track('Klik WhatsApp', { tombol: a.dataset.where || (a.classList.contains('fab') ? 'tombol melayang' : 'link'), halaman: location.pathname });
+});
+
+/* ── Ulasan customer (isi di data.js → ULASAN; bagian ini tersembunyi selama masih kosong) ── */
+const reviewsBox = $('#reviews');
+if (reviewsBox && ULASAN.length) {
+  reviewsBox.innerHTML = ULASAN.map(u => `<figure class="review">
+    <p class="review-stars" aria-label="${u.bintang || 5} dari 5 bintang">${'★'.repeat(u.bintang || 5)}</p>
+    <blockquote>${esc(u.teks)}</blockquote>
+    <figcaption>${esc(u.nama)}${u.kota ? ` · ${esc(u.kota)}` : ''}${u.kebaya ? ` · ${esc(u.kebaya)}` : ''}</figcaption>
+  </figure>`).join('');
+  reviewsBox.hidden = false;
+}
 if ($('#syarat')) $('#footTerms').addEventListener('click', () => { $('#syarat').open = true; });
 
 $('#year').textContent = new Date().getFullYear();
@@ -416,14 +446,16 @@ const floatCta = $('#floatCta');
 if (floatCta) {
   const foot = $('.foot');
   const caps = [...document.querySelectorAll('.hero-cap')];
+  const heroBtn = $('.hero-btn');   // tombol "Lihat katalog" di foto pembuka: jangan tampil dobel
   const checkFloat = () => {
     const p = floatCta.getBoundingClientRect(), pad = 12;
     const coversCaption = caps.some(c => {
       const r = c.getBoundingClientRect();
       return r.bottom > p.top - pad && r.top < p.bottom + pad && r.right > p.left - pad && r.left < p.right + pad;
     });
+    const heroBtnInView = heroBtn && heroBtn.getBoundingClientRect().bottom > 0 && heroBtn.getBoundingClientRect().top < innerHeight;
     const atFoot = foot && foot.getBoundingClientRect().top < innerHeight - 40;
-    floatCta.classList.toggle('hide', coversCaption || !!atFoot);
+    floatCta.classList.toggle('hide', coversCaption || !!heroBtnInView || !!atFoot);
   };
   checkFloat();
   setTimeout(checkFloat, 0);   // cek ulang setelah katalog selesai digambar (bagian "Mulai" di bawah)

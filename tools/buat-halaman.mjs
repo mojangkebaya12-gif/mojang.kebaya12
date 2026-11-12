@@ -9,6 +9,7 @@
      kebaya/<nama>.html  satu halaman per kebaya (judul, foto & harga sendiri,
                          supaya muncul di Google dan rapi saat dibagikan di WA)
      404.html            halaman "tidak ditemukan"
+     panduan/…           artikel panduan (isi di tools/panduan.mjs) + daftar artikel
      sitemap.xml         daftar halaman untuk Google
      robots.txt          menunjuk ke sitemap
      katalog.html        daftar kebaya statis (untuk Google & tanpa JavaScript)
@@ -25,6 +26,7 @@ import path from 'node:path';
 import vm from 'node:vm';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
+import { daftarArtikel } from './panduan.mjs';
 
 const SITE = 'https://mojangkebaya.vercel.app';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -36,7 +38,7 @@ const abs = p => `${SITE}/${p}`;
 /* ── Data kebaya ── */
 const ctx = { window: {} };
 vm.runInNewContext(rd('assets/js/data.js'), ctx);
-const { KONTAK, SERIES, ITEMS } = ctx.window.MOJANG_DATA;
+const { KONTAK, SERIES, FAMILIES, ITEMS } = ctx.window.MOJANG_DATA;
 const minPrice = Math.min(...ITEMS.map(i => i.price));
 
 /* ── 0. Tanda versi (?v=…) pada link CSS/JS: berubah otomatis setiap isi file berubah,
@@ -168,9 +170,72 @@ wr('404.html', page({
   </section>`,
 }));
 
-/* ── 3. sitemap.xml & robots.txt ── */
+/* ── 2b. Artikel panduan (isi di tools/panduan.mjs) ── */
 const today = new Date().toISOString().slice(0, 10);
-const urls = [`${SITE}/`, abs('katalog.html'), ...ITEMS.map(i => abs(`kebaya/${i.key}.html`))];
+const tglID = d => new Date(d + 'T00:00:00').toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+const ARTIKEL = daftarArtikel({ ITEMS, SERIES, FAMILIES, esc });
+// tanggal terbit disimpan di panduan/tanggal.json supaya tidak berubah setiap kali pembuat halaman dijalankan
+const tglFile = 'panduan/tanggal.json';
+const TGL = fs.existsSync(path.join(ROOT, tglFile)) ? JSON.parse(rd(tglFile)) : {};
+for (const a of ARTIKEL) TGL[a.slug] ||= today;
+fs.rmSync(path.join(ROOT, 'panduan'), { recursive: true, force: true });
+wr(tglFile, JSON.stringify(TGL, null, 2) + '\n');
+const fotoM = src => src.replace('image/editorial/', 'image/editorial/m/');
+const imgTag = (src, alt, extra = '') => `<img src="../${src}" srcset="../${fotoM(src)} 800w, ../${src} 1066w" sizes="(min-width: 760px) 720px, 100vw" alt="${esc(alt)}" decoding="async"${extra}>`;
+const ctaArtikel = `    <div class="art-cta">
+      <a class="btn btn-dark" href="../katalog.html">Lihat katalog</a>
+      <a class="btn js-wa" data-where="artikel panduan" href="https://wa.me/${KONTAK.wa}" target="_blank" rel="noopener">Tanya via WhatsApp</a>
+    </div>`;
+
+for (const a of ARTIKEL) {
+  const url = abs(`panduan/${a.slug}.html`);
+  const lain = ARTIKEL.filter(x => x !== a);
+  const main = `  <nav class="crumbs" aria-label="Lokasi halaman"><a href="../index.html">Beranda</a> / <a href="index.html">Panduan</a> / <span aria-current="page">${esc(a.judul.split(':')[0])}</span></nav>
+  <article class="art">
+    <header class="art-head">
+      <p class="caps muted">Panduan</p>
+      <h1>${esc(a.judul)}</h1>
+      <p class="art-meta">Mojang.Kebaya · ${tglID(TGL[a.slug])}</p>
+    </header>
+    <figure class="art-photo">${imgTag(a.foto, a.fotoAlt, ' fetchpriority="high"')}</figure>
+${a.isi}
+${ctaArtikel}
+${lain.length ? `    <nav class="art-more" aria-label="Artikel lain">
+      <p class="label">Baca juga</p>
+${lain.map(x => `      <a href="${x.slug}.html">${esc(x.judul)}</a>`).join('\n')}
+    </nav>` : ''}
+  </article>`;
+  const jsonld = [
+    { '@context': 'https://schema.org', '@type': 'Article', headline: a.judul, description: a.ringkas, image: [abs(a.foto)],
+      datePublished: TGL[a.slug], dateModified: today, mainEntityOfPage: url,
+      author: { '@type': 'Organization', name: 'Mojang.Kebaya', url: `${SITE}/` },
+      publisher: { '@type': 'Organization', name: 'Mojang.Kebaya', logo: { '@type': 'ImageObject', url: abs('image/logo/apple-touch-icon.png') } } },
+    { '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+      itemListElement: [['Beranda', `${SITE}/`], ['Panduan', abs('panduan/index.html')], [a.judul, url]]
+        .map(([name, item], n) => ({ '@type': 'ListItem', position: n + 1, name, item })) },
+  ];
+  wr(`panduan/${a.slug}.html`, page({ prefix: '../', title: `${a.judul} – Mojang.Kebaya`, desc: a.ringkas, canonical: url, image: abs(a.foto), type: 'article', jsonld, main }));
+}
+
+wr('panduan/index.html', page({
+  prefix: '../', title: 'Panduan Sewa Kebaya – Mojang.Kebaya Sukabumi', canonical: abs('panduan/index.html'),
+  desc: 'Panduan sewa kebaya wisuda & lamaran dari Mojang.Kebaya Sukabumi: harga, cara booking, ukuran, dan tips memilih warna kebaya.',
+  image: abs(ARTIKEL[0].foto),
+  main: `  <nav class="crumbs" aria-label="Lokasi halaman"><a href="../index.html">Beranda</a> / <span aria-current="page">Panduan</span></nav>
+  <section class="pg">
+    <header class="pg-head">
+      <p class="caps muted">Panduan</p>
+      <h1>Panduan sewa kebaya</h1>
+      <p>Harga, cara booking, ukuran, dan tips memilih kebaya untuk wisuda, lamaran dan hari istimewa.</p>
+    </header>
+    <ul class="pg-list">
+${ARTIKEL.map((a, n) => `      <li class="pg-card"><a href="${a.slug}.html">${imgTag(a.foto, a.fotoAlt, n ? ' loading="lazy"' : '').replace('sizes="(min-width: 760px) 720px, 100vw"', 'sizes="(min-width: 700px) 50vw, 100vw"')}<h2>${esc(a.judul)}</h2><p>${esc(a.ringkas)}</p></a></li>`).join('\n')}
+    </ul>
+  </section>`,
+}));
+
+/* ── 3. sitemap.xml & robots.txt ── */
+const urls = [`${SITE}/`, abs('katalog.html'), ...ITEMS.map(i => abs(`kebaya/${i.key}.html`)), abs('panduan/index.html'), ...ARTIKEL.map(a => abs(`panduan/${a.slug}.html`))];
 wr('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map(u => `  <url><loc>${u}</loc><lastmod>${today}</lastmod></url>`).join('\n')}
@@ -188,4 +253,4 @@ let kat = katalog
 if (kat === katalog && !katalog.includes('kebaya/')) throw new Error('Penanda AUTO di katalog.html tidak ditemukan');
 wr('katalog.html', kat);
 
-console.log(`Selesai: ${ITEMS.length} halaman kebaya, 404.html, sitemap.xml (${urls.length} alamat), robots.txt, katalog.html diperbarui. Harga mulai Rp${minPrice}rb.`);
+console.log(`Selesai: ${ITEMS.length} halaman kebaya, ${ARTIKEL.length} artikel panduan, 404.html, sitemap.xml (${urls.length} alamat), robots.txt, katalog.html diperbarui. Harga mulai Rp${minPrice}rb.`);

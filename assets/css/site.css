@@ -98,22 +98,15 @@ figure { margin: 0; }
 .drawer-series small { display: none; }
 .drawer-cta { margin-top: auto; display: grid; gap: 10px; }
 
-/* ── Pembuka: satu foto penuh ── */
+/* ── Pembuka: dua foto penuh ── */
 .hero { display: grid; grid-template-columns: 1fr; height: calc(100vh - var(--bar)); height: calc(100svh - var(--bar)); min-height: 520px; }
-.hero-bg { display: none; }
-/* layar lebar: foto potret tampil utuh (tidak diperbesar/terpotong) di kanan, latar = foto yang sama diburamkan */
-@media (min-width: 900px) {
-  .hero-main { background: #14100d; }
-  .hero-main .hero-bg, .hero-main:hover .hero-bg { display: block; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: blur(40px) brightness(.45) saturate(1.1); transform: scale(1.15); }
-  .hero-main .hero-photo { position: absolute; top: 0; bottom: 0; right: max(0px, calc((100vw - 1000px) / 2.4)); width: auto; height: 100%; aspect-ratio: 1066 / 1600; object-fit: cover;
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent); mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent); }
-  .hero-main::after { background: linear-gradient(90deg, rgba(0,0,0,.4), transparent 55%), linear-gradient(transparent 55%, rgba(0,0,0,.35)); }
-}
+@media (min-width: 900px) { .hero { grid-template-columns: 1fr 1fr; } }
 .hero-half, .duo-half { position: relative; display: block; overflow: hidden; background: var(--prod); color: #fff; }
 .hero-half img, .duo-half img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.6s var(--ease); }
 .hero-half:hover img, .duo-half:hover img { transform: scale(1.025); }
 .hero-half::after, .duo-half::after { content: ''; position: absolute; inset: 0; background: linear-gradient(transparent 60%, rgba(0,0,0,.28)); pointer-events: none; }
 .hero-half:first-child::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 160px; z-index: 1; background: linear-gradient(rgba(0,0,0,.28), transparent); pointer-events: none; }
+.hero-half:nth-child(2)::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 160px; z-index: 1; background: linear-gradient(rgba(0,0,0,.28), transparent); pointer-events: none; }
 .hero-cap { position: absolute; left: var(--gut); bottom: 28px; z-index: 2; display: grid; justify-items: start; gap: 6px; }
 .hero-cap em { font-family: var(--serif); font-size: clamp(26px, 2.4vw, 32px); line-height: 1.1; }
 .hero-cap u { text-decoration: none; padding-bottom: 2px; border-bottom: 1px solid currentColor; font-size: 13px; }

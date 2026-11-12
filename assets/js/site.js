@@ -361,6 +361,10 @@ document.querySelectorAll('.js-wa').forEach(a => {
 document.querySelectorAll('.js-ig').forEach(a => { a.href = `https://instagram.com/${KONTAK.ig}`; });
 document.querySelectorAll('.js-tt').forEach(a => { a.href = `https://www.tiktok.com/@${KONTAK.tiktok}`; });
 document.querySelectorAll('.js-maps').forEach(a => { if (KONTAK.maps) a.href = KONTAK.maps; });
+document.querySelectorAll('.js-review').forEach(a => {
+  if (KONTAK.ulasan) a.href = KONTAK.ulasan;
+  a.addEventListener('click', () => track('Klik tulis ulasan', { halaman: location.pathname }));
+});
 // catat setiap klik ke WhatsApp (tombol mana & di halaman apa)
 document.addEventListener('click', e => {
   const a = e.target.closest('.js-wa'); if (!a) return;

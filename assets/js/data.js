@@ -18,6 +18,7 @@ const KONTAK = {
   ig: 'mojang.kebaya',
   tiktok: 'mojang.kebaya',
   maps: 'https://maps.app.goo.gl/3HWTA4Q6ufHqqMdx5', // lokasi toko di Google Maps
+  ulasan: 'https://g.page/r/CUJq0MAbz5cqEAE/review', // link "tulis ulasan" di Google (Business Profile → Get more reviews)
 };
 
 /* ── SERIES ─────────────────────────────────────────────────────

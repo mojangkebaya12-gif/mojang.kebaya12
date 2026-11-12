@@ -410,6 +410,21 @@ if ('IntersectionObserver' in window) {
   document.querySelectorAll('.cta, .foot').forEach(el => fo.observe(el));
 }
 
+/* ── Tombol melayang "Lihat katalog" (beranda): muncul setelah foto pembuka
+   digulir (supaya tidak menutupi tulisan di foto), sembunyi saat footer terlihat ── */
+const floatCta = $('#floatCta');
+if (floatCta) {
+  const hero = $('.hero'), foot = $('.foot');
+  const checkFloat = () => {
+    const pastHero = !hero || hero.getBoundingClientRect().bottom < innerHeight * .6;
+    const atFoot = foot && foot.getBoundingClientRect().top < innerHeight - 40;
+    floatCta.classList.toggle('hide', !pastHero || !!atFoot);
+  };
+  checkFloat();
+  addEventListener('scroll', checkFloat, { passive: true });
+  addEventListener('resize', checkFloat);
+}
+
 /* ── Mulai ── */
 update();
 const startKey = q.get('k');

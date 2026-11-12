@@ -410,15 +410,20 @@ if ('IntersectionObserver' in window) {
   document.querySelectorAll('.cta, .foot').forEach(el => fo.observe(el));
 }
 
-/* ── Tombol melayang "Lihat katalog" (beranda): muncul setelah foto pembuka
-   digulir (supaya tidak menutupi tulisan di foto), sembunyi saat footer terlihat ── */
+/* ── Tombol melayang "Lihat katalog" (beranda): menyingkir sementara saat akan
+   menutupi tulisan di foto (Koleksi Baru, Series …), sembunyi saat footer terlihat ── */
 const floatCta = $('#floatCta');
 if (floatCta) {
-  const hero = $('.hero'), foot = $('.foot');
+  const foot = $('.foot');
+  const caps = [...document.querySelectorAll('.hero-cap')];
   const checkFloat = () => {
-    const pastHero = !hero || hero.getBoundingClientRect().bottom < innerHeight * .6;
+    const p = floatCta.getBoundingClientRect(), pad = 12;
+    const coversCaption = caps.some(c => {
+      const r = c.getBoundingClientRect();
+      return r.bottom > p.top - pad && r.top < p.bottom + pad && r.right > p.left - pad && r.left < p.right + pad;
+    });
     const atFoot = foot && foot.getBoundingClientRect().top < innerHeight - 40;
-    floatCta.classList.toggle('hide', !pastHero || !!atFoot);
+    floatCta.classList.toggle('hide', coversCaption || !!atFoot);
   };
   checkFloat();
   addEventListener('scroll', checkFloat, { passive: true });

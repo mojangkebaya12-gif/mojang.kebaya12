@@ -240,7 +240,7 @@ figure { margin: 0; }
 @media (min-width: 900px) { .foot-in { grid-template-columns: 2fr 1fr 1fr 1fr; } .foot { padding-bottom: 40px; } }
 .foot-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
 .foot-list a:hover { color: var(--tx); }
-.foot-logo { margin: 64px 0 0 !important; font-family: var(--serif); font-weight: 300; font-size: 19vw; line-height: .8; letter-spacing: .12em; text-align: center; color: var(--wine); opacity: .9; white-space: nowrap; overflow: hidden; }
+.foot-logo { margin: 64px 0 0 !important; font-family: var(--serif); font-weight: 300; font-size: 14vw; line-height: 1.3; letter-spacing: .02em; text-align: center; color: var(--wine); opacity: .9; white-space: nowrap; overflow: hidden; }
 .copy { margin-top: 20px !important; font-size: 12px; }
 
 /* ── Tombol WhatsApp ── */

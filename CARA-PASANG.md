@@ -18,6 +18,9 @@ Website statis (HTML + CSS + JavaScript, tanpa build). Setiap push ke branch
 | `image/` | Foto: `editorial/` (beranda; versi HP di `editorial/m/`), `kebaya/` (+ `thumb/`), `customer/`, `cutout/`, `logo/` |
 
 ## Mengubah kebaya, harga, foto atau ulasan
+> Setelah mengubah `site.css` atau `site.js` juga jalankan `node tools/buat-halaman.mjs`,
+> supaya tanda versi (`?v=…`) di semua halaman ikut berubah dan browser memuat file terbaru.
+
 1. Ubah `assets/js/data.js` (petunjuk lengkap ada di dalam file itu).
 2. Jalankan sekali di folder ini: `node tools/buat-halaman.mjs`
    → halaman `kebaya/`, sitemap, 404 dan daftar katalog untuk Google ikut diperbarui.

@@ -13,6 +13,9 @@
      robots.txt          menunjuk ke sitemap
      katalog.html        daftar kebaya statis (untuk Google & tanpa JavaScript)
                          di antara penanda AUTO:GRID dan AUTO:ITEMLIST
+     ?v=… pada link      tanda versi CSS/JS di semua halaman, supaya browser
+                         selalu memuat file terbaru (jalankan juga setelah
+                         mengubah site.css atau site.js)
 
    Header, menu & footer disalin dari katalog.html, jadi cukup ubah di sana.
    Jika nanti memakai domain sendiri, ganti SITE di bawah.
@@ -20,6 +23,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
+import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 const SITE = 'https://mojangkebaya.vercel.app';
@@ -35,6 +39,13 @@ vm.runInNewContext(rd('assets/js/data.js'), ctx);
 const { KONTAK, SERIES, ITEMS } = ctx.window.MOJANG_DATA;
 const minPrice = Math.min(...ITEMS.map(i => i.price));
 
+/* ── 0. Tanda versi (?v=…) pada link CSS/JS: berubah otomatis setiap isi file berubah,
+        jadi browser tidak memakai salinan lama ── */
+const ASSETS = ['assets/css/site.css', 'assets/js/site.js', 'assets/js/data.js'];
+const V = Object.fromEntries(ASSETS.map(a => [a, crypto.createHash('sha1').update(fs.readFileSync(path.join(ROOT, a))).digest('hex').slice(0, 8)]));
+const stamp = html => ASSETS.reduce((h, a) => h.replace(new RegExp(`(${a.replace(/\./g, '\\.')})(\\?v=[0-9a-f]+)?"`, 'g'), `$1?v=${V[a]}"`), html);
+for (const f of ['index.html', 'katalog.html']) wr(f, stamp(rd(f)));
+
 /* ── Bagian bersama, disalin dari katalog.html ── */
 const katalog = rd('katalog.html');
 const between = (s, a, b) => { const i = s.indexOf(a), j = s.indexOf(b, i); if (i < 0 || j < 0) throw new Error(`Penanda tidak ditemukan: ${a} … ${b}`); return s.slice(i, j); };
@@ -49,7 +60,7 @@ const chrome = prefix => ({
   head: fixLinks(headShared, prefix),
   top: fixLinks(topAndMenu, prefix).replace(' aria-current="page"', ''),
   foot: fixLinks(footAndFab, prefix),
-  scripts: `<script src="${prefix}assets/js/data.js"></script>\n<script src="${prefix}assets/js/site.js"></script>`,
+  scripts: stamp(`<script src="${prefix}assets/js/data.js"></script>\n<script src="${prefix}assets/js/site.js"></script>`),
 });
 
 function page({ prefix, title, desc, canonical, image, type = 'website', robots = '', jsonld = [], main }) {

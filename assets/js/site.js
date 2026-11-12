@@ -1,6 +1,8 @@
 /* =============================================================
    MOJANG.KEBAYA — KATALOG, DETAIL & WHATSAPP
    Data produk ada di data.js; file ini tidak perlu diubah.
+   Dipakai di index.html (beranda) dan katalog.html (katalog + detail).
+   Setiap bagian hanya berjalan jika elemennya ada di halaman.
    ============================================================= */
 (function () {
 'use strict';
@@ -12,9 +14,16 @@ const waLink = msg => `https://wa.me/${KONTAK.wa}?text=${encodeURIComponent(msg)
 const hideBroken = img => { img.onerror = () => img.closest('[data-photo]')?.remove(); };
 const minPrice = Math.min(...ITEMS.map(i => i.price));
 const rb = p => `${p}rb`;
-// foto kedua yang muncul saat kursor diarahkan ke kartu (desktop)
 const scrollToEl = el => (window.MOJANG_SCROLL ? window.MOJANG_SCROLL(el) : el.scrollIntoView({ behavior: 'smooth' }));
-const altPhoto = i => i.photos[1] ? i.photos[1].replace('image/kebaya/', 'image/kebaya/thumb/') : (i.cust[0] || '');
+
+const grid = $('#grid');     // ada di katalog.html
+const sheet = $('#sheet');   // ada di katalog.html
+const KATALOG = 'katalog.html';
+const baseTitle = document.title;
+
+const today = new Date(); today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+const todayISO = today.toISOString().slice(0, 10);
+const fmtDate = v => v ? new Date(v + 'T00:00').toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : '...';
 
 /* ── Kartu produk: foto asli kebaya, berganti ke foto customer saat disentuh ── */
 function cardHTML(i, eager) {
@@ -55,7 +64,7 @@ function syncUrl(extra) {
   return location.pathname + (s ? '?' + s : '') + location.hash;
 }
 
-/* ── Filter ── */
+/* ── Filter katalog ── */
 function renderFilters() {
   const count = s => ITEMS.filter(i => !s || i.s === s).length;
   const chips = [['', 'Semua'], ['baru', 'Baru'], ...Object.entries(SERIES).map(([k, v]) => [k, (v.unggulan ? '✦ ' : '') + v.name])];
@@ -86,7 +95,7 @@ function filtered() {
 
 function renderGrid() {
   const list = filtered();
-  $('#grid').innerHTML = list.map((i, n) => cardHTML(i, n < 4)).join('');
+  grid.innerHTML = list.map((i, n) => cardHTML(i, n < 4)).join('');
 
   const label = state.baru ? 'kebaya baru'
     : state.series ? `kebaya series ${SERIES[state.series].name}` : 'kebaya';
@@ -96,32 +105,35 @@ function renderGrid() {
 }
 
 function update() {
+  if (!grid) return;
   renderFilters();
   renderGrid();
   history.replaceState(history.state, '', syncUrl(history.state?.k));
 }
 
-$('#fSeries').addEventListener('click', e => {
-  const b = e.target.closest('[data-series]'); if (!b) return;
-  const k = b.dataset.series;
-  state.baru = k === 'baru';
-  state.series = k === 'baru' ? '' : k;
-  update();
-});
-$('#fColor').addEventListener('click', e => {
-  const b = e.target.closest('[data-fam]'); if (!b) return;
-  const f = b.dataset.fam;
-  state.fam = state.fam.includes(f) ? state.fam.filter(x => x !== f) : [...state.fam, f];
-  update();
-});
-$('#fSort').addEventListener('change', e => { state.sort = e.target.value; update(); });
-$('#reset').addEventListener('click', () => { Object.assign(state, { series: '', fam: [], baru: false }); update(); });
+if (grid) {
+  $('#fSeries').addEventListener('click', e => {
+    const b = e.target.closest('[data-series]'); if (!b) return;
+    const k = b.dataset.series;
+    state.baru = k === 'baru';
+    state.series = k === 'baru' ? '' : k;
+    update();
+  });
+  $('#fColor').addEventListener('click', e => {
+    const b = e.target.closest('[data-fam]'); if (!b) return;
+    const f = b.dataset.fam;
+    state.fam = state.fam.includes(f) ? state.fam.filter(x => x !== f) : [...state.fam, f];
+    update();
+  });
+  $('#fSort').addEventListener('change', e => { state.sort = e.target.value; update(); });
+  $('#reset').addEventListener('click', () => { Object.assign(state, { series: '', fam: [], baru: false }); update(); });
+}
 
-/* ── Detail kebaya ── */
-const sheet = $('#sheet');
+/* ── Detail kebaya (katalog.html) ── */
 let current = null;
 
 function openDetail(key, push = true) {
+  if (!sheet) return;
   const i = ITEMS.find(x => x.key === key); if (!i) return;
   current = i;
   const ser = SERIES[i.s];
@@ -167,96 +179,98 @@ function openDetail(key, push = true) {
 }
 
 function closeDetail() {
-  if (!sheet.open) return;
+  if (!sheet || !sheet.open) return;
   sheet.close();
 }
-sheet.addEventListener('close', () => {
-  document.body.classList.remove('lock');
-  document.title = 'Katalog Sewa Kebaya Sukabumi – Mojang.kebaya';
-  current = null;
-  if (history.state?.k) history.back();
-  // cadangan: jika browser melewati langkah "back", bersihkan ?k= dari URL
-  setTimeout(() => {
-    if (!sheet.open && new URLSearchParams(location.search).has('k')) history.replaceState(null, '', syncUrl());
-  }, 400);
-});
-window.addEventListener('popstate', e => {
-  if (e.state?.k) openDetail(e.state.k, false);
-  else if (sheet.open) { history.replaceState(null, '', syncUrl()); sheet.close(); }
-});
-$('#dClose').addEventListener('click', closeDetail);
-sheet.addEventListener('click', e => { if (e.target === sheet) closeDetail(); });
 
-document.addEventListener('click', e => {
-  const b = e.target.closest('[data-key]');
-  if (b) { openDetail(b.dataset.key, !sheet.open); }
-});
+if (sheet) {
+  sheet.addEventListener('close', () => {
+    document.body.classList.remove('lock');
+    document.title = baseTitle;
+    current = null;
+    if (history.state?.k) history.back();
+    // cadangan: jika browser melewati langkah "back", bersihkan ?k= dari URL
+    setTimeout(() => {
+      if (!sheet.open && new URLSearchParams(location.search).has('k')) history.replaceState(null, '', syncUrl());
+    }, 400);
+  });
+  window.addEventListener('popstate', e => {
+    if (e.state?.k) openDetail(e.state.k, false);
+    else if (sheet.open) { history.replaceState(null, '', syncUrl()); sheet.close(); }
+  });
+  $('#dClose').addEventListener('click', closeDetail);
+  sheet.addEventListener('click', e => { if (e.target === sheet) closeDetail(); });
 
-/* Galeri foto: thumbnail ↔ geser */
-const slides = $('#dSlides');
-function goTo(n) { slides.scrollTo({ left: n * slides.clientWidth, behavior: 'smooth' }); }
-$('#dThumbs').addEventListener('click', e => { const b = e.target.closest('[data-n]'); if (b) goTo(+b.dataset.n); });
-$('#dCust').addEventListener('click', e => {
-  const img = e.target.closest('img[data-n]'); if (!img) return;
-  const all = [...slides.querySelectorAll('img')];
-  const idx = all.findIndex(x => x.getAttribute('src') === img.getAttribute('src'));
-  sheet.scrollTo({ top: 0, behavior: 'smooth' });
-  if (idx > -1) goTo(idx);
-});
-slides.addEventListener('scroll', () => {
-  const n = Math.round(slides.scrollLeft / slides.clientWidth);
-  $('#dThumbs').querySelectorAll('button').forEach((b, k) => b.setAttribute('aria-current', k === n));
-}, { passive: true });
-slides.addEventListener('keydown', e => {
-  const n = Math.round(slides.scrollLeft / slides.clientWidth);
-  if (e.key === 'ArrowRight') goTo(n + 1);
-  if (e.key === 'ArrowLeft') goTo(Math.max(0, n - 1));
-});
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-key]');
+    if (b) { openDetail(b.dataset.key, !sheet.open); }
+  });
 
-/* Booking & kalender */
-const dDate = $('#dDate');
-const today = new Date(); today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
-dDate.min = today.toISOString().slice(0, 10);
-const fmtDate = v => v ? new Date(v + 'T00:00').toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : '...';
+  /* Galeri foto: thumbnail ↔ geser */
+  const slides = $('#dSlides');
+  const goTo = n => slides.scrollTo({ left: n * slides.clientWidth, behavior: 'smooth' });
+  $('#dThumbs').addEventListener('click', e => { const b = e.target.closest('[data-n]'); if (b) goTo(+b.dataset.n); });
+  $('#dCust').addEventListener('click', e => {
+    const img = e.target.closest('img[data-n]'); if (!img) return;
+    const all = [...slides.querySelectorAll('img')];
+    const idx = all.findIndex(x => x.getAttribute('src') === img.getAttribute('src'));
+    sheet.scrollTo({ top: 0, behavior: 'smooth' });
+    if (idx > -1) goTo(idx);
+  });
+  slides.addEventListener('scroll', () => {
+    const n = Math.round(slides.scrollLeft / slides.clientWidth);
+    $('#dThumbs').querySelectorAll('button').forEach((b, k) => b.setAttribute('aria-current', k === n));
+  }, { passive: true });
+  slides.addEventListener('keydown', e => {
+    const n = Math.round(slides.scrollLeft / slides.clientWidth);
+    if (e.key === 'ArrowRight') goTo(n + 1);
+    if (e.key === 'ArrowLeft') goTo(Math.max(0, n - 1));
+  });
 
-$('#dBook').addEventListener('submit', e => {
-  e.preventDefault();
-  if (!current) return;
-  const msg = `Halo Mojang.kebaya, saya mau booking kebaya:\n` +
-    `Kebaya: ${current.name} (${current.priceTxt})\n` +
-    `Tanggal acara: ${fmtDate(dDate.value)}\n` +
-    `Acara: ${$('#dEvent').value}\n` +
-    `Nama: ...\nAmbil di Sukabumi / kirim ke: ...\n\n` +
-    `Link: ${location.origin}${location.pathname}?k=${current.key}`;
-  window.open(waLink(msg), '_blank', 'noopener');
-});
+  /* Booking & kalender */
+  const dDate = $('#dDate');
+  dDate.min = todayISO;
 
-$('#dCalBtn').addEventListener('click', () => {
-  if (!current) return;
-  if (!current.cal) {
-    window.open(waLink(`Halo Mojang.kebaya, apakah ${current.name} tersedia tanggal ${fmtDate(dDate.value)}?`), '_blank', 'noopener');
-    return;
-  }
-  const box = $('#dCal');
-  box.hidden = !box.hidden;
-  if (!box.hidden) {
-    $('#dCalFrame').src = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(current.cal)}&ctz=Asia%2FJakarta&mode=MONTH&showTitle=0&showNav=1&showPrint=0&showTabs=0&showCalendars=0&showTz=0`;
-    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
-});
+  $('#dBook').addEventListener('submit', e => {
+    e.preventDefault();
+    if (!current) return;
+    const msg = `Halo Mojang.kebaya, saya mau booking kebaya:\n` +
+      `Kebaya: ${current.name} (${current.priceTxt})\n` +
+      `Tanggal acara: ${fmtDate(dDate.value)}\n` +
+      `Acara: ${$('#dEvent').value}\n` +
+      `Nama: ...\nAmbil di Sukabumi / kirim ke: ...\n\n` +
+      `Link: ${location.origin}${location.pathname}?k=${current.key}`;
+    window.open(waLink(msg), '_blank', 'noopener');
+  });
 
-/* ── Series: kartu di halaman utama & daftar di footer ── */
+  $('#dCalBtn').addEventListener('click', () => {
+    if (!current) return;
+    if (!current.cal) {
+      window.open(waLink(`Halo Mojang.kebaya, apakah ${current.name} tersedia tanggal ${fmtDate(dDate.value)}?`), '_blank', 'noopener');
+      return;
+    }
+    const box = $('#dCal');
+    box.hidden = !box.hidden;
+    if (!box.hidden) {
+      $('#dCalFrame').src = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(current.cal)}&ctz=Asia%2FJakarta&mode=MONTH&showTitle=0&showNav=1&showPrint=0&showTabs=0&showCalendars=0&showTz=0`;
+      box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  });
+}
+
+/* ── Series: daftar di menu & footer (link ke katalog.html?series=…) ── */
 const seriesInfo = Object.entries(SERIES).map(([k, ser], n) => {
   const list = ITEMS.filter(i => i.s === k);
   const cover = list.find(i => i.isNew) || list[0];
   return { k, ser, n, list, cover, min: Math.min(...list.map(i => i.price)) };
 }).filter(x => x.list.length);
 
-$('#footSeries').innerHTML = seriesInfo.map(({ k, ser }) =>
-  `<li><a href="?series=${k}#katalog" data-go-series="${k}">${esc(ser.name)}</a></li>`).join('');
+if ($('#footSeries')) $('#footSeries').innerHTML = seriesInfo.map(({ k, ser }) =>
+  `<li><a href="${KATALOG}?series=${k}" data-go-series="${k}">${esc(ser.name)}</a></li>`).join('');
 
+// di katalog.html: saring di tempat tanpa memuat ulang; di beranda: pindah ke katalog.html
 document.addEventListener('click', e => {
-  const b = e.target.closest('[data-go-series]'); if (!b) return;
+  const b = e.target.closest('[data-go-series]'); if (!b || !grid) return;
   e.preventDefault();
   Object.assign(state, { series: b.dataset.goSeries, fam: [], baru: false });
   update();
@@ -267,7 +281,7 @@ document.addEventListener('click', e => {
 const drawer = $('#drawer');
 const menuBtn = $('#menuBtn');
 $('#drawerSeries').innerHTML = seriesInfo.map(({ k, ser, list, min }) => `
-  <li><a href="?series=${k}#katalog" data-go-series="${k}" data-close>
+  <li><a href="${KATALOG}?series=${k}" data-go-series="${k}" data-close>
     <span class="ds-name">${ser.unggulan ? '✦ ' : ''}${esc(ser.name)}</span>
     <span class="ds-dots">${list.map(i => `<i style="background:${i.hex}"></i>`).join('')}</span>
     <small>${list.length} warna · mulai ${rb(min)}</small>
@@ -278,29 +292,12 @@ function setMenu(open) {
   drawer.setAttribute('aria-hidden', !open);
   menuBtn.setAttribute('aria-expanded', open);
   menuBtn.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
-  document.body.classList.toggle('lock', open || sheet.open);
+  document.body.classList.toggle('lock', open || !!sheet?.open);
   if (open) drawer.querySelector('.drawer-panel').focus();
 }
 menuBtn.addEventListener('click', () => setMenu(!drawer.classList.contains('open')));
 drawer.addEventListener('click', e => { if (e.target.closest('[data-close]')) setMenu(false); });
 addEventListener('keydown', e => { if (e.key === 'Escape' && drawer.classList.contains('open')) setMenu(false); });
-
-/* ── Deret koleksi (series unggulan dulu, lalu kebaya baru) ── */
-const topOf = i => SERIES[i.s].unggulan ? 1 : 0;
-const showcase = [...ITEMS].sort((a, b) => (topOf(b) - topOf(a)) || (b.isNew - a.isNew) || a.order - b.order);
-$('#hTrack').innerHTML = showcase.map((i, n) => cardHTML(i, n < 4)).join('');
-const rail = $('#hViewport');
-const railStep = () => (rail.querySelector('li')?.getBoundingClientRect().width || 300) + 12;
-function railButtons() {
-  const max = rail.scrollWidth - rail.clientWidth - 2;
-  $('#railPrev').disabled = rail.scrollLeft <= 2;
-  $('#railNext').disabled = rail.scrollLeft >= max;
-}
-$('#railPrev').addEventListener('click', () => rail.scrollBy({ left: -railStep(), behavior: 'smooth' }));
-$('#railNext').addEventListener('click', () => rail.scrollBy({ left: railStep(), behavior: 'smooth' }));
-rail.addEventListener('scroll', railButtons, { passive: true });
-addEventListener('resize', railButtons);
-railButtons();
 
 /* ── Tautan yang membuka bagian info tertentu ── */
 document.addEventListener('click', e => {
@@ -308,26 +305,34 @@ document.addEventListener('click', e => {
   const d = document.getElementById('acc-' + a.dataset.open);
   if (d) { d.open = true; e.preventDefault(); setTimeout(() => d.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50); }
 });
+// datang dari halaman lain dengan #acc-… atau #syarat: buka bagian itu
+const hashTarget = location.hash.length > 1 && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+if (hashTarget && hashTarget.tagName === 'DETAILS') {
+  hashTarget.open = true;
+  setTimeout(() => hashTarget.scrollIntoView({ block: 'start', behavior: 'instant' }), 60);
+}
 
-/* ── Booking cepat ── */
-$('#quickForm').addEventListener('submit', e => {
+/* ── Booking cepat (beranda) ── */
+if ($('#quickForm')) $('#quickForm').addEventListener('submit', e => {
   e.preventDefault();
   const t = $('#quickText').value.trim();
   window.open(waLink(`Halo Mojang.kebaya, saya mau booking kebaya.${t ? `\n${t}` : ''}`), '_blank', 'noopener');
 });
 
-/* ── Cek ongkir luar kota → WhatsApp ── */
-$('#sKebaya').innerHTML += ITEMS.map(i => `<option>${esc(i.name)}</option>`).join('');
-$('#sDate').min = dDate.min;
-$('#shipForm').addEventListener('submit', e => {
-  e.preventDefault();
-  const msg = `Halo Mojang.kebaya, saya mau sewa kebaya untuk dikirim ke luar kota.\n` +
-    `Kota tujuan: ${$('#sCity').value.trim()}\n` +
-    `Tanggal acara: ${fmtDate($('#sDate').value)}\n` +
-    `Kebaya: ${$('#sKebaya').value || 'belum memilih'}\n` +
-    `Mohon info estimasi ongkirnya. Terima kasih.`;
-  window.open(waLink(msg), '_blank', 'noopener');
-});
+/* ── Cek ongkir luar kota → WhatsApp (beranda) ── */
+if ($('#shipForm')) {
+  $('#sKebaya').innerHTML += ITEMS.map(i => `<option>${esc(i.name)}</option>`).join('');
+  $('#sDate').min = todayISO;
+  $('#shipForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const msg = `Halo Mojang.kebaya, saya mau sewa kebaya untuk dikirim ke luar kota.\n` +
+      `Kota tujuan: ${$('#sCity').value.trim()}\n` +
+      `Tanggal acara: ${fmtDate($('#sDate').value)}\n` +
+      `Kebaya: ${$('#sKebaya').value || 'belum memilih'}\n` +
+      `Mohon info estimasi ongkirnya. Terima kasih.`;
+    window.open(waLink(msg), '_blank', 'noopener');
+  });
+}
 
 /* ── Angka di hero ── */
 if ($('#statCount')) $('#statCount').textContent = ITEMS.length;
@@ -342,7 +347,7 @@ document.querySelectorAll('.js-wa').forEach(a => {
 document.querySelectorAll('.js-ig').forEach(a => { a.href = `https://instagram.com/${KONTAK.ig}`; });
 document.querySelectorAll('.js-tt').forEach(a => { a.href = `https://www.tiktok.com/@${KONTAK.tiktok}`; });
 document.querySelectorAll('.js-maps').forEach(a => { if (KONTAK.maps) a.href = KONTAK.maps; });
-$('#footTerms').addEventListener('click', () => { $('#syarat').open = true; });
+if ($('#syarat')) $('#footTerms').addEventListener('click', () => { $('#syarat').open = true; });
 
 $('#year').textContent = new Date().getFullYear();
 
@@ -408,7 +413,7 @@ if ('IntersectionObserver' in window) {
 /* ── Mulai ── */
 update();
 const startKey = q.get('k');
-if (startKey && ITEMS.some(i => i.key === startKey)) {
+if (sheet && startKey && ITEMS.some(i => i.key === startKey)) {
   history.replaceState(null, '', syncUrl());
   openDetail(startKey, true);
 }

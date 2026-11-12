@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- Link lama ke katalog (?series=, ?k=, #katalog, #koleksi) diteruskan ke katalog.html -->
+  <script>(function (l) { if (/[?&](k|series|warna|baru|urut)=/.test(l.search) || l.hash === '#katalog' || l.hash === '#koleksi') l.replace('katalog.html' + l.search); })(location);</script>
   <title>Mojang.Kebaya – Sewa Kebaya Full Payet Sukabumi, Kirim se-Pulau Jawa</title>
   <meta name="description" content="Sewa kebaya full payet Mojang.kebaya Sukabumi: 15 pilihan warna mulai Rp300.000, free laundry & free resize. Ambil di Sukabumi atau kirim ke seluruh Pulau Jawa.">
   <meta name="theme-color" content="#FFFFFF">
@@ -57,7 +59,7 @@
   <symbol id="i-down" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/></symbol>
 </svg>
 
-<a class="skip" href="#katalog">Langsung ke katalog</a>
+<a class="skip" href="#konten">Langsung ke konten</a>
 
 <p class="topbar">Kirim ke seluruh Pulau Jawa — free laundry &amp; free resize.</p>
 
@@ -66,7 +68,7 @@
     <div class="top-left">
       <button class="burger" id="menuBtn" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="drawer"><span></span><span></span></button>
       <nav class="nav" aria-label="Menu">
-        <a href="#katalog">Koleksi</a>
+        <a href="katalog.html">Koleksi</a>
         <a href="#info-sewa" data-open="sewa">Cara sewa</a>
         <a href="#info-sewa" data-open="kirim">Kirim se-Jawa</a>
         <a class="js-maps" href="https://maps.app.goo.gl/3HWTA4Q6ufHqqMdx5" target="_blank" rel="noopener">Google Maps</a>
@@ -90,8 +92,8 @@
       <button class="drawer-x" type="button" data-close aria-label="Tutup menu">×</button>
     </div>
     <ul class="drawer-nav">
-      <li><a href="#koleksi" data-close>Koleksi baru</a></li>
-      <li><a href="#katalog" data-close>Semua kebaya</a></li>
+      <li><a href="katalog.html?baru=1" data-close>Koleksi baru</a></li>
+      <li><a href="katalog.html" data-close>Semua kebaya</a></li>
       <li><a href="#info-sewa" data-close data-open="sewa">Cara sewa</a></li>
       <li><a href="#info-sewa" data-close data-open="kirim">Kirim se-Pulau Jawa</a></li>
       <li><a href="#info-sewa" data-close data-open="faq">Tanya jawab</a></li>
@@ -106,14 +108,14 @@
   </nav>
 </div>
 
-<main>
+<main id="konten">
   <!-- PEMBUKA: dua foto penuh -->
   <section class="hero" aria-label="Koleksi baru">
-    <a class="hero-half" href="#koleksi">
+    <a class="hero-half" href="katalog.html?baru=1">
       <img src="image/editorial/hero-navy.jpg" alt="Customer memakai kebaya Aruni Navy saat wisuda" fetchpriority="high">
       <span class="hero-cap"><em>Koleksi Baru</em><u>Lihat sekarang</u></span>
     </a>
-    <a class="hero-half hide-sm-block" href="#katalog">
+    <a class="hero-half hide-sm-block" href="katalog.html">
       <img src="image/editorial/hero-b.jpg" alt="Customer memakai kebaya Puspa Mahogany" loading="lazy">
       <span class="hero-cap"><em>Wisuda &amp; Lamaran</em><u>Semua kebaya</u></span>
     </a>
@@ -125,7 +127,7 @@
       <div class="sticky">
         <h2 class="ital">Hari yang hanya sekali</h2>
         <p>Mojang dalam bahasa Sunda berarti gadis. Kami menyewakan kebaya full payet untuk wisuda, lamaran dan hari istimewa Anda. Setiap paket sudah lengkap dengan rok songket, hijab dan veil, sudah dicuci, dan ukurannya disesuaikan gratis. Ambil di Sukabumi atau kami kirim ke seluruh Pulau Jawa.</p>
-        <a class="ulink" href="#katalog">Lihat semua kebaya</a>
+        <a class="ulink" href="katalog.html">Lihat semua kebaya</a>
       </div>
     </div>
     <div class="story-photos">
@@ -134,60 +136,16 @@
     </div>
   </section>
 
-  <!-- KOLEKSI: deret produk yang bisa digeser -->
-  <section class="rail-sec" id="koleksi" aria-labelledby="railTitle">
-    <div class="rail-head">
-      <h2 class="ital" id="railTitle">Koleksi</h2>
-      <div class="rail-nav">
-        <button type="button" id="railPrev" aria-label="Sebelumnya"><svg width="18" height="18" style="transform:rotate(180deg)" aria-hidden="true"><use href="#i-chev"/></svg></button>
-        <button type="button" id="railNext" aria-label="Berikutnya"><svg width="18" height="18" aria-hidden="true"><use href="#i-chev"/></svg></button>
-      </div>
-    </div>
-    <div class="rail" id="hViewport">
-      <ul class="rail-track" id="hTrack"></ul>
-    </div>
-  </section>
-
   <!-- DUA SERIES -->
   <section class="duo" aria-label="Series pilihan">
-    <a class="duo-half" href="?series=kinasih#katalog" data-go-series="kinasih">
+    <a class="duo-half" href="katalog.html?series=kinasih" data-go-series="kinasih">
       <img src="image/editorial/ban-a.jpg" alt="Customer memakai kebaya Kinasih Ice Blue" loading="lazy">
       <span class="hero-cap"><em>Series Kinasih</em><u>Lihat series</u></span>
     </a>
-    <a class="duo-half" href="?series=geulis#katalog" data-go-series="geulis">
+    <a class="duo-half" href="katalog.html?series=geulis" data-go-series="geulis">
       <img src="image/editorial/ban-b.jpg" alt="Customer memakai kebaya Geulis Baby Pink" loading="lazy">
       <span class="hero-cap"><em>Series Geulis</em><u>Lihat series</u></span>
     </a>
-  </section>
-
-  <!-- SEMUA KEBAYA -->
-  <section id="katalog" class="catalog" aria-labelledby="katalogTitle">
-    <div class="catalog-head">
-      <h2 class="ital" id="katalogTitle">Semua kebaya</h2>
-      <p class="small muted">Ketuk kebaya untuk melihat foto, ukuran, cek tanggal dan booking.</p>
-    </div>
-    <div class="filters">
-      <div class="filters-in">
-        <div class="chips" id="fSeries" role="group" aria-label="Filter series"></div>
-        <div class="filters-right">
-          <div class="swatches" id="fColor" role="group" aria-label="Filter warna"></div>
-          <label class="sort">
-            <span class="sr-only">Urutkan</span>
-            <select id="fSort">
-              <option value="new">Unggulan</option>
-              <option value="low">Harga terendah</option>
-              <option value="high">Harga tertinggi</option>
-            </select>
-          </label>
-        </div>
-      </div>
-    </div>
-    <p class="result" id="result" aria-live="polite"></p>
-    <ul class="grid" id="grid"></ul>
-    <div class="empty" id="empty" hidden>
-      <p>Belum ada kebaya dengan filter ini.</p>
-      <button class="ulink" type="button" id="reset">Tampilkan semua</button>
-    </div>
   </section>
 
   <!-- DIKENAKAN OLEH -->
@@ -334,54 +292,6 @@
 </footer>
 
 <a class="fab js-wa" href="https://wa.me/628985555506" target="_blank" rel="noopener" aria-label="Chat WhatsApp"><svg width="22" height="22" aria-hidden="true"><use href="#i-wa"/></svg></a>
-
-<!-- DETAIL KEBAYA -->
-<dialog class="sheet" id="sheet" aria-labelledby="dName">
-  <div class="sheet-in">
-    <button class="close" type="button" id="dClose" aria-label="Tutup">×</button>
-    <div class="d-media">
-      <div class="d-slides" id="dSlides" tabindex="0" aria-label="Foto kebaya"></div>
-      <div class="d-thumbs" id="dThumbs"></div>
-    </div>
-    <div class="d-info">
-      <p class="caps muted" id="dSeries"></p>
-      <h2 id="dName"></h2>
-      <p class="d-price"><span id="dPrice"></span> <small>/ sewa 3 hari</small></p>
-      <p class="d-ld" id="dLd"></p>
-      <div class="d-colors" id="dColorsWrap">
-        <p class="label">Warna</p>
-        <div id="dColors"></div>
-      </div>
-      <form class="d-book" id="dBook">
-        <label class="label" for="dDate">Tanggal acara</label>
-        <input type="date" id="dDate" required>
-        <label class="label" for="dEvent">Acara</label>
-        <select id="dEvent">
-          <option>Wisuda</option><option>Lamaran</option><option>Resepsi</option><option>Lainnya</option>
-        </select>
-        <button class="btn btn-dark" type="submit">Booking via WhatsApp</button>
-        <button class="ulink" type="button" id="dCalBtn">Cek ketersediaan</button>
-        <p class="tiny">Booking terkonfirmasi setelah DP min. Rp100.000 diterima.</p>
-      </form>
-      <div class="d-cal" id="dCal" hidden>
-        <iframe id="dCalFrame" title="Kalender ketersediaan" loading="lazy"></iframe>
-        <p class="tiny">Tanggal yang terisi berarti kebaya sudah dipesan.</p>
-      </div>
-      <details class="acc small-acc" open>
-        <summary>Deskripsi<svg width="14" height="14" aria-hidden="true"><use href="#i-down"/></svg></summary>
-        <p id="dDesc"></p>
-      </details>
-      <details class="acc small-acc">
-        <summary>Isi paket<svg width="14" height="14" aria-hidden="true"><use href="#i-down"/></svg></summary>
-        <ul id="dPkg"></ul>
-      </details>
-      <div class="d-cust" id="dCustWrap">
-        <p class="label">Foto customer</p>
-        <div class="d-cust-row" id="dCust"></div>
-      </div>
-    </div>
-  </div>
-</dialog>
 
 <script src="assets/js/data.js"></script>
 <script src="assets/js/site.js"></script>

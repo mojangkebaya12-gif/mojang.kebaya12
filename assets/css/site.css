@@ -60,6 +60,8 @@ figure { margin: 0; }
 /* ── Header ── */
 .top { position: fixed; left: 0; right: 0; top: var(--bar); z-index: 50; color: #fff; transition: top .3s var(--ease), background-color .3s, color .3s, border-color .3s; border-bottom: 1px solid transparent; }
 .top.scrolled { top: 0; background: #fff; color: var(--tx); border-bottom-color: var(--line); }
+/* halaman tanpa foto pembuka (katalog): header langsung putih */
+.top.solid { background: #fff; color: var(--tx); border-bottom-color: var(--line); }
 .top-in { position: relative; height: var(--top-h); display: flex; align-items: center; justify-content: space-between; padding: 0 var(--gut); }
 .top-left, .top-right { display: flex; align-items: center; gap: 22px; font-size: 13px; }
 .top-right a:hover, .nav a:hover { opacity: .6; }
@@ -124,19 +126,6 @@ figure { margin: 0; }
   .story-rev .story-photos { padding: 0 10% 0 6%; }
   .story-rev .story-text { padding-left: 10%; }
 }
-
-/* ── Deret koleksi ── */
-.rail-sec { padding: 40px 0 96px; }
-.rail-head { display: flex; align-items: center; justify-content: space-between; padding: 0 var(--gut) 18px; }
-.rail-nav { display: flex; gap: 4px; }
-.rail-nav button { display: grid; place-items: center; width: 36px; height: 36px; border: 0; background: none; color: var(--tx); transition: opacity .3s; }
-.rail-nav button:disabled { opacity: .25; cursor: default; }
-.rail { overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gut); scrollbar-width: none; }
-.rail::-webkit-scrollbar { display: none; }
-.rail-track { list-style: none; margin: 0; padding: 0 var(--gut); display: flex; gap: 12px; width: max-content; }
-.rail-track > li { flex: none; width: 72vw; scroll-snap-align: start; }
-@media (min-width: 700px) { .rail-track > li { width: calc((100vw - 2 * var(--gut) - 2 * 12px) / 3); } }
-@media (min-width: 1100px) { .rail-track > li { width: calc((100vw - 2 * var(--gut) - 3 * 12px) / 4); } }
 
 /* ── Kartu produk ── */
 .card-btn { display: block; width: 100%; padding: 0; border: 0; background: none; text-align: left; color: var(--tx); }

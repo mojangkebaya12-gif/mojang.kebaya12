@@ -440,6 +440,18 @@ if ('IntersectionObserver' in window) {
   document.querySelectorAll('.cta, .foot').forEach(el => fo.observe(el));
 }
 
+/* ── Foto pembuka di HP/tablet: titik penanda foto yang sedang tampil ── */
+const heroTrack = $('#heroTrack'), heroDots = $('#heroDots');
+if (heroTrack && heroDots) {
+  const dots = [...heroDots.children];
+  const syncDots = () => {
+    const n = Math.round(heroTrack.scrollLeft / Math.max(1, heroTrack.clientWidth));
+    dots.forEach((d, k) => d.classList.toggle('on', k === n));
+  };
+  heroTrack.addEventListener('scroll', syncDots, { passive: true });
+  addEventListener('resize', syncDots);
+}
+
 /* ── Tombol melayang "Lihat katalog" (beranda): menyingkir sementara saat akan
    menutupi tulisan di foto (Koleksi Baru, Series …), sembunyi saat footer terlihat ── */
 const floatCta = $('#floatCta');

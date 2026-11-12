@@ -334,13 +334,14 @@ if ($('#statCount')) $('#statCount').textContent = ITEMS.length;
 if ($('#statSeries')) $('#statSeries').textContent = seriesInfo.length;
 if ($('#statMin')) $('#statMin').textContent = minPrice;
 
-/* ── Link WhatsApp, Instagram & TikTok ── */
+/* ── Link WhatsApp, Instagram, TikTok & Google Maps ── */
 document.querySelectorAll('.js-wa').forEach(a => {
   const msg = a.dataset.msg ? decodeURIComponent(a.dataset.msg) : 'Halo Mojang.kebaya, saya mau tanya sewa kebaya.';
   a.href = waLink(msg);
 });
 document.querySelectorAll('.js-ig').forEach(a => { a.href = `https://instagram.com/${KONTAK.ig}`; });
 document.querySelectorAll('.js-tt').forEach(a => { a.href = `https://www.tiktok.com/@${KONTAK.tiktok}`; });
+document.querySelectorAll('.js-maps').forEach(a => { if (KONTAK.maps) a.href = KONTAK.maps; });
 $('#footTerms').addEventListener('click', () => { $('#syarat').open = true; });
 
 $('#year').textContent = new Date().getFullYear();

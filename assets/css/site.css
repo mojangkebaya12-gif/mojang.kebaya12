@@ -233,6 +233,9 @@ figure { margin: 0; }
 .foot { padding: 56px var(--gut) calc(84px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); font-size: 13px; color: var(--tx-2); }
 .foot .caps { color: var(--tx); }
 .foot p { margin: 0; }
+.foot .ulink { margin-top: 12px; }
+.foot-addr { transition: color .3s; }
+.foot-addr:hover { color: var(--tx); text-decoration: underline; text-underline-offset: 3px; }
 .foot-in { display: grid; grid-template-columns: 1fr 1fr; gap: 32px 20px; }
 @media (min-width: 900px) { .foot-in { grid-template-columns: 2fr 1fr 1fr 1fr; } .foot { padding-bottom: 40px; } }
 .foot-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }

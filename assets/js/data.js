@@ -12,6 +12,7 @@ const KONTAK = {
   waTxt: '0898 5555 506',
   ig: 'mojang.kebaya',
   tiktok: 'mojang.kebaya',
+  maps: 'https://maps.app.goo.gl/3HWTA4Q6ufHqqMdx5', // lokasi toko di Google Maps
 };
 
 /* ── SERIES ─────────────────────────────────────────────────────

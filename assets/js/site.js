@@ -426,6 +426,8 @@ if (floatCta) {
     floatCta.classList.toggle('hide', coversCaption || !!atFoot);
   };
   checkFloat();
+  setTimeout(checkFloat, 0);   // cek ulang setelah katalog selesai digambar (bagian "Mulai" di bawah)
+  addEventListener('load', checkFloat);
   addEventListener('scroll', checkFloat, { passive: true });
   addEventListener('resize', checkFloat);
 }

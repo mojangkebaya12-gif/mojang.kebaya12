@@ -236,9 +236,9 @@ ${ARTIKEL.map((a, n) => `      <li class="pg-card"><a href="${a.slug}.html">${im
 }));
 
 /* ── 2c. Form booking (booking.html) ──
-        Pintu masuk ke Google Form booking: lokasi HP terdeteksi otomatis saat penyewa mulai
-        mengisi, dicatat ke Google Form "Log Lokasi Booking", lalu form booking terbuka dengan
-        nama & nomor WA terisi. Alamat Google Form ada di data.js (FORM_BOOKING).
+        Pintu masuk ke Google Form booking. Penyewa memilih ambil di Sukabumi / dikirim ke luar
+        kota; untuk luar kota, lokasi HP wajib dan dicatat ke Google Form "Log Lokasi Booking".
+        Lalu form booking terbuka dengan nama, nomor WA & pengambilan terisi. Alamat Google Form ada di data.js (FORM_BOOKING).
         Tidak masuk sitemap (noindex): link-nya dibagikan admin. Logika ada di site.js. */
 wr('booking.html', page({
   prefix: '', title: 'Form Booking – Mojang.Kebaya', robots: 'noindex',
@@ -249,25 +249,30 @@ wr('booking.html', page({
     <header class="pg-head">
       <p class="caps muted">Booking</p>
       <h1>Form booking</h1>
-      <p>Isi setelah tanggal sudah dicek lewat WhatsApp dan deposit Rp100.000 sudah ditransfer. Mulai dari nama dan nomor WhatsApp, lalu lanjut ke form booking lengkap.</p>
+      <p>Isi setelah tanggal sudah dicek lewat WhatsApp dan deposit Rp100.000 sudah ditransfer. Mulai dari sini, lalu lanjut ke form booking lengkap.</p>
     </header>
     <form class="vf-form" id="bookForm" novalidate>
       <p class="small muted" id="bPilihan"></p>
+      <fieldset class="vf-pick">
+        <legend class="label">Pengambilan</legend>
+        <label><input type="radio" name="bAmbil" value="ambil" required><span>Ambil di Sukabumi</span></label>
+        <label><input type="radio" name="bAmbil" value="kirim" required><span>Dikirim ke luar kota</span></label>
+      </fieldset>
       <label class="label" for="bName">Nama lengkap (sesuai KTP)</label>
       <input id="bName" type="text" required autocomplete="name">
       <label class="label" for="bWa">Nomor WhatsApp</label>
       <input id="bWa" type="tel" inputmode="tel" required autocomplete="tel" placeholder="Contoh: 081234567890">
-      <div class="vf-loc">
-        <p class="vf-status" id="bStatus" role="status" aria-live="polite">Lokasi HP <b>wajib</b> untuk keamanan sewa, dan terdeteksi otomatis saat Anda mulai mengisi. Nyalakan GPS, lalu pilih <b>Izinkan</b> saat browser meminta izin lokasi.</p>
+      <div class="vf-loc" id="bLoc" hidden>
+        <p class="vf-status" id="bStatus" role="status" aria-live="polite">Untuk pengiriman luar kota, lokasi HP <b>wajib</b> dibagikan. Nyalakan GPS, lalu pilih <b>Izinkan</b> saat browser meminta izin lokasi.</p>
+        <label class="vf-ok"><input type="checkbox" id="bAgree" required disabled><span>Saya setuju lokasi HP saya dicatat oleh Mojang.Kebaya untuk keamanan sewa ini.</span></label>
       </div>
-      <label class="vf-ok"><input type="checkbox" id="bAgree" required><span>Saya setuju lokasi HP saya dicatat oleh Mojang.Kebaya untuk keamanan sewa ini.</span></label>
       <button class="btn btn-dark" type="submit">Lanjut ke form booking</button>
       <p class="vf-err" id="bErr" role="alert"></p>
     </form>
     <div class="vf-note">
       <p class="caps">Privasi</p>
       <ul>
-        <li>Lokasi dideteksi sekali saat Anda mulai mengisi, dan hanya jika Anda mengizinkannya di browser. Tidak ada pelacakan di latar belakang.</li>
+        <li>Lokasi hanya diminta untuk pengiriman luar kota: dideteksi sekali, dan hanya jika Anda mengizinkannya di browser. Tidak ada pelacakan di latar belakang.</li>
         <li>Nama, nomor WhatsApp dan lokasi tersimpan di formulir Google milik Mojang.Kebaya, hanya untuk keamanan sewa ini, dan dihapus paling lambat 30 hari setelah kebaya kembali.</li>
       </ul>
     </div>

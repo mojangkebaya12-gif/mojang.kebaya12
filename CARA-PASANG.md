@@ -51,15 +51,17 @@ proyek → **Analytics** → **Enable**. Klik WhatsApp & booking dicatat sebagai
 Bagikan **https://mojangkebaya.vercel.app/booking.html** ke penyewa, **menggantikan link Google Form**
 booking yang lama (di balasan WhatsApp, bio Instagram, dll.).
 
-1. Penyewa mengisi nama (sesuai KTP) dan nomor WhatsApp. Begitu mulai mengisi, lokasi HP
-   terdeteksi otomatis (browser meminta izin sekali).
-2. Saat menekan *Lanjut ke form booking*, nama, nomor WA, link Google Maps, akurasi dan waktu
-   tercatat ke Google Form **"Log Lokasi Booking"** (hanya Anda yang melihat hasilnya: buka form itu
-   → tab *Responses*, atau *Link to Sheets* supaya jadi spreadsheet).
-3. Google Form **"Booking Mojang.kebaya"** terbuka dengan nama & nomor WA sudah terisi. Form ini
-   tidak diubah sama sekali.
+1. Penyewa memilih **Ambil di Sukabumi** atau **Dikirim ke luar kota**, lalu mengisi nama (sesuai KTP)
+   dan nomor WhatsApp.
+2. **Ambil di Sukabumi:** tanpa lokasi (Anda bertemu langsung & melihat KTP), langsung lanjut.
+   **Dikirim ke luar kota:** lokasi HP langsung terdeteksi (browser meminta izin sekali) dan **wajib**.
+   Saat menekan *Lanjut ke form booking*, nama, nomor WA, link Google Maps, akurasi, waktu, serta
+   jenis HP & browser tercatat ke Google Form **"Log Lokasi Booking"** (hanya Anda yang melihat
+   hasilnya: buka form itu → tab *Responses*, atau *Link to Sheets* supaya jadi spreadsheet).
+3. Google Form **"Booking Mojang.kebaya"** terbuka dengan nama, nomor WA & pengambilan sudah terisi.
+   Form ini tidak diubah sama sekali.
 
-- **Lokasi wajib.** Jika lokasi ditolak / GPS mati, penyewa **tidak bisa lanjut** ke form booking; ia
+- **Lokasi wajib untuk luar kota.** Jika lokasi ditolak / GPS mati, penyewa **tidak bisa lanjut** ke form booking; ia
   melihat pengingat cara mengizinkan lokasi (sesuai iPhone/Android/aplikasi) + tombol *Coba lagi*.
 - Penyewa yang tertahan tercatat **sekali** di log dengan Lokasi HP `DITOLAK, belum bisa lanjut (…)`,
   plus jenis HP & browser di Keterangan (mis. `iPhone · Instagram`). Hubungi penyewa itu lewat WhatsApp:
@@ -73,6 +75,7 @@ booking yang lama (di balasan WhatsApp, bio Instagram, dll.).
 - Alamat kedua Google Form dan ID pertanyaannya ada di `assets/js/data.js` → `FORM_BOOKING`.
   Jika pertanyaan Nama/Nomor WhatsApp/Kebaya/Tanggal acara di form booking dihapus lalu dibuat ulang,
   ID-nya berubah: buka form → ⋮ → *Get pre-filled link*, isi, salin link, lalu ambil angka `entry.…`.
+  Jika teks pilihan *Pengambilan* di Google Form diubah, samakan juga di `FORM_BOOKING.pengambilan`.
 - Hapus baris log paling lambat 30 hari setelah kebaya kembali (janji di halaman booking).
 
 ## Privasi

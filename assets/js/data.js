@@ -90,15 +90,18 @@ const ULASAN = [
 ];
 
 /* ── FORM BOOKING (Google Form) ───────────────────────────────
-   booking.html mendeteksi lokasi HP penyewa, mencatatnya ke Google Form
-   "Log Lokasi Booking" (hanya admin yang melihat hasilnya), lalu membuka
-   form "Booking Mojang.kebaya" dengan nama, nomor WA (dan kebaya/tanggal
-   jika ada di link) sudah terisi. Form booking-nya sendiri tidak diubah.
+   booking.html: penyewa memilih ambil di Sukabumi / dikirim ke luar kota.
+   Untuk luar kota, lokasi HP wajib dan dicatat ke Google Form "Log Lokasi
+   Booking" (hanya admin yang melihat hasilnya). Lalu form "Booking
+   Mojang.kebaya" terbuka dengan nama, nomor WA, pengambilan (dan kebaya/
+   tanggal jika ada di link) sudah terisi. Form booking-nya tidak diubah.
    entry.… = ID pertanyaan di Google Form. Jika pertanyaan dihapus lalu dibuat
    ulang, ID-nya berubah: lihat cara mencarinya di CARA-PASANG.md. */
 const FORM_BOOKING = {
   url: 'https://docs.google.com/forms/d/e/1FAIpQLSdUccB8OnBvJuEnqNEMnood2I_JlJFIZnOnNK47L_Ffeez0yQ/viewform',
-  isi: { nama: 'entry.370762926', wa: 'entry.1819328870', kebaya: 'entry.1325446991', tanggal: 'entry.1287179652' },
+  isi: { nama: 'entry.370762926', wa: 'entry.1819328870', kebaya: 'entry.1325446991', tanggal: 'entry.1287179652', pengambilan: 'entry.1070568253' },
+  // jawaban "Pengambilan" persis seperti di Google Form
+  pengambilan: { ambil: 'Ambil di toko Sukabumi', kirim: 'Dikirim ke luar kota (se-Pulau Jawa)' },
   log: {
     url: 'https://docs.google.com/forms/d/e/1FAIpQLSe4TyO49Ok_lmwlmu_EzOYN7tJ546F5q4HJIhKqv3vxTWaTUw/formResponse',
     nama: 'entry.1813959811', wa: 'entry.1133580014', lokasi: 'entry.1118937253', akurasi: 'entry.881073526', ket: 'entry.2093022354',

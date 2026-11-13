@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Hanken+Grotesk:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/site.css?v=40e4294e">
+  <link rel="stylesheet" href="assets/css/site.css?v=0a4b0d6a">
 
   <link rel="icon" type="image/svg+xml" href="image/logo/favicon.svg">
   <link rel="icon" type="image/png" sizes="48x48" href="image/logo/favicon-48.png">
@@ -92,25 +92,30 @@
     <header class="pg-head">
       <p class="caps muted">Booking</p>
       <h1>Form booking</h1>
-      <p>Isi setelah tanggal sudah dicek lewat WhatsApp dan deposit Rp100.000 sudah ditransfer. Mulai dari nama dan nomor WhatsApp, lalu lanjut ke form booking lengkap.</p>
+      <p>Isi setelah tanggal sudah dicek lewat WhatsApp dan deposit Rp100.000 sudah ditransfer. Mulai dari sini, lalu lanjut ke form booking lengkap.</p>
     </header>
     <form class="vf-form" id="bookForm" novalidate>
       <p class="small muted" id="bPilihan"></p>
+      <fieldset class="vf-pick">
+        <legend class="label">Pengambilan</legend>
+        <label><input type="radio" name="bAmbil" value="ambil" required><span>Ambil di Sukabumi</span></label>
+        <label><input type="radio" name="bAmbil" value="kirim" required><span>Dikirim ke luar kota</span></label>
+      </fieldset>
       <label class="label" for="bName">Nama lengkap (sesuai KTP)</label>
       <input id="bName" type="text" required autocomplete="name">
       <label class="label" for="bWa">Nomor WhatsApp</label>
       <input id="bWa" type="tel" inputmode="tel" required autocomplete="tel" placeholder="Contoh: 081234567890">
-      <div class="vf-loc">
-        <p class="vf-status" id="bStatus" role="status" aria-live="polite">Lokasi HP <b>wajib</b> untuk keamanan sewa, dan terdeteksi otomatis saat Anda mulai mengisi. Nyalakan GPS, lalu pilih <b>Izinkan</b> saat browser meminta izin lokasi.</p>
+      <div class="vf-loc" id="bLoc" hidden>
+        <p class="vf-status" id="bStatus" role="status" aria-live="polite">Untuk pengiriman luar kota, lokasi HP <b>wajib</b> dibagikan. Nyalakan GPS, lalu pilih <b>Izinkan</b> saat browser meminta izin lokasi.</p>
+        <label class="vf-ok"><input type="checkbox" id="bAgree" required disabled><span>Saya setuju lokasi HP saya dicatat oleh Mojang.Kebaya untuk keamanan sewa ini.</span></label>
       </div>
-      <label class="vf-ok"><input type="checkbox" id="bAgree" required><span>Saya setuju lokasi HP saya dicatat oleh Mojang.Kebaya untuk keamanan sewa ini.</span></label>
       <button class="btn btn-dark" type="submit">Lanjut ke form booking</button>
       <p class="vf-err" id="bErr" role="alert"></p>
     </form>
     <div class="vf-note">
       <p class="caps">Privasi</p>
       <ul>
-        <li>Lokasi dideteksi sekali saat Anda mulai mengisi, dan hanya jika Anda mengizinkannya di browser. Tidak ada pelacakan di latar belakang.</li>
+        <li>Lokasi hanya diminta untuk pengiriman luar kota: dideteksi sekali, dan hanya jika Anda mengizinkannya di browser. Tidak ada pelacakan di latar belakang.</li>
         <li>Nama, nomor WhatsApp dan lokasi tersimpan di formulir Google milik Mojang.Kebaya, hanya untuk keamanan sewa ini, dan dihapus paling lambat 30 hari setelah kebaya kembali.</li>
       </ul>
     </div>
@@ -154,7 +159,7 @@
 
 <a class="fab js-wa" href="https://wa.me/628985555506" target="_blank" rel="noopener" aria-label="Chat WhatsApp"><svg width="22" height="22" aria-hidden="true"><use href="#i-wa"/></svg></a>
 
-<script src="assets/js/data.js?v=fe0fa9bd"></script>
-<script src="assets/js/site.js?v=9444078a"></script>
+<script src="assets/js/data.js?v=1667d4d3"></script>
+<script src="assets/js/site.js?v=29401869"></script>
 </body>
 </html>

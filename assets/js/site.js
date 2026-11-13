@@ -37,9 +37,9 @@ const today = new Date(); today.setMinutes(today.getMinutes() - today.getTimezon
 const todayISO = today.toISOString().slice(0, 10);
 const fmtDate = v => v ? new Date(v + 'T00:00').toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : '...';
 
-/* ── Lokasi HP penyewa (booking.html) ──
-   Lokasi dideteksi otomatis sekali saat penyewa mulai mengisi form, dan hanya jika penyewa
-   mengizinkan di browser. Tidak disimpan di website: hanya ikut di pesan WhatsApp. */
+/* ── Lokasi HP penyewa luar kota (booking.html) ──
+   Lokasi dideteksi sekali begitu penyewa memilih "Dikirim ke luar kota", dan hanya jika penyewa
+   mengizinkan di browser. Tidak disimpan di website: hanya dikirim ke Google Form log. */
 const LOKASI_MAKS_UMUR = 15 * 60 * 1000;   // lokasi lebih lama dari 15 menit diambil ulang
 const LOKASI_KURANG = 500;                // akurasi di atas ±500 m dianggap kurang tepat (GPS mati)
 const mapsUrl = p => `https://www.google.com/maps/search/?api=1&query=${p.lat.toFixed(5)},${p.lng.toFixed(5)}`;
@@ -81,8 +81,7 @@ function ambilLokasi(ok, fail) {
     { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 });
 }
 /* Deteksi lokasi untuk satu form. Status (dan tombol "Coba lagi" bila gagal) tampil di statusEl.
-   L.otomatis(form): mulai mendeteksi begitu penyewa pertama kali menyentuh/mengisi form.
-   L.segar(): lokasi ada dan belum lebih dari 15 menit. */
+   L.cari(): mulai mendeteksi. L.segar(): lokasi ada dan belum lebih dari 15 menit. */
 function lokasiForm(statusEl, teks = {}) {
   const L = { pos: null, gagal: null, mencari: false };
   const ulang = label => ` <button type="button" class="ulink" data-lokasi>${label}</button>`;
@@ -99,13 +98,9 @@ function lokasiForm(statusEl, teks = {}) {
       teks.selesai?.();
     }, code => {
       L.mencari = false; L.gagal = code;
-      L.set(`${LOKASI_GAGAL[code][0]}${ulang('Coba lagi')}${teks.gagal ? `<br>${teks.gagal}` : ''}`, 'warn');
+      L.set(`${LOKASI_GAGAL[code][0]}${ulang('Coba lagi')}`, 'warn');
       teks.selesai?.();
     });
-  };
-  L.otomatis = form => {
-    const mulai = () => { if (!L.pos && !L.mencari && L.gagal === null) L.cari(); };
-    ['focusin', 'pointerdown', 'input'].forEach(ev => form.addEventListener(ev, mulai, { once: true }));
   };
   statusEl.addEventListener('click', e => { if (e.target.closest('[data-lokasi]')) L.cari(); });
   return L;
@@ -424,12 +419,12 @@ if ($('#shipForm')) {
 }
 
 /* ── Form booking (booking.html) → Google Form "Booking Mojang.kebaya" ──
-   Lokasi HP terdeteksi otomatis saat penyewa mulai mengisi nama/nomor WA, dicatat ke Google Form
-   "Log Lokasi Booking" (data.js → FORM_BOOKING.log), lalu form booking terbuka dengan nama & nomor WA
-   (dan kebaya/tanggal dari link, mis. booking.html?k=aruni-navy&t=2026-11-21) sudah terisi.
-   Lokasi WAJIB: tanpa lokasi, tombol "Lanjut" hanya menampilkan pengingat cara mengizinkannya.
-   Percobaan yang tertolak dicatat sekali ke log (DITOLAK + jenis HP/browser) supaya admin bisa
-   menghubungi penyewa. */
+   Penyewa memilih "Ambil di Sukabumi" (langsung lanjut, tanpa lokasi) atau "Dikirim ke luar kota":
+   lokasi HP langsung dideteksi dan WAJIB; tanpa lokasi, tombol "Lanjut" hanya menampilkan pengingat
+   cara mengizinkannya. Lokasi dicatat ke Google Form "Log Lokasi Booking" (data.js → FORM_BOOKING.log);
+   percobaan yang tertolak dicatat sekali (DITOLAK + jenis HP/browser) supaya admin bisa menghubungi
+   penyewa. Lalu form booking terbuka dengan nama, nomor WA, pengambilan (dan kebaya/tanggal dari link,
+   mis. booking.html?k=aruni-navy&t=2026-11-21) sudah terisi. */
 if ($('#bookForm') && FORM_BOOKING) {
   const form = $('#bookForm'), err = $('#bErr');
   const L = lokasiForm($('#bStatus'), {
@@ -441,7 +436,16 @@ if ($('#bookForm') && FORM_BOOKING) {
     },
   });
   const WAJIB = 'Lokasi wajib untuk melanjutkan booking. Ikuti petunjuk di atas, lalu ketuk Coba lagi.';
-  L.otomatis(form);
+  // pilihan pengambilan: lokasi & persetujuan hanya untuk yang dikirim ke luar kota
+  const luarKota = () => form.querySelector('[name="bAmbil"]:checked')?.value === 'kirim';
+  form.addEventListener('change', e => {
+    if (e.target.name !== 'bAmbil') return;
+    const kirim = luarKota();
+    $('#bLoc').hidden = !kirim;
+    $('#bAgree').disabled = !kirim;
+    err.textContent = ''; delete err.dataset.tunggu;
+    if (kirim && !L.pos && !L.mencari && L.gagal === null) L.cari();
+  });
   let izinAwal = '';   // 'denied' = lokasi sudah diblokir sebelum ditanya (pengaturan HP/browser)
   try { navigator.permissions?.query({ name: 'geolocation' }).then(st => { izinAwal = st.state; }, () => {}); } catch (e) { /* tidak didukung */ }
   let tolakTercatat = false;
@@ -464,13 +468,21 @@ if ($('#bookForm') && FORM_BOOKING) {
     $('#bWa').setCustomValidity(digit >= 9 && digit <= 15 ? '' : 'Nomor WhatsApp tidak valid');
     if (!form.checkValidity()) {
       const bad = form.querySelector('input:invalid');
-      err.textContent = bad.id === 'bAgree' ? 'Centang persetujuan dulu.' : bad.id === 'bWa' ? 'Isi nomor WhatsApp yang benar, contoh 081234567890.' : 'Isi nama lengkap sesuai KTP.';
+      err.textContent = bad.name === 'bAmbil' ? 'Pilih ambil di Sukabumi atau dikirim ke luar kota.' : bad.id === 'bAgree' ? 'Centang persetujuan dulu.' : bad.id === 'bWa' ? 'Isi nomor WhatsApp yang benar, contoh 081234567890.' : 'Isi nama lengkap sesuai KTP.';
       bad.focus();
       return;
     }
     const nama = $('#bName').value.trim(), wa = $('#bWa').value.trim();
+    const kirim = luarKota();
+    const f = FORM_BOOKING.isi;
+    const isi = new URLSearchParams({ usp: 'pp_url', [f.nama]: nama, [f.wa]: wa, [f.pengambilan]: FORM_BOOKING.pengambilan[kirim ? 'kirim' : 'ambil'] });
+    if (item) isi.set(f.kebaya, item.name);
+    if (tgl) isi.set(f.tanggal, tgl);
+    const buka = () => setTimeout(() => { location.href = `${FORM_BOOKING.url}?${isi}`; }, 150);   // beri waktu log terkirim
+    if (!kirim) { track('Lanjut form booking', { pengambilan: 'Sukabumi' }); buka(); return; }   // ambil di toko: tanpa lokasi
+
     const g = FORM_BOOKING.log;
-    const ket = ['Halaman booking', PERANGKAT, item && `Kebaya: ${item.name}`, tgl && `Tanggal acara: ${tgl}`].filter(Boolean).join(' · ');
+    const ket = ['Luar kota', PERANGKAT, item && `Kebaya: ${item.name}`, tgl && `Tanggal acara: ${tgl}`].filter(Boolean).join(' · ');
     // lokasi wajib: belum ada, gagal, atau sudah lebih dari 15 menit → deteksi (ulang) dan tunggu
     if (!L.segar()) {
       if (L.gagal !== null && !tolakTercatat) {   // catat sekali bahwa penyewa ini tertahan karena lokasi
@@ -488,12 +500,8 @@ if ($('#bookForm') && FORM_BOOKING) {
     }
     const p = L.pos;
     kirimLog({ [g.nama]: nama, [g.wa]: wa, [g.lokasi]: mapsUrl(p), [g.akurasi]: `${jarak(p.acc)}, ${jam(p.time)}`, [g.ket]: ket });
-    track('Lanjut form booking', { perangkat: PERANGKAT });
-    const f = FORM_BOOKING.isi;
-    const isi = new URLSearchParams({ usp: 'pp_url', [f.nama]: nama, [f.wa]: wa });
-    if (item) isi.set(f.kebaya, item.name);
-    if (tgl) isi.set(f.tanggal, tgl);
-    setTimeout(() => { location.href = `${FORM_BOOKING.url}?${isi}`; }, 150);   // beri waktu log terkirim
+    track('Lanjut form booking', { pengambilan: 'luar kota', perangkat: PERANGKAT });
+    buka();
   });
 }
 

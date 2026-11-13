@@ -468,7 +468,7 @@ if ($('#bookForm') && FORM_BOOKING) {
     $('#bWa').setCustomValidity(digit >= 9 && digit <= 15 ? '' : 'Nomor WhatsApp tidak valid');
     if (!form.checkValidity()) {
       const bad = form.querySelector('input:invalid');
-      err.textContent = bad.name === 'bAmbil' ? 'Pilih ambil di Sukabumi atau dikirim ke luar kota.' : bad.id === 'bAgree' ? 'Centang persetujuan dulu.' : bad.id === 'bWa' ? 'Isi nomor WhatsApp yang benar, contoh 081234567890.' : 'Isi nama lengkap sesuai KTP.';
+      err.textContent = bad.name === 'bAmbil' ? 'Pilih Sukabumi atau Luar kota.' : bad.id === 'bAgree' ? 'Centang persetujuan dulu.' : bad.id === 'bWa' ? 'Isi nomor WhatsApp yang benar, contoh 081234567890.' : 'Isi nama lengkap sesuai KTP.';
       bad.focus();
       return;
     }

@@ -255,8 +255,8 @@ wr('booking.html', page({
       <p class="small muted" id="bPilihan"></p>
       <fieldset class="vf-pick">
         <legend class="label">Pengambilan</legend>
-        <label><input type="radio" name="bAmbil" value="ambil" required><span>Ambil di Sukabumi</span></label>
-        <label><input type="radio" name="bAmbil" value="kirim" required><span>Dikirim ke luar kota</span></label>
+        <label><input type="radio" name="bAmbil" value="ambil" required><span>Sukabumi</span></label>
+        <label><input type="radio" name="bAmbil" value="kirim" required><span>Luar kota</span></label>
       </fieldset>
       <label class="label" for="bName">Nama lengkap (sesuai KTP)</label>
       <input id="bName" type="text" required autocomplete="name">

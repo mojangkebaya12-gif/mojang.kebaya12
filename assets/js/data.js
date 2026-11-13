@@ -89,6 +89,22 @@ const KEBAYA = [
 const ULASAN = [
 ];
 
+/* ── FORM BOOKING (Google Form) ───────────────────────────────
+   booking.html mendeteksi lokasi HP penyewa, mencatatnya ke Google Form
+   "Log Lokasi Booking" (hanya admin yang melihat hasilnya), lalu membuka
+   form "Booking Mojang.kebaya" dengan nama, nomor WA (dan kebaya/tanggal
+   jika ada di link) sudah terisi. Form booking-nya sendiri tidak diubah.
+   entry.… = ID pertanyaan di Google Form. Jika pertanyaan dihapus lalu dibuat
+   ulang, ID-nya berubah: lihat cara mencarinya di CARA-PASANG.md. */
+const FORM_BOOKING = {
+  url: 'https://docs.google.com/forms/d/e/1FAIpQLSdUccB8OnBvJuEnqNEMnood2I_JlJFIZnOnNK47L_Ffeez0yQ/viewform',
+  isi: { nama: 'entry.370762926', wa: 'entry.1819328870', kebaya: 'entry.1325446991', tanggal: 'entry.1287179652' },
+  log: {
+    url: 'https://docs.google.com/forms/d/e/1FAIpQLSe4TyO49Ok_lmwlmu_EzOYN7tJ546F5q4HJIhKqv3vxTWaTUw/formResponse',
+    nama: 'entry.1813959811', wa: 'entry.1133580014', lokasi: 'entry.1118937253', akurasi: 'entry.881073526', ket: 'entry.2093022354',
+  },
+};
+
 /* ── KALENDER KETERSEDIAAN (Google Calendar) ───────────────────
    PENTING: kalender ini bisa dilihat siapa saja. Tulis judul acara
    cukup "Dipesan" — jangan cantumkan nama atau nomor WA customer.
@@ -137,5 +153,5 @@ const ITEMS = KEBAYA.map(([s, color, price, hex, fam, o = {}], order) => {
   };
 });
 
-window.MOJANG_DATA = { KONTAK, SERIES, FAMILIES, ITEMS, ULASAN };
+window.MOJANG_DATA = { KONTAK, SERIES, FAMILIES, ITEMS, ULASAN, FORM_BOOKING };
 })();

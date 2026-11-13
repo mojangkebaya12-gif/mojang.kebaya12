@@ -44,7 +44,8 @@ const minPrice = Math.min(...ITEMS.map(i => i.price));
 
 /* ── 0. Tanda versi (?v=…) pada link CSS/JS: berubah otomatis setiap isi file berubah,
         jadi browser tidak memakai salinan lama ── */
-const ASSETS = ['assets/css/site.css', 'assets/js/site.js', 'assets/js/data.js'];
+const ASSETS = ['assets/css/site.css', 'assets/js/site.js', 'assets/js/data.js',
+  'image/og/beranda.jpg', 'image/og/katalog.jpg'];   // gambar pratinjau link: ?v= baru tiap gambar diganti (lewati cache WhatsApp)
 const V = Object.fromEntries(ASSETS.map(a => [a, crypto.createHash('sha1').update(fs.readFileSync(path.join(ROOT, a))).digest('hex').slice(0, 8)]));
 const stamp = html => ASSETS.reduce((h, a) => h.replace(new RegExp(`(${a.replace(/\./g, '\\.')})(\\?v=[0-9a-f]+)?"`, 'g'), `$1?v=${V[a]}"`), html);
 for (const f of ['index.html', 'katalog.html']) wr(f, stamp(rd(f)));
@@ -243,8 +244,8 @@ ${ARTIKEL.map((a, n) => `      <li class="pg-card"><a href="${a.slug}.html">${im
 wr('booking.html', page({
   prefix: '', title: 'Form Booking – Mojang.Kebaya', robots: 'noindex',
   desc: 'Isi data booking setelah tanggal dicek & deposit Rp100.000 ditransfer.',
-  // gambar pratinjau link (WhatsApp dll.): dibuat khusus 1200x630, logo emas + tulisan "Form Booking"
-  image: abs('image/og/booking.jpg'),
+  // gambar pratinjau link (WhatsApp dll.): 1200x630 gaya kartu undangan, logo emas + "Form Booking" (tools/og-gambar.swift)
+  image: abs('image/og/booking.jpg') + '?v=' + crypto.createHash('sha1').update(fs.readFileSync(path.join(ROOT, 'image/og/booking.jpg'))).digest('hex').slice(0, 8),   // ?v= berubah tiap gambar diganti (lewati cache WhatsApp)
   imageMeta: { w: 1200, h: 630, alt: 'Form Booking Mojang.Kebaya, sewa kebaya Sukabumi & se-Pulau Jawa' },
   main: `  <nav class="crumbs" aria-label="Lokasi halaman"><a href="index.html">Beranda</a> / <span aria-current="page">Form booking</span></nav>
   <section class="vf">

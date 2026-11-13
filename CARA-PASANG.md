@@ -79,6 +79,15 @@ booking yang lama (di balasan WhatsApp, bio Instagram, dll.).
   Jika teks pilihan *Pengambilan* di Google Form diubah, samakan juga di `FORM_BOOKING.pengambilan`.
 - Hapus baris log paling lambat 30 hari setelah kebaya kembali (janji di halaman booking).
 
+## Gambar pratinjau link (WhatsApp, IG, FB)
+- Gaya kartu undangan (logo emas, judul miring, bingkai emas di latar marun):
+  `image/og/beranda.jpg` (beranda), `image/og/katalog.jpg` (katalog), `image/og/booking.jpg` (form booking).
+  Halaman tiap kebaya memakai foto kebayanya sendiri.
+- Jika jumlah kebaya atau harga berubah, buat ulang gambar katalog (perintah ada di bagian atas
+  `tools/og-gambar.swift`), lalu push.
+- WhatsApp menyimpan pratinjau lama di HP. Untuk melihat yang baru, kirim link dengan tambahan
+  `?v=2`, `?v=3`, dst., dan tunggu kotak pratinjau muncul sebelum menekan kirim.
+
 ## Privasi
 - Kalender ketersediaan (Google Calendar) bisa dilihat siapa saja, **termasuk judul,
   catatan dan lokasi acara**: tulis judul cukup "Dipesan", jangan nama, nomor WA atau

@@ -66,7 +66,7 @@ const chrome = prefix => ({
   scripts: stamp(`<script src="${prefix}assets/js/data.js"></script>\n<script src="${prefix}assets/js/site.js"></script>`),
 });
 
-function page({ prefix, title, desc, canonical, image, type = 'website', robots = '', jsonld = [], main }) {
+function page({ prefix, title, desc, canonical, image, imageMeta, type = 'website', robots = '', jsonld = [], main }) {
   const c = chrome(prefix);
   return `<!DOCTYPE html>
 <html lang="id" data-root="${prefix}">
@@ -82,7 +82,7 @@ ${canonical ? `  <link rel="canonical" href="${canonical}">\n` : ''}${robots ? `
   <meta property="og:title" content="${esc(title)}">
   <meta property="og:description" content="${esc(desc)}">
 ${canonical ? `  <meta property="og:url" content="${canonical}">\n` : ''}  <meta property="og:image" content="${image}">
-  <meta name="twitter:card" content="summary_large_image">
+${imageMeta ? `  <meta property="og:image:width" content="${imageMeta.w}">\n  <meta property="og:image:height" content="${imageMeta.h}">\n  <meta property="og:image:alt" content="${esc(imageMeta.alt)}">\n` : ''}  <meta name="twitter:card" content="summary_large_image">
 
 ${c.head}${jsonld.map(j => `  <script type="application/ld+json">\n${JSON.stringify(j, null, 2)}\n  </script>\n`).join('')}</head>
 <body class="page-sub">
@@ -242,8 +242,10 @@ ${ARTIKEL.map((a, n) => `      <li class="pg-card"><a href="${a.slug}.html">${im
         Tidak masuk sitemap (noindex): link-nya dibagikan admin. Logika ada di site.js. */
 wr('booking.html', page({
   prefix: '', title: 'Form Booking – Mojang.Kebaya', robots: 'noindex',
-  desc: 'Form booking kebaya Mojang.Kebaya setelah tanggal dicek dan deposit Rp100.000 ditransfer.',
-  image: abs('image/editorial/hero-navy.jpg'),
+  desc: 'Isi data booking setelah tanggal dicek & deposit Rp100.000 ditransfer.',
+  // gambar pratinjau link (WhatsApp dll.): dibuat khusus 1200x630, logo emas + tulisan "Form Booking"
+  image: abs('image/og/booking.jpg'),
+  imageMeta: { w: 1200, h: 630, alt: 'Form Booking Mojang.Kebaya, sewa kebaya Sukabumi & se-Pulau Jawa' },
   main: `  <nav class="crumbs" aria-label="Lokasi halaman"><a href="index.html">Beranda</a> / <span aria-current="page">Form booking</span></nav>
   <section class="vf">
     <header class="pg-head">

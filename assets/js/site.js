@@ -501,7 +501,7 @@ if ($('#bookForm') && FORM_BOOKING) {
       if (id !== nomorCek) return;   // pilihan sudah berubah
       if (kosong) {
         cek = { status: 'kosong', item, tgl, jeda };
-        setCek(`✓ <b>${esc(item.name)}</b> tersedia untuk ${fmtDate(tgl)}.<br>Transfer deposit ${FORM_BOOKING.deposit} ke ${esc(FORM_BOOKING.rekening)}, lalu lanjutkan.`, 'ok');
+        setCek(`✓ <b>${esc(item.name)}</b> tersedia untuk ${fmtDate(tgl)}.<br>Transfer DP ${FORM_BOOKING.deposit} ke ${esc(FORM_BOOKING.rekening)}, lalu lanjutkan. DP menjadi deposit dan dikembalikan setelah kebaya kembali.`, 'ok');
         track('Cek tanggal', { hasil: 'tersedia', kebaya: item.name });
         return;
       }

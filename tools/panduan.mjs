@@ -67,8 +67,8 @@ ${pkg.map(p => `      <li>${esc(p)}</li>`).join('\n')}
     <ol class="art-steps">
       <li><strong>Pilih kebaya & cek tanggal.</strong> Di halaman tiap kebaya ada kalender yang menunjukkan tanggal yang sudah dipesan.</li>
       <li><strong>Hubungi kami lewat WhatsApp</strong> dengan nama kebaya, tanggal acara, dan apakah akan diambil atau dikirim.</li>
-      <li><strong>Bayar DP minimal Rp100.000.</strong> Booking terkonfirmasi setelah DP diterima. Rekening resmi tercantum di <a href="../index.html#syarat">syarat & ketentuan</a> — kami tidak pernah meminta transfer ke rekening lain.</li>
-      <li><strong>Pelunasan paling lambat H-1</strong> pengambilan, dengan menyertakan foto KTP asli.</li>
+      <li><strong>Bayar DP Rp100.000.</strong> Booking terkonfirmasi setelah DP diterima. DP ini menjadi deposit (jaminan) dan dikembalikan setelah kebaya kembali. Rekening resmi tercantum di <a href="../index.html#syarat">syarat & ketentuan</a> — kami tidak pernah meminta transfer ke rekening lain.</li>
+      <li><strong>Pelunasan paling lambat H-1</strong> pengambilan: harga sewa dibayar penuh, dengan menyertakan foto KTP asli.</li>
       <li><strong>Ambil H-1 di Sukabumi</strong> atau kebaya dikirim dan tiba H-1. Pakai di hari H, lalu kembalikan H+1 (Sukabumi maks. 16.00 WIB, luar kota maks. 12.00 WIB).</li>
     </ol>
 

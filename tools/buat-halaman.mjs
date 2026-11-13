@@ -245,7 +245,7 @@ ${ARTIKEL.map((a, n) => `      <li class="pg-card"><a href="${a.slug}.html">${im
         Tidak masuk sitemap (noindex): link-nya dibagikan admin. Logika ada di site.js. */
 wr('booking.html', page({
   prefix: '', title: 'Form Booking – Mojang.Kebaya', robots: 'noindex',
-  desc: 'Isi data booking setelah tanggal dicek & deposit Rp100.000 ditransfer.',
+  desc: 'Isi data booking setelah tanggal dicek & DP Rp100.000 ditransfer.',
   // gambar pratinjau link (WhatsApp dll.): 1200x630 gaya kartu undangan, logo emas + "Form Booking" (tools/og-gambar.swift)
   image: abs('image/og/booking.jpg') + '?v=' + crypto.createHash('sha1').update(fs.readFileSync(path.join(ROOT, 'image/og/booking.jpg'))).digest('hex').slice(0, 8),   // ?v= berubah tiap gambar diganti (lewati cache WhatsApp)
   imageMeta: { w: 1200, h: 630, alt: 'Form Booking Mojang.Kebaya, sewa kebaya Sukabumi & se-Pulau Jawa' },
@@ -254,7 +254,7 @@ wr('booking.html', page({
     <header class="pg-head">
       <p class="caps muted">Booking</p>
       <h1>Form booking</h1>
-      <p>Pilih kebaya &amp; tanggal acara, ketersediaannya langsung dicek. Kalau tersedia, transfer deposit Rp100.000 lalu lanjut ke form booking lengkap.</p>
+      <p>Pilih kebaya &amp; tanggal acara, ketersediaannya langsung dicek. Kalau tersedia, transfer DP Rp100.000 (menjadi deposit, dikembalikan setelah kebaya kembali) lalu lanjut ke form booking lengkap.</p>
     </header>
     <form class="vf-form" id="bookForm" novalidate>
       <fieldset class="vf-pick">

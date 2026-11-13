@@ -100,6 +100,11 @@ const ULASAN = [
 const FORM_BOOKING = {
   url: 'https://docs.google.com/forms/d/e/1FAIpQLSdUccB8OnBvJuEnqNEMnood2I_JlJFIZnOnNK47L_Ffeez0yQ/viewform',
   isi: { nama: 'entry.370762926', wa: 'entry.1819328870', kebaya: 'entry.1325446991', tanggal: 'entry.1287179652', pengambilan: 'entry.1070568253' },
+  // web app Apps Script "Cek ketersediaan tanggal": hanya mengirim TANGGAL yang terisi di Google Calendar
+  // tiap kebaya (tanpa nama/judul). Dipakai booking.html untuk mengecek bentrok sebelum lanjut ke form.
+  ketersediaan: 'https://script.google.com/macros/s/AKfycbyBKV-G-lNHx7_vFgtte9TdpBQ0jc-50rr-FkgTjsgXRvTF1_VZVn2Y-1-PsTN_2BZi/exec',
+  rekening: 'BCA 0382828273 a.n. Uzhma Ilham Firdani',
+  deposit: 'Rp100.000',
   // jawaban "Pengambilan" persis seperti di Google Form
   pengambilan: { ambil: 'Ambil di toko Sukabumi', kirim: 'Dikirim ke luar kota (se-Pulau Jawa)' },
   log: {

@@ -239,7 +239,9 @@ ${ARTIKEL.map((a, n) => `      <li class="pg-card"><a href="${a.slug}.html">${im
 /* ── 2c. Form booking (booking.html) ──
         Pintu masuk ke Google Form booking. Penyewa memilih ambil di Sukabumi / dikirim ke luar
         kota; untuk luar kota, lokasi HP wajib dan dicatat ke Google Form "Log Lokasi Booking".
-        Lalu form booking terbuka dengan nama, nomor WA & pengambilan terisi. Alamat Google Form ada di data.js (FORM_BOOKING).
+        Kebaya & tanggal dicek dulu ke kalender (web app ketersediaan, data.js → FORM_BOOKING.ketersediaan):
+        kalau bentrok, penyewa tidak bisa lanjut dan ditawari kebaya lain yang kosong.
+        Lalu form booking terbuka dengan nama, nomor WA, kebaya, tanggal & pengambilan terisi. Alamat Google Form ada di data.js (FORM_BOOKING).
         Tidak masuk sitemap (noindex): link-nya dibagikan admin. Logika ada di site.js. */
 wr('booking.html', page({
   prefix: '', title: 'Form Booking – Mojang.Kebaya', robots: 'noindex',
@@ -252,15 +254,22 @@ wr('booking.html', page({
     <header class="pg-head">
       <p class="caps muted">Booking</p>
       <h1>Form booking</h1>
-      <p>Isi setelah tanggal sudah dicek lewat WhatsApp dan deposit Rp100.000 sudah ditransfer. Mulai dari sini, lalu lanjut ke form booking lengkap.</p>
+      <p>Pilih kebaya &amp; tanggal acara, ketersediaannya langsung dicek. Kalau tersedia, transfer deposit Rp100.000 lalu lanjut ke form booking lengkap.</p>
     </header>
     <form class="vf-form" id="bookForm" novalidate>
-      <p class="small muted" id="bPilihan"></p>
       <fieldset class="vf-pick">
         <legend class="label">Pengambilan</legend>
         <label><input type="radio" name="bAmbil" value="ambil" required><span>Sukabumi</span></label>
         <label><input type="radio" name="bAmbil" value="kirim" required><span>Luar kota</span></label>
       </fieldset>
+      <label class="label" for="bKebaya">Kebaya</label>
+      <select id="bKebaya" required>
+        <option value="">Pilih kebaya</option>
+${ITEMS.map(i => `        <option value="${i.key}">${esc(i.name)} · ${esc(i.priceTxt)}</option>`).join('\n')}
+      </select>
+      <label class="label" for="bTgl">Tanggal acara</label>
+      <input id="bTgl" type="date" required>
+      <div class="bk-cek" id="bCek" role="status" aria-live="polite"><p class="vf-status">Pilih kebaya &amp; tanggal acara, ketersediaannya dicek otomatis.</p></div>
       <label class="label" for="bName">Nama lengkap (sesuai KTP)</label>
       <input id="bName" type="text" required autocomplete="name">
       <label class="label" for="bWa">Nomor WhatsApp</label>

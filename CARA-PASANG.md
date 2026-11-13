@@ -62,6 +62,12 @@ booking yang lama (di balasan WhatsApp, bio Instagram, dll.).
 3. Google Form **"Booking Mojang.kebaya"** terbuka dengan nama, nomor WA & pengambilan sudah terisi.
    Form ini tidak diubah sama sekali.
 
+- **Cek tanggal otomatis.** Penyewa memilih kebaya & tanggal acara di booking.html; website langsung
+  mengecek Google Calendar kebaya itu lewat web app Apps Script "Cek ketersediaan tanggal" (hanya
+  mengirim tanggal, tanpa nama; alamatnya di `assets/js/data.js` → `FORM_BOOKING.ketersediaan`).
+  Aturannya sama dengan script booking: jarak minimal 3 hari (Sukabumi) / 5 hari (luar kota). Kalau
+  bentrok, tombol *Lanjut* ditahan dan penyewa ditawari kebaya lain yang kosong. Kalau pengecekan gagal
+  (koneksi), penyewa tetap bisa lanjut; script booking tetap mengecek ulang setelah form masuk.
 - **Lokasi wajib untuk luar kota.** Jika lokasi ditolak / GPS mati, penyewa **tidak bisa lanjut** ke form booking; ia
   melihat pengingat cara mengizinkan lokasi (sesuai iPhone/Android/aplikasi) + tombol *Coba lagi*.
 - Penyewa yang tertahan tercatat **sekali** di log dengan Lokasi HP `DITOLAK, belum bisa lanjut (…)`,

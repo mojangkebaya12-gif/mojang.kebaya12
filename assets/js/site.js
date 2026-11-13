@@ -423,8 +423,10 @@ if ($('#shipForm')) {
    lokasi HP langsung dideteksi dan WAJIB; tanpa lokasi, tombol "Lanjut" hanya menampilkan pengingat
    cara mengizinkannya. Lokasi dicatat ke Google Form "Log Lokasi Booking" (data.js → FORM_BOOKING.log);
    percobaan yang tertolak dicatat sekali (DITOLAK + jenis HP/browser) supaya admin bisa menghubungi
-   penyewa. Lalu form booking terbuka dengan nama, nomor WA, pengambilan (dan kebaya/tanggal dari link,
-   mis. booking.html?k=aruni-navy&t=2026-11-21) sudah terisi. */
+   penyewa. Kebaya & tanggal dicek dulu ke kalender (lihat "Cek tanggal" di bawah): kalau bentrok,
+   tombol "Lanjut" ditahan dan penyewa ditawari kebaya lain yang kosong. Lalu form booking terbuka dengan
+   nama, nomor WA, kebaya, tanggal & pengambilan sudah terisi. Link boleh membawa pilihan awal,
+   mis. booking.html?k=aruni-navy&t=2026-11-21. */
 if ($('#bookForm') && FORM_BOOKING) {
   const form = $('#bookForm'), err = $('#bErr');
   const L = lokasiForm($('#bStatus'), {
@@ -449,10 +451,89 @@ if ($('#bookForm') && FORM_BOOKING) {
   let izinAwal = '';   // 'denied' = lokasi sudah diblokir sebelum ditanya (pengaturan HP/browser)
   try { navigator.permissions?.query({ name: 'geolocation' }).then(st => { izinAwal = st.state; }, () => {}); } catch (e) { /* tidak didukung */ }
   let tolakTercatat = false;
+  const selKebaya = $('#bKebaya'), inTgl = $('#bTgl'), boxCek = $('#bCek');
+  inTgl.min = todayISO;
   const q = new URLSearchParams(location.search);
-  const item = ITEMS.find(i => i.key === q.get('k'));
-  const tgl = /^\d{4}-\d{2}-\d{2}$/.test(q.get('t') || '') ? q.get('t') : '';
-  if (item || tgl) $('#bPilihan').textContent = [item && `Kebaya: ${item.name}`, tgl && `Tanggal acara: ${fmtDate(tgl)}`].filter(Boolean).join(' · ');
+  if (ITEMS.some(i => i.key === q.get('k'))) selKebaya.value = q.get('k');
+  if (/^\d{4}-\d{2}-\d{2}$/.test(q.get('t') || '') && q.get('t') >= todayISO) inTgl.value = q.get('t');
+  const pilihan = () => ({ item: ITEMS.find(i => i.key === selKebaya.value), tgl: inTgl.value });
+
+  /* ── Cek tanggal: tanya web app ketersediaan (hanya tanggal terisi, tanpa nama) ──
+     Aturannya sama dengan Apps Script booking (cariBentrok): bentrok bila jarak tanggal acara dengan
+     booking lain ≤ jarak minimal (Sukabumi 3 hari, luar kota 5 hari; dipakai yang terbesar dari keduanya).
+     Tanggal acara booking lain ditebak dari blok kalendernya: blok 3 hari (H-1..H+1) = Sukabumi,
+     blok 5 hari (H-2..H+2) = luar kota, acara = hari tengah. Blok dengan panjang lain (dibuat manual)
+     dihitung hati-hati: setiap harinya dianggap terisi. Apps Script tetap mengecek ulang setelah form masuk. */
+  const JARAK = { ambil: 3, kirim: 5 };
+  const hariKe = iso => Math.round(Date.parse(iso + 'T00:00:00Z') / 864e5);
+  const tambahHari = (iso, n) => new Date((hariKe(iso) + n) * 864e5).toISOString().slice(0, 10);
+  const cekSatu = async (it, tgl, jeda, sinyal) => {
+    const u = new URL(FORM_BOOKING.ketersediaan);
+    u.search = new URLSearchParams({ kebaya: it.name.toLowerCase(), dari: tambahHari(tgl, -8), sampai: tambahHari(tgl, 8) });
+    const r = await fetch(u, { signal: sinyal });
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error || 'gagal');
+    // kelompokkan hari terisi yang berurutan menjadi blok
+    const hari = [...new Set(d.dipesan)].map(hariKe).sort((a, b) => a - b), blok = [];
+    hari.forEach(h => { const b = blok[blok.length - 1]; if (b && h === b[1] + 1) b[1] = h; else blok.push([h, h]); });
+    const B = hariKe(tgl);
+    const bentrok = blok.some(([a, z]) => {
+      const n = z - a + 1;
+      if (n === 3 || n === 5) return Math.abs(B - (a + z) / 2) <= Math.max(jeda, n === 5 ? JARAK.kirim : JARAK.ambil);
+      for (let h = a; h <= z; h++) if (Math.abs(B - h) <= jeda - 1) return true;   // blok manual: hati-hati
+      return false;
+    });
+    return !bentrok;   // true = kosong
+  };
+  let cek = { status: 'belum' }, nomorCek = 0;
+  const setCek = (html, cls = '') => { boxCek.innerHTML = `<p class="vf-status${cls ? ' ' + cls : ''}">${html}</p>`; };
+  async function cekTanggal() {
+    const { item, tgl } = pilihan(), id = ++nomorCek;
+    err.textContent = '';
+    if (!item || !tgl) { cek = { status: 'belum' }; setCek('Pilih kebaya &amp; tanggal acara, ketersediaannya dicek otomatis.'); return; }
+    if (!FORM_BOOKING.ketersediaan || !item.cal) { cek = { status: 'gagal', item, tgl }; setCek('Ketersediaan kebaya ini belum bisa dicek otomatis. Pastikan tanggalnya sudah dikonfirmasi lewat WhatsApp.', 'warn'); return; }
+    const jeda = JARAK[luarKota() ? 'kirim' : 'ambil'];
+    cek = { status: 'mencari', item, tgl, jeda };
+    setCek(`Mengecek ketersediaan ${esc(item.name)}…`);
+    const batas = new AbortController(); setTimeout(() => batas.abort(), 15000);
+    try {
+      const kosong = await cekSatu(item, tgl, jeda, batas.signal);
+      if (id !== nomorCek) return;   // pilihan sudah berubah
+      if (kosong) {
+        cek = { status: 'kosong', item, tgl, jeda };
+        setCek(`✓ <b>${esc(item.name)}</b> tersedia untuk ${fmtDate(tgl)}.<br>Transfer deposit ${FORM_BOOKING.deposit} ke ${esc(FORM_BOOKING.rekening)}, lalu lanjutkan.`, 'ok');
+        track('Cek tanggal', { hasil: 'tersedia', kebaya: item.name });
+        return;
+      }
+      cek = { status: 'bentrok', item, tgl, jeda };
+      setCek(`✕ <b>${esc(item.name)}</b> sudah dipesan di sekitar ${fmtDate(tgl)} (perlu jeda untuk ${luarKota() ? 'pengiriman' : 'pengambilan'} &amp; laundry). Pilih tanggal atau kebaya lain.<br><span class="muted">Mencari kebaya lain yang kosong…</span>`, 'warn');
+      track('Cek tanggal', { hasil: 'bentrok', kebaya: item.name });
+      // tawarkan kebaya lain yang kosong: series yang sama dulu
+      const lain = ITEMS.filter(i => i.key !== item.key && i.cal).sort((a, b) => (b.s === item.s) - (a.s === item.s));
+      const hasil = await Promise.all(lain.map(i => cekSatu(i, tgl, jeda).then(k => k && i, () => null)));
+      if (id !== nomorCek) return;
+      const kosong2 = hasil.filter(Boolean).slice(0, 6);
+      boxCek.querySelector('.muted')?.remove();
+      if (kosong2.length) {
+        boxCek.insertAdjacentHTML('beforeend', '<p class="tiny">Kebaya lain yang tersedia di tanggal ini:</p><ul class="bk-saran">' +
+          kosong2.map(i => `<li><button type="button" data-kebaya="${i.key}">${esc(i.name)} · ${esc(i.priceTxt)}</button></li>`).join('') + '</ul>');
+      } else {
+        boxCek.insertAdjacentHTML('beforeend', '<p class="tiny">Semua kebaya sudah dipesan di sekitar tanggal ini. Hubungi kami lewat WhatsApp untuk pilihan lain.</p>');
+      }
+    } catch (e2) {
+      if (id !== nomorCek) return;
+      cek = { status: 'gagal', item, tgl, jeda };
+      setCek('Ketersediaan belum bisa dicek (koneksi). Coba lagi sebentar, atau pastikan tanggalnya sudah dikonfirmasi lewat WhatsApp. <button type="button" class="ulink" data-cekulang>Cek lagi</button>', 'warn');
+    }
+  }
+  [selKebaya, inTgl].forEach(el => el.addEventListener('change', cekTanggal));
+  form.addEventListener('change', e => { if (e.target.name === 'bAmbil' && pilihan().item && pilihan().tgl) cekTanggal(); });   // jeda beda Sukabumi / luar kota
+  boxCek.addEventListener('click', e => {
+    const b = e.target.closest('[data-kebaya]');
+    if (b) { selKebaya.value = b.dataset.kebaya; cekTanggal(); selKebaya.focus(); }
+    if (e.target.closest('[data-cekulang]')) cekTanggal();
+  });
+  if (pilihan().item && pilihan().tgl) cekTanggal();
 
   // kirim ke Google Form tanpa membuka halamannya (tetap terkirim walau halaman langsung berpindah)
   const kirimLog = data => {
@@ -468,21 +549,28 @@ if ($('#bookForm') && FORM_BOOKING) {
     $('#bWa').setCustomValidity(digit >= 9 && digit <= 15 ? '' : 'Nomor WhatsApp tidak valid');
     if (!form.checkValidity()) {
       const bad = form.querySelector('input:invalid');
-      err.textContent = bad.name === 'bAmbil' ? 'Pilih Sukabumi atau Luar kota.' : bad.id === 'bAgree' ? 'Centang persetujuan dulu.' : bad.id === 'bWa' ? 'Isi nomor WhatsApp yang benar, contoh 081234567890.' : 'Isi nama lengkap sesuai KTP.';
+      const pesan = { bAmbil: 'Pilih Sukabumi atau Luar kota.', bKebaya: 'Pilih kebaya dulu.', bTgl: 'Isi tanggal acara (hari ini atau setelahnya).',
+                      bAgree: 'Centang persetujuan dulu.', bWa: 'Isi nomor WhatsApp yang benar, contoh 081234567890.' };
+      err.textContent = pesan[bad.name] || pesan[bad.id] || 'Isi nama lengkap sesuai KTP.';
       bad.focus();
       return;
     }
+    // tanggal wajib sudah dicek & kosong (kalau pengecekan gagal karena koneksi, tetap boleh lanjut)
+    const { item, tgl } = pilihan();
+    if (cek.item !== item || cek.tgl !== tgl || cek.jeda !== JARAK[luarKota() ? 'kirim' : 'ambil']) { cekTanggal(); err.textContent = 'Ketersediaan sedang dicek. Tekan “Lanjut ke form booking” lagi setelah hasilnya muncul.'; return; }
+    if (cek.status === 'mencari') { err.textContent = 'Ketersediaan sedang dicek. Tekan “Lanjut ke form booking” lagi setelah hasilnya muncul.'; return; }
+    if (cek.status === 'bentrok') { err.textContent = 'Kebaya ini sudah dipesan di sekitar tanggal tersebut. Pilih tanggal atau kebaya lain.'; selKebaya.focus(); return; }
     const nama = $('#bName').value.trim(), wa = $('#bWa').value.trim();
     const kirim = luarKota();
     const f = FORM_BOOKING.isi;
     const isi = new URLSearchParams({ usp: 'pp_url', [f.nama]: nama, [f.wa]: wa, [f.pengambilan]: FORM_BOOKING.pengambilan[kirim ? 'kirim' : 'ambil'] });
-    if (item) isi.set(f.kebaya, item.name);
-    if (tgl) isi.set(f.tanggal, tgl);
+    isi.set(f.kebaya, item.name);
+    isi.set(f.tanggal, tgl);
     const buka = () => setTimeout(() => { location.href = `${FORM_BOOKING.url}?${isi}`; }, 150);   // beri waktu log terkirim
     if (!kirim) { track('Lanjut form booking', { pengambilan: 'Sukabumi' }); buka(); return; }   // ambil di toko: tanpa lokasi
 
     const g = FORM_BOOKING.log;
-    const ket = ['Luar kota', PERANGKAT, item && `Kebaya: ${item.name}`, tgl && `Tanggal acara: ${tgl}`].filter(Boolean).join(' · ');
+    const ket = ['Luar kota', PERANGKAT, `Kebaya: ${item.name}`, `Tanggal acara: ${tgl}`].join(' · ');
     // lokasi wajib: belum ada, gagal, atau sudah lebih dari 15 menit → deteksi (ulang) dan tunggu
     if (!L.segar()) {
       if (L.gagal !== null && !tolakTercatat) {   // catat sekali bahwa penyewa ini tertahan karena lokasi

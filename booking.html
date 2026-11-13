@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Hanken+Grotesk:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/site.css?v=0a4b0d6a">
+  <link rel="stylesheet" href="assets/css/site.css?v=b42a584d">
 
   <link rel="icon" type="image/svg+xml" href="image/logo/favicon.svg?v=3">
   <link rel="icon" type="image/png" sizes="32x32" href="image/logo/favicon-32.png?v=3">
@@ -97,15 +97,36 @@
     <header class="pg-head">
       <p class="caps muted">Booking</p>
       <h1>Form booking</h1>
-      <p>Isi setelah tanggal sudah dicek lewat WhatsApp dan deposit Rp100.000 sudah ditransfer. Mulai dari sini, lalu lanjut ke form booking lengkap.</p>
+      <p>Pilih kebaya &amp; tanggal acara, ketersediaannya langsung dicek. Kalau tersedia, transfer deposit Rp100.000 lalu lanjut ke form booking lengkap.</p>
     </header>
     <form class="vf-form" id="bookForm" novalidate>
-      <p class="small muted" id="bPilihan"></p>
       <fieldset class="vf-pick">
         <legend class="label">Pengambilan</legend>
         <label><input type="radio" name="bAmbil" value="ambil" required><span>Sukabumi</span></label>
         <label><input type="radio" name="bAmbil" value="kirim" required><span>Luar kota</span></label>
       </fieldset>
+      <label class="label" for="bKebaya">Kebaya</label>
+      <select id="bKebaya" required>
+        <option value="">Pilih kebaya</option>
+        <option value="geulis-burgundy">Geulis Burgundy · Rp 400.000</option>
+        <option value="aruni-blush-pink">Aruni Blush Pink · Rp 350.000</option>
+        <option value="aruni-creamy-nude">Aruni Creamy Nude · Rp 350.000</option>
+        <option value="aruni-navy">Aruni Navy · Rp 350.000</option>
+        <option value="aruni-nude-pink">Aruni Nude Pink · Rp 350.000</option>
+        <option value="aruni-emerald">Aruni Emerald · Rp 350.000</option>
+        <option value="kinasih-grey">Kinasih Grey · Rp 300.000</option>
+        <option value="kinasih-ice-blue">Kinasih Ice Blue · Rp 350.000</option>
+        <option value="kinasih-maroon">Kinasih Maroon · Rp 350.000</option>
+        <option value="niskala-ice-blue">Niskala Ice Blue · Rp 350.000</option>
+        <option value="puspa-mahogany">Puspa Mahogany · Rp 350.000</option>
+        <option value="geulis-baby-pink">Geulis Baby Pink · Rp 390.000</option>
+        <option value="geulis-rose-gold">Geulis Rose Gold · Rp 400.000</option>
+        <option value="geulis-butter-yellow">Geulis Butter Yellow · Rp 390.000</option>
+        <option value="geulis-creamy-nude">Geulis Creamy Nude · Rp 390.000</option>
+      </select>
+      <label class="label" for="bTgl">Tanggal acara</label>
+      <input id="bTgl" type="date" required>
+      <div class="bk-cek" id="bCek" role="status" aria-live="polite"><p class="vf-status">Pilih kebaya &amp; tanggal acara, ketersediaannya dicek otomatis.</p></div>
       <label class="label" for="bName">Nama lengkap (sesuai KTP)</label>
       <input id="bName" type="text" required autocomplete="name">
       <label class="label" for="bWa">Nomor WhatsApp</label>
@@ -164,7 +185,7 @@
 
 <a class="fab js-wa" href="https://wa.me/628985555506" target="_blank" rel="noopener" aria-label="Chat WhatsApp"><svg width="22" height="22" aria-hidden="true"><use href="#i-wa"/></svg></a>
 
-<script src="assets/js/data.js?v=1667d4d3"></script>
-<script src="assets/js/site.js?v=d1a301af"></script>
+<script src="assets/js/data.js?v=3dec493f"></script>
+<script src="assets/js/site.js?v=23841c93"></script>
 </body>
 </html>

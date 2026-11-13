@@ -9,9 +9,7 @@
      kebaya/<nama>.html  satu halaman per kebaya (judul, foto & harga sendiri,
                          supaya muncul di Google dan rapi saat dibagikan di WA)
      404.html            halaman "tidak ditemukan"
-     verifikasi.html     verifikasi lokasi penyewa luar kota (tidak masuk Google)
      booking.html        pintu masuk form booking (Google Form) + deteksi lokasi HP
-     cek-luar-kota.html  alat admin: link verifikasi & cek balasan penyewa luar kota
      panduan/…           artikel panduan (isi di tools/panduan.mjs) + daftar artikel
      sitemap.xml         daftar halaman untuk Google
      robots.txt          menunjuk ke sitemap
@@ -237,72 +235,7 @@ ${ARTIKEL.map((a, n) => `      <li class="pg-card"><a href="${a.slug}.html">${im
   </section>`,
 }));
 
-/* ── 2c. Verifikasi lokasi sewa luar kota (verifikasi.html) ──
-        Penyewa luar kota membagikan lokasi HP 3 kali: booking, paket diterima, kirim kembali.
-        Lokasi terdeteksi otomatis saat penyewa mulai mengisi form (setelah diizinkan di browser),
-        lalu dikirim lewat WhatsApp.
-        Tidak masuk sitemap (noindex): link-nya dikirim admin ke penyewa via WhatsApp.
-        Logika ada di site.js (bagian "Verifikasi lokasi"). */
-const LANGKAH = [
-  ['1', 'Booking', 'Setelah DP. Lokasi dicocokkan dengan alamat kirim.'],
-  ['2', 'Paket diterima', 'H-1, saat kebaya sampai di rumah Anda.'],
-  ['3', 'Kirim kembali', 'H+1 paling lambat 12.00 WIB, di tempat pengiriman, beserta nomor resi.'],
-];
-wr('verifikasi.html', page({
-  prefix: '', title: 'Verifikasi Lokasi Sewa Luar Kota – Mojang.Kebaya', robots: 'noindex',
-  desc: 'Verifikasi lokasi penyewa untuk sewa kebaya luar kota Mojang.Kebaya: bagikan lokasi HP saat booking, saat paket diterima dan saat kirim kembali.',
-  image: abs('image/editorial/hero-navy.jpg'),
-  main: `  <nav class="crumbs" aria-label="Lokasi halaman"><a href="index.html">Beranda</a> / <span aria-current="page">Verifikasi lokasi</span></nav>
-  <section class="vf">
-    <header class="pg-head">
-      <p class="caps muted">Sewa luar kota</p>
-      <h1>Verifikasi lokasi penyewa</h1>
-      <p>Supaya kebaya yang dikirim ke luar kota tetap aman, penyewa membagikan lokasi HP tiga kali selama masa sewa.</p>
-    </header>
-    <ol class="vf-steps">
-${LANGKAH.map(([n, t, d]) => `      <li><b>${n} · ${t}</b>${d}</li>`).join('\n')}
-    </ol>
-    <form class="vf-form" id="locForm" novalidate>
-      <fieldset class="vf-pick">
-        <legend class="label">Langkah sekarang</legend>
-${LANGKAH.map(([n, t]) => `        <label><input type="radio" name="langkah" value="${n}"${n === '1' ? ' checked' : ''}><span>${n}. ${t}</span></label>`).join('\n')}
-      </fieldset>
-      <label class="label" for="vName">Nama lengkap (sesuai KTP)</label>
-      <input id="vName" type="text" required autocomplete="name">
-      <label class="label" for="vKebaya">Kebaya</label>
-      <select id="vKebaya" required>
-        <option value="">Pilih kebaya</option>
-${ITEMS.map(i => `        <option value="${i.key}">${esc(i.name)}</option>`).join('\n')}
-      </select>
-      <label class="label" for="vDate">Tanggal acara</label>
-      <input id="vDate" type="date" required>
-      <div data-langkah="1">
-        <label class="label" for="vAddr">Alamat lengkap pengiriman</label>
-        <textarea id="vAddr" rows="3" required autocomplete="street-address" placeholder="Jalan, nomor rumah, RT/RW, kelurahan, kecamatan, kota"></textarea>
-      </div>
-      <div data-langkah="3" hidden>
-        <label class="label" for="vResi">Kurir &amp; nomor resi</label>
-        <input id="vResi" type="text" required placeholder="Contoh: JNE 0123456789">
-      </div>
-      <div class="vf-loc">
-        <p class="vf-status" id="vStatus" role="status" aria-live="polite">Lokasi HP terdeteksi otomatis saat Anda mulai mengisi form. Nyalakan GPS, lalu pilih <b>Izinkan</b> saat browser meminta izin lokasi.</p>
-      </div>
-      <label class="vf-ok"><input type="checkbox" id="vAgree" required><span>Saya setuju lokasi HP saya dikirim ke Mojang.Kebaya untuk keamanan sewa ini.</span></label>
-      <button class="btn btn-dark" type="submit"><svg width="18" height="18" aria-hidden="true"><use href="#i-wa"/></svg>Kirim ke WhatsApp</button>
-      <p class="vf-err" id="vErr" role="alert"></p>
-    </form>
-    <div class="vf-note">
-      <p class="caps">Privasi</p>
-      <ul>
-        <li>Lokasi dideteksi sekali saat Anda mulai mengisi form, dan hanya jika Anda mengizinkannya di browser. Tidak ada pelacakan di latar belakang.</li>
-        <li>Website ini tidak menyimpan data Anda. Data hanya terkirim lewat WhatsApp ke Mojang.Kebaya (${esc(KONTAK.waTxt)}).</li>
-        <li>Data lokasi hanya dipakai untuk keamanan sewa ini dan dihapus paling lambat 30 hari setelah kebaya kembali.</li>
-      </ul>
-    </div>
-  </section>`,
-}));
-
-/* ── 2c-2. Form booking (booking.html) ──
+/* ── 2c. Form booking (booking.html) ──
         Pintu masuk ke Google Form booking: lokasi HP terdeteksi otomatis saat penyewa mulai
         mengisi, dicatat ke Google Form "Log Lokasi Booking", lalu form booking terbuka dengan
         nama & nomor WA terisi. Alamat Google Form ada di data.js (FORM_BOOKING).
@@ -341,74 +274,6 @@ wr('booking.html', page({
   </section>`,
 }));
 
-/* ── 2d. Cek sewa luar kota, khusus admin (cek-luar-kota.html) ──
-        Membuat link verifikasi + pesan WA untuk penyewa, membaca balasan WA penyewa
-        (lokasi, akurasi, jarak antarlangkah, ketepatan waktu kirim kembali) dan daftar
-        cek sebelum kebaya dikirim. Tidak masuk sitemap (noindex) dan tidak ditautkan.
-        Isian hanya tersimpan di tab browser admin (sessionStorage), tidak dikirim ke mana pun.
-        Logika ada di site.js (bagian "Cek sewa luar kota"). */
-const CEK_KIRIM = [
-  'DP minimal Rp100.000 sudah masuk. Cek di mutasi rekening, jangan hanya dari foto bukti transfer.',
-  'Foto KTP asli sudah diterima, dan nama di KTP sama dengan nama di pesan penyewa.',
-  'Lokasi langkah 1 sudah masuk, akurasinya baik, dan berada di kota yang sama dengan alamat kirim.',
-  'Pelunasan 100% sudah masuk (cek mutasi) sebelum paket diserahkan ke kurir.',
-  'Video packing direkam: kondisi kebaya, veil dan isi paket sampai paket ditutup.',
-  'Nomor resi kirim &amp; foto paket disimpan.',
-];
-const CEK_KEMBALI = [
-  'Lokasi langkah 3 &amp; nomor resi sudah masuk; resi dicek di aplikasi atau situs kurir.',
-  'Video saat membuka paket kembali direkam; kondisi &amp; kelengkapan kebaya dicek.',
-  'Foto KTP &amp; pesan lokasi dihapus paling lambat 30 hari setelah kebaya kembali.',
-];
-const cekList = (items, from) => items.map((t, n) => `      <li><label class="vf-ok"><input type="checkbox" data-cek="${from + n}"><span>${t}</span></label></li>`).join('\n');
-wr('cek-luar-kota.html', page({
-  prefix: '', title: 'Cek Sewa Luar Kota (Admin) – Mojang.Kebaya', robots: 'noindex, nofollow',
-  desc: 'Alat admin Mojang.Kebaya untuk mengecek verifikasi lokasi penyewa luar kota.',
-  image: abs('image/editorial/hero-navy.jpg'),
-  main: `  <nav class="crumbs" aria-label="Lokasi halaman"><a href="index.html">Beranda</a> / <span aria-current="page">Cek sewa luar kota</span></nav>
-  <section class="vf ck">
-    <header class="pg-head">
-      <p class="caps muted">Khusus admin</p>
-      <h1>Cek sewa luar kota</h1>
-      <p>Tempel pesan booking penyewa, kirim link verifikasi, lalu tempel balasannya di sini untuk dicek otomatis. Isian hanya ada di tab browser ini, tidak dikirim ke mana pun, dan hilang saat tab ditutup.</p>
-    </header>
-
-    <h2 class="ck-h">1 · Data sewa &amp; link untuk penyewa</h2>
-    <form class="vf-form" id="ckForm" novalidate>
-      <label class="label" for="cKebaya">Kebaya</label>
-      <select id="cKebaya" data-simpan>
-        <option value="">Pilih kebaya</option>
-${ITEMS.map(i => `        <option value="${i.key}">${esc(i.name)}</option>`).join('\n')}
-      </select>
-      <label class="label" for="cDate">Tanggal acara</label>
-      <input id="cDate" type="date" data-simpan>
-      <label class="label" for="cWa">Nomor WhatsApp penyewa (boleh kosong)</label>
-      <input id="cWa" type="tel" inputmode="tel" autocomplete="off" placeholder="Contoh: 0812 3456 7890" data-simpan>
-    </form>
-    <p class="small muted" id="ckHint">Pilih kebaya &amp; tanggal acara, atau tempel pesan booking di bagian 2 supaya terisi otomatis.</p>
-    <ol class="ck-links" id="ckLinks" hidden></ol>
-
-    <h2 class="ck-h">2 · Cek pesan penyewa</h2>
-    <p class="small muted">Di WhatsApp, tekan lama pesan penyewa → Salin, lalu tempel di kotak langkahnya.</p>
-    <form class="vf-form ck-msgs" id="ckMsgs" novalidate>
-${LANGKAH.map(([n, t]) => `      <label class="label" for="cM${n}">Langkah ${n} · ${t}${n === '1' ? ' (pesan booking atau verifikasi)' : ''}</label>
-      <textarea id="cM${n}" rows="3" data-step="${n}" data-simpan placeholder="Tempel pesan langkah ${n} di sini"></textarea>`).join('\n')}
-    </form>
-    <div id="ckOut" aria-live="polite"></div>
-
-    <h2 class="ck-h">3 · Sebelum kebaya dikirim</h2>
-    <ul class="ck-todo">
-${cekList(CEK_KIRIM, 0)}
-    </ul>
-    <p class="vf-status" id="ckGo" role="status"></p>
-    <p class="caps ck-sub">Saat kebaya kembali</p>
-    <ul class="ck-todo">
-${cekList(CEK_KEMBALI, CEK_KIRIM.length)}
-    </ul>
-    <p class="ck-reset"><button class="ulink" type="button" id="ckReset">Kosongkan semua isian</button></p>
-  </section>`,
-}));
-
 /* ── 3. sitemap.xml & robots.txt ── */
 const urls = [`${SITE}/`, abs('katalog.html'), ...ITEMS.map(i => abs(`kebaya/${i.key}.html`)), abs('panduan/index.html'), ...ARTIKEL.map(a => abs(`panduan/${a.slug}.html`))];
 wr('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
@@ -428,4 +293,4 @@ let kat = katalog
 if (kat === katalog && !katalog.includes('kebaya/')) throw new Error('Penanda AUTO di katalog.html tidak ditemukan');
 wr('katalog.html', kat);
 
-console.log(`Selesai: ${ITEMS.length} halaman kebaya, ${ARTIKEL.length} artikel panduan, 404.html, verifikasi.html, booking.html, cek-luar-kota.html, sitemap.xml (${urls.length} alamat), robots.txt, katalog.html diperbarui. Harga mulai Rp${minPrice}rb.`);
+console.log(`Selesai: ${ITEMS.length} halaman kebaya, ${ARTIKEL.length} artikel panduan, 404.html, booking.html, sitemap.xml (${urls.length} alamat), robots.txt, katalog.html diperbarui. Harga mulai Rp${minPrice}rb.`);

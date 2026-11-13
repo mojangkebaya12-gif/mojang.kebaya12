@@ -10,9 +10,7 @@ Website statis (HTML + CSS + JavaScript, tanpa build). Setiap push ke branch
 | `katalog.html` | Katalog: semua kebaya, filter series & warna, urutan harga, detail kebaya, cek tanggal, booking |
 | `kebaya/*.html` | Satu halaman per kebaya (untuk Google & dibagikan di WhatsApp). **Dibuat otomatis** |
 | `panduan/*.html` | Artikel panduan (harga & cara booking, tips warna) + daftar artikel. **Dibuat otomatis** dari `tools/panduan.mjs` |
-| `verifikasi.html` | Verifikasi lokasi HP penyewa luar kota (lihat di bawah). **Dibuat otomatis** |
 | `booking.html` | Pintu masuk **form booking** (Google Form): deteksi lokasi HP otomatis, lalu membuka Google Form (lihat di bawah). **Dibuat otomatis** |
-| `cek-luar-kota.html` | **Khusus admin**: link verifikasi untuk penyewa + cek otomatis balasan penyewa (lihat di bawah). **Dibuat otomatis** |
 | `404.html`, `sitemap.xml`, `robots.txt` | Halaman "tidak ditemukan" & data untuk Google. **Dibuat otomatis** |
 | `assets/js/data.js` | **Semua data**: kontak, series, kebaya & harga, ulasan, kalender ketersediaan |
 | `assets/js/site.js` | Logika katalog, detail, menu, link WhatsApp, statistik klik |
@@ -61,8 +59,9 @@ booking yang lama (di balasan WhatsApp, bio Instagram, dll.).
 3. Google Form **"Booking Mojang.kebaya"** terbuka dengan nama & nomor WA sudah terisi. Form ini
    tidak diubah sama sekali.
 
-- Jika lokasi ditolak / GPS mati, booking tetap bisa lanjut; di log tertulis
-  `belum dibagikan (izin ditolak)`. Minta verifikasi lokasi lewat WhatsApp sebelum mengirim kebaya.
+- Jika lokasi ditolak / GPS mati, penyewa melihat pengingat cara mengizinkan lokasi (sesuai iPhone
+  atau Android) + tombol *Coba lagi*. Booking tetap bisa lanjut; di log tertulis
+  `belum dibagikan (izin ditolak)`. Minta penyewa membagikan lokasi lewat WhatsApp sebelum mengirim kebaya.
 - Link bisa langsung berisi kebaya & tanggal: `booking.html?k=aruni-navy&t=2026-11-21`
   (kolom Kebaya & Tanggal acara di Google Form ikut terisi).
 - Cocokkan log dengan jawaban form booking lewat **nama + nomor WA**.
@@ -72,67 +71,6 @@ booking yang lama (di balasan WhatsApp, bio Instagram, dll.).
   Jika pertanyaan Nama/Nomor WhatsApp/Kebaya/Tanggal acara di form booking dihapus lalu dibuat ulang,
   ID-nya berubah: buka form → ⋮ → *Get pre-filled link*, isi, salin link, lalu ambil angka `entry.…`.
 - Hapus baris log paling lambat 30 hari setelah kebaya kembali (janji di halaman booking).
-
-## Verifikasi lokasi sewa luar kota
-Halaman `verifikasi.html` (tidak muncul di Google). Penyewa luar kota membagikan lokasi HP
-tiga kali; setiap kali, pesan WhatsApp berisi nama, kebaya, tanggal, link Google Maps dan
-akurasi lokasi terkirim ke nomor Mojang.Kebaya.
-
-**Lokasi terdeteksi otomatis saat penyewa mengisi form** (tanpa tombol), setelah penyewa memilih
-*Izinkan* di browser:
-- **Booking di katalog:** begitu memilih "Kirim ke luar kota". Pesan booking berisi baris
-  `Lokasi HP:` (link Google Maps), jadi ini sekaligus langkah 1.
-- **Cek ongkir di beranda:** begitu mulai mengisi form. Tidak wajib; tetap bisa tanya ongkir tanpa lokasi.
-- **Halaman verifikasi:** begitu mulai mengisi form. Wajib; jika ditolak atau GPS mati, muncul
-  petunjuk + tombol "Coba lagi". Lokasi yang lebih dari 15 menit dideteksi ulang otomatis.
-
-Lokasi hanya dideteksi sekali per form (bukan pelacakan terus-menerus).
-Link langkah 1 di bawah hanya perlu dikirim jika pesan booking bertuliskan
-`Lokasi HP: belum dibagikan`, atau penyewa booking lewat jalur lain (Instagram, chat langsung,
-tombol WhatsApp di halaman kebaya).
-
-### Halaman admin: `cek-luar-kota.html`
-Buka **https://mojangkebaya.vercel.app/cek-luar-kota.html** di HP (simpan sebagai bookmark;
-halaman ini tidak muncul di Google dan tidak ditautkan dari menu).
-
-1. **Tempel pesan booking** penyewa di kotak *Langkah 1* → kebaya & tanggal acara terisi sendiri.
-2. **Link untuk penyewa** muncul untuk langkah 1, 2 dan 3, lengkap dengan tanggal kapan dikirim
-   (H-1 dan H+1). Isi nomor WA penyewa supaya tombol *Kirim lewat WhatsApp* langsung ke chat-nya,
-   atau tekan *Salin pesan*.
-3. **Tempel balasan penyewa** di kotak langkahnya. Halaman mengecek otomatis:
-   - lokasi ada atau belum, dan akurasinya (di atas ±500 m = GPS mati);
-   - jarak antarlangkah (di atas 25 km diberi tanda: tanyakan dulu ke penyewa);
-   - kirim kembali tepat waktu atau terlambat berapa jam dari batas H+1 pukul 12.00 WIB;
-   - nama, kebaya dan tanggal acara sama di semua pesan; pesan yang salah kotak.
-4. **Daftar cek sebelum kirim**: kebaya baru boleh dikirim setelah semua tercentang
-   (DP & pelunasan dicek di mutasi rekening, KTP, lokasi, video packing, resi).
-
-Isian hanya tersimpan di tab browser itu, tidak dikirim ke mana pun, dan hilang saat tab
-ditutup. Tekan **Kosongkan semua isian** sebelum mengecek penyewa berikutnya.
-
-Link juga bisa dibuat manual (ganti `k` = nama file kebaya di folder `kebaya/`, `t` = tanggal acara):
-
-| Kapan | Link |
-|---|---|
-| Setelah DP masuk (jika lokasi belum ada) | `https://mojangkebaya.vercel.app/verifikasi.html?langkah=1&k=aruni-navy&t=2026-11-21` |
-| H-1, paket sampai | `https://mojangkebaya.vercel.app/verifikasi.html?langkah=2&k=aruni-navy&t=2026-11-21` |
-| H+1, kirim kembali | `https://mojangkebaya.vercel.app/verifikasi.html?langkah=3&k=aruni-navy&t=2026-11-21` |
-
-Yang dicek:
-- **Langkah 1:** buka link peta. Lokasi harus di kota yang sama dengan alamat kirim, dan nama
-  harus sama dengan KTP. Jika jauh berbeda, tanyakan dulu sebelum mengirim kebaya.
-- **Langkah 2:** lokasi harus dekat alamat kirim.
-- **Langkah 3:** lokasi biasanya di agen kurir; cek nomor resi di situs kurir.
-- **Akurasi** di atas ±500 m berarti GPS mati. Minta penyewa menyalakan GPS lalu kirim ulang.
-- Lokasi diambil hanya sekali per langkah (bukan pelacakan terus-menerus), dan aplikasi lokasi
-  palsu bisa mengakalinya. Jadi tetap cocokkan dengan KTP, alamat dan nomor resi.
-
-Denda keterlambatan tidak dipatok di syarat & ketentuan ("tergantung lama keterlambatan");
-halaman admin menampilkan berapa jam keterlambatannya sebagai dasar.
-
-Janji di halaman itu: data lokasi dihapus paling lambat **30 hari** setelah kebaya kembali.
-Hapus pesan lokasi di WhatsApp sesuai janji tersebut (UU PDP). Untuk mengubah angkanya, ubah
-teks di bagian "2c" pada `tools/buat-halaman.mjs`, lalu jalankan pembuat halaman lagi.
 
 ## Privasi
 - Kalender ketersediaan (Google Calendar) bisa dilihat siapa saja, **termasuk judul,

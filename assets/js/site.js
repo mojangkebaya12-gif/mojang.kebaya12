@@ -2,7 +2,7 @@
    MOJANG.KEBAYA — KATALOG, DETAIL & WHATSAPP
    Data produk ada di data.js; file ini tidak perlu diubah.
    Dipakai di index.html (beranda), katalog.html (katalog + detail), halaman
-   kebaya/ & panduan/, dan verifikasi.html (verifikasi lokasi sewa luar kota).
+   kebaya/ & panduan/, dan booking.html (form booking + lokasi HP).
    Setiap bagian hanya berjalan jika elemennya ada di halaman.
    ============================================================= */
 (function () {
@@ -37,8 +37,7 @@ const today = new Date(); today.setMinutes(today.getMinutes() - today.getTimezon
 const todayISO = today.toISOString().slice(0, 10);
 const fmtDate = v => v ? new Date(v + 'T00:00').toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : '...';
 
-/* ── Lokasi HP penyewa luar kota (verifikasi.html, booking "Kirim ke luar kota" di katalog,
-      cek ongkir di beranda) ──
+/* ── Lokasi HP penyewa (booking.html) ──
    Lokasi dideteksi otomatis sekali saat penyewa mulai mengisi form, dan hanya jika penyewa
    mengizinkan di browser. Tidak disimpan di website: hanya ikut di pesan WhatsApp. */
 const LOKASI_MAKS_UMUR = 15 * 60 * 1000;   // lokasi lebih lama dari 15 menit diambil ulang
@@ -46,9 +45,20 @@ const LOKASI_KURANG = 500;                // akurasi di atas ±500 m dianggap ku
 const mapsUrl = p => `https://www.google.com/maps/search/?api=1&query=${p.lat.toFixed(5)},${p.lng.toFixed(5)}`;
 const jarak = m => m < 1000 ? `±${Math.round(m)} m` : `±${(m / 1000).toFixed(1).replace('.', ',')} km`;
 const jam = t => new Date(t).toLocaleString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' }) + ' WIB';
-const LOKASI_GAGAL = {   // [pesan untuk penyewa, alasan singkat untuk pesan WhatsApp]
-  0: ['Browser ini tidak bisa membagikan lokasi. Buka link ini di Chrome atau Safari.', 'browser tidak mendukung'],
-  1: ['Izin lokasi ditolak. Buka pengaturan browser → Izin situs → Lokasi → Izinkan untuk situs ini, lalu coba lagi.', 'izin ditolak'],
+// Petunjuk izin lokasi sesuai HP/browser penyewa (iPhone sering mematikan lokasi untuk Safari di Pengaturan)
+const UA = navigator.userAgent;
+const DI_APLIKASI = /Instagram|FBAN|FBAV|musical_ly|Bytedance|TikTok|Line\//i.test(UA);   // browser di dalam aplikasi
+const IOS = /iPhone|iPad|iPod/.test(UA) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const PETUNJUK_IZIN = DI_APLIKASI
+  ? 'Lokasi tidak bisa dibaca di dalam aplikasi ini. Ketuk ⋯ lalu “Buka di browser” (Safari/Chrome), kemudian isi lagi.'
+  : IOS
+    ? (/CriOS/.test(UA)
+      ? 'Lokasi belum diizinkan. Buka Pengaturan iPhone → Chrome → Lokasi → pilih “Saat Menggunakan App”, lalu ketuk'
+      : 'Lokasi belum diizinkan. Buka Pengaturan iPhone → Privasi & Keamanan → Layanan Lokasi → Situs Web Safari → pilih “Saat Menggunakan App”, lalu ketuk')
+    : 'Lokasi belum diizinkan. Ketuk ikon di kiri alamat situs → Izin → Lokasi → Izinkan, lalu ketuk';
+const LOKASI_GAGAL = {   // [pesan pengingat untuk penyewa, alasan singkat untuk pesan WhatsApp/log]
+  0: ['Browser ini tidak bisa membagikan lokasi. Buka link ini di Safari atau Chrome.', 'browser tidak mendukung'],
+  1: [PETUNJUK_IZIN, 'izin ditolak'],
   2: ['Lokasi tidak terbaca. Nyalakan GPS / Lokasi di HP, lalu coba lagi.', 'GPS mati / tidak terbaca'],
   3: ['Terlalu lama mencari lokasi. Pastikan GPS menyala (lebih cepat di dekat jendela), lalu coba lagi.', 'terlalu lama'],
 };
@@ -78,8 +88,7 @@ function lokasiForm(statusEl, teks = {}) {
       teks.selesai?.();
     }, code => {
       L.mencari = false; L.gagal = code;
-      if (teks.diamGagal) L.set('');   // tanpa pesan ke penyewa; alasannya tetap ikut tercatat
-      else L.set(`${LOKASI_GAGAL[code][0]}${ulang('Coba lagi')}${teks.gagal ? `<br>${teks.gagal}` : ''}`, 'warn');
+      L.set(`${LOKASI_GAGAL[code][0]}${ulang('Coba lagi')}${teks.gagal ? `<br>${teks.gagal}` : ''}`, 'warn');
       teks.selesai?.();
     });
   };
@@ -297,43 +306,16 @@ if (sheet) {
   const dDate = $('#dDate');
   dDate.min = todayISO;
 
-  /* Pengambilan: begitu "Kirim ke luar kota" dipilih, lokasi HP terdeteksi otomatis,
-     lalu link Google Maps-nya ikut di pesan booking WhatsApp. */
-  const dBook = $('#dBook'), dLoc = $('#dLoc'), dCity = $('#dCity');
-  const kirimLuarKota = () => dBook.querySelector('[name="dShip"]:checked')?.value === 'kirim';
-  // jika ditolak/gagal: tidak ada pesan, booking tetap terkirim dengan baris "Lokasi HP: belum dibagikan (…)"
-  const dL = lokasiForm($('#dLocStatus'), { ok: 'Lokasi ikut terkirim bersama booking.', diamGagal: true });
-  dBook.addEventListener('change', e => {
-    if (e.target.name !== 'dShip') return;
-    const kirim = kirimLuarKota();
-    dLoc.hidden = !kirim;
-    dCity.disabled = !kirim;
-    if (kirim && !dL.pos && dL.gagal === null) dL.cari();
-  });
-
-  dBook.addEventListener('submit', e => {
+  $('#dBook').addEventListener('submit', e => {
     e.preventDefault();
     if (!current) return;
-    const kirim = kirimLuarKota();
-    if (kirim && (dL.mencari || (dL.pos && !dL.segar()))) {   // masih mendeteksi, atau lokasi sudah lama: deteksi ulang
-      dL.cari();
-      dL.set('Lokasi sedang dideteksi… Tekan “Booking via WhatsApp” lagi setelah lokasi terdeteksi.', 'warn');
-      return;
-    }
-    const dPos = dL.pos;
-    const lokasi = dPos
-      ? `Lokasi HP: ${mapsUrl(dPos)}\nAkurasi lokasi: ${jarak(dPos.acc)}, ${jam(dPos.time)}\n`
-      : `Lokasi HP: belum dibagikan (${LOKASI_GAGAL[dL.gagal ?? 2][1]})\n`;
     const msg = `Halo Mojang.Kebaya, saya mau booking kebaya:\n` +
       `Kebaya: ${current.name} (${current.priceTxt})\n` +
       `Tanggal acara: ${fmtDate(dDate.value)}\n` +
       `Acara: ${$('#dEvent').value}\n` +
-      (kirim ? `Kirim ke: ${dCity.value.trim()}\n${lokasi}` : `Pengambilan: ambil di Sukabumi\n`) +
-      `Nama: ...\n` +
-      (kirim ? `Alamat lengkap: ...\n` : '') +
-      (kirim && dPos ? `\nSaya setuju lokasi ini dipakai Mojang.Kebaya untuk keamanan sewa.\n` : '') +
-      `\nLink: ${pageUrl(current.key)}`;
-    track('Booking WhatsApp', { kebaya: current.name, dari: 'detail', pengambilan: kirim ? (dPos ? 'luar kota + lokasi' : 'luar kota tanpa lokasi') : 'Sukabumi' });
+      `Nama: ...\nAmbil di Sukabumi / kirim ke: ...\n\n` +
+      `Link: ${pageUrl(current.key)}`;
+    track('Booking WhatsApp', { kebaya: current.name, dari: 'detail' });
     window.open(waLink(msg), '_blank', 'noopener');
   });
 
@@ -414,28 +396,18 @@ if ($('#quickForm')) $('#quickForm').addEventListener('submit', e => {
   window.open(waLink(`Halo Mojang.Kebaya, saya mau booking kebaya.${t ? `\n${t}` : ''}`), '_blank', 'noopener');
 });
 
-/* ── Cek ongkir luar kota → WhatsApp (beranda) ──
-   Lokasi HP terdeteksi otomatis saat penyewa mulai mengisi form (tidak wajib untuk tanya ongkir). */
+/* ── Cek ongkir luar kota → WhatsApp (beranda) ── */
 if ($('#shipForm')) {
-  const ship = $('#shipForm');
   $('#sKebaya').innerHTML += ITEMS.map(i => `<option>${esc(i.name)}</option>`).join('');
   $('#sDate').min = todayISO;
-  const sL = lokasiForm($('#sLocStatus'), { ok: 'Lokasi ikut terkirim untuk menghitung ongkir.', gagal: 'Tetap bisa tanya ongkir tanpa lokasi.' });
-  sL.otomatis(ship);
-  ship.addEventListener('submit', e => {
+  $('#shipForm').addEventListener('submit', e => {
     e.preventDefault();
-    if (sL.mencari || (sL.pos && !sL.segar())) {
-      sL.cari();
-      sL.set('Lokasi sedang dideteksi… Tekan “Tanya ongkir via WhatsApp” lagi setelah lokasi terdeteksi.', 'warn');
-      return;
-    }
     const msg = `Halo Mojang.Kebaya, saya mau sewa kebaya untuk dikirim ke luar kota.\n` +
       `Kota tujuan: ${$('#sCity').value.trim()}\n` +
-      (sL.pos ? `Lokasi HP: ${mapsUrl(sL.pos)}\nAkurasi lokasi: ${jarak(sL.pos.acc)}, ${jam(sL.pos.time)}\n` : '') +
       `Tanggal acara: ${fmtDate($('#sDate').value)}\n` +
       `Kebaya: ${$('#sKebaya').value || 'belum memilih'}\n` +
       `Mohon info estimasi ongkirnya. Terima kasih.`;
-    track('Tanya ongkir WhatsApp', { kota: $('#sCity').value.trim(), lokasi: sL.pos ? 'ada' : 'tidak' });
+    track('Tanya ongkir WhatsApp', { kota: $('#sCity').value.trim() });
     window.open(waLink(msg), '_blank', 'noopener');
   });
 }
@@ -444,13 +416,12 @@ if ($('#shipForm')) {
    Lokasi HP terdeteksi otomatis saat penyewa mulai mengisi nama/nomor WA, dicatat ke Google Form
    "Log Lokasi Booking" (data.js → FORM_BOOKING.log), lalu form booking terbuka dengan nama & nomor WA
    (dan kebaya/tanggal dari link, mis. booking.html?k=aruni-navy&t=2026-11-21) sudah terisi.
-   Jika lokasi gagal/ditolak, tidak ada pesan untuk penyewa: booking tetap lanjut dan alasannya
-   ikut tercatat di log. */
+   Jika lokasi gagal/ditolak, muncul pengingat cara mengizinkan lokasi (+ tombol "Coba lagi");
+   booking tetap bisa lanjut dan alasannya ikut tercatat di log. */
 if ($('#bookForm') && FORM_BOOKING) {
   const form = $('#bookForm'), err = $('#bErr');
   const L = lokasiForm($('#bStatus'), {
     ok: 'Lokasi tercatat untuk keamanan sewa.',
-    diamGagal: true,   // jika ditolak/gagal: tidak ada pesan, booking lanjut, alasan tercatat di log
     selesai: () => { if (err.dataset.tunggu) { err.textContent = ''; delete err.dataset.tunggu; } },
   });
   L.otomatis(form);
@@ -501,263 +472,6 @@ if ($('#bookForm') && FORM_BOOKING) {
     if (tgl) isi.set(f.tanggal, tgl);
     setTimeout(() => { location.href = `${FORM_BOOKING.url}?${isi}`; }, 150);   // beri waktu log terkirim
   });
-}
-
-/* ── Verifikasi lokasi sewa luar kota → WhatsApp (verifikasi.html) ──
-   Lokasi terdeteksi otomatis sekali saat penyewa mulai mengisi form (setelah diizinkan di browser).
-   Tidak disimpan di website. Link dari admin bisa mengisi otomatis:
-   verifikasi.html?langkah=2&k=aruni-navy&t=2026-11-21 */
-if ($('#locForm')) {
-  const form = $('#locForm'), err = $('#vErr');
-  const NAMA_LANGKAH = { 1: 'Booking (verifikasi alamat)', 2: 'Paket diterima', 3: 'Paket dikirim kembali' };
-  const L = lokasiForm($('#vStatus'), { selesai: () => { if (err.dataset.tunggu) { err.textContent = ''; delete err.dataset.tunggu; } } });
-  L.otomatis(form);
-
-  const langkah = () => form.querySelector('[name="langkah"]:checked').value;
-  // kolom khusus langkah tertentu (alamat = 1, resi = 3): disembunyikan & dinonaktifkan di langkah lain
-  const syncLangkah = () => form.querySelectorAll('[data-langkah]').forEach(box => {
-    const on = box.dataset.langkah === langkah();
-    box.hidden = !on;
-    box.querySelectorAll('input, textarea').forEach(f => { f.disabled = !on; });
-  });
-
-  // isi otomatis dari link admin
-  const q = new URLSearchParams(location.search);
-  const r = form.querySelector(`[name="langkah"][value="${q.get('langkah')}"]`);
-  if (r) r.checked = true;
-  if (ITEMS.some(i => i.key === q.get('k'))) $('#vKebaya').value = q.get('k');
-  if (/^\d{4}-\d{2}-\d{2}$/.test(q.get('t') || '')) $('#vDate').value = q.get('t');
-  syncLangkah();
-  form.addEventListener('change', e => { if (e.target.name === 'langkah') { syncLangkah(); err.textContent = ''; } });
-
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    err.textContent = ''; delete err.dataset.tunggu;
-    if (!form.checkValidity()) {
-      const bad = form.querySelector('input:invalid, select:invalid, textarea:invalid');
-      err.textContent = bad.id === 'vAgree' ? 'Centang persetujuan lokasi dulu.' : 'Lengkapi kolom yang masih kosong.';
-      bad.focus();
-      return;
-    }
-    if (!L.segar()) {   // belum terdeteksi, gagal, atau sudah lebih dari 15 menit: deteksi (ulang)
-      L.cari();
-      err.textContent = L.mencari ? 'Lokasi sedang dideteksi. Tekan “Kirim ke WhatsApp” lagi setelah tanda ✓ muncul.' : 'Lokasi belum terdeteksi. Ikuti petunjuk di atas, lalu coba lagi.';
-      if (L.mencari) err.dataset.tunggu = '1';   // dihapus otomatis setelah deteksi selesai
-      return;
-    }
-    const pos = L.pos;
-    const n = langkah();
-    const kebaya = ITEMS.find(i => i.key === $('#vKebaya').value);
-    const msg = `Halo Mojang.Kebaya, ini verifikasi lokasi sewa luar kota.\n` +
-      `Langkah: ${n}. ${NAMA_LANGKAH[n]}\n` +
-      `Nama: ${$('#vName').value.trim()}\n` +
-      `Kebaya: ${kebaya.name}\n` +
-      `Tanggal acara: ${fmtDate($('#vDate').value)}\n` +
-      (n === '1' ? `Alamat kirim: ${$('#vAddr').value.trim().replace(/\s*\n\s*/g, ', ')}\n` : '') +
-      (n === '3' ? `Kurir & resi: ${$('#vResi').value.trim()}\n` : '') +
-      `Lokasi HP: ${mapsUrl(pos)}\n` +
-      `Akurasi: ${jarak(pos.acc)}, diambil ${jam(pos.time)}\n\n` +
-      `Saya setuju lokasi ini dipakai Mojang.Kebaya untuk keamanan sewa.` +
-      (n === '1' ? `\nFoto KTP asli saya kirim di chat ini.` : '');
-    track('Verifikasi lokasi WhatsApp', { langkah: n });
-    window.open(waLink(msg), '_blank', 'noopener');
-  });
-}
-
-/* ── Cek sewa luar kota, khusus admin (cek-luar-kota.html) ──
-   1) link verifikasi + pesan WA untuk penyewa, 2) membaca pesan WA penyewa yang ditempel
-   (lokasi, akurasi, jarak antarlangkah, ketepatan waktu kirim kembali, kecocokan data),
-   3) daftar cek sebelum kirim. Semua dihitung di browser ini; isian hanya disimpan di
-   sessionStorage tab ini (hilang saat tab ditutup) dan tidak dikirim ke mana pun. */
-if ($('#ckForm')) {
-  const JAUH_KM = 25;                         // jarak antarlangkah di atas ini perlu ditanyakan
-  const SIMPAN = 'mojang-cek-luar-kota';
-  const NAMA = { 1: 'Booking', 2: 'Paket diterima', 3: 'Kirim kembali' };
-  const cKebaya = $('#cKebaya'), cDate = $('#cDate'), cWa = $('#cWa');
-  const links = $('#ckLinks'), hint = $('#ckHint'), out = $('#ckOut'), go = $('#ckGo');
-  const boxes = [...document.querySelectorAll('#ckMsgs textarea')];
-  const fields = [...document.querySelectorAll('[data-simpan]')];
-  const checks = [...document.querySelectorAll('[data-cek]')];
-  const kirimChecks = [...document.querySelector('.ck-todo').querySelectorAll('[data-cek]')];
-
-  /* tanggal & jarak */
-  const WIB = 7 * 3600e3;
-  const BULAN = ['jan', 'feb', 'mar', 'apr', 'mei', 'jun', 'jul', 'agu', 'sep', 'okt', 'nov', 'des'];
-  const bulanKe = s => { const k = s.slice(0, 3).toLowerCase(); return k === 'agt' ? 7 : BULAN.indexOf(k); };
-  const isoDari = (d, m, y) => `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-  const tambahHari = (iso, n) => { const d = new Date(iso + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
-  const isoWIB = t => new Date(t + WIB).toISOString().slice(0, 10);
-  const labelH = (iso, acara) => { const n = Math.round((Date.parse(iso) - Date.parse(acara)) / 864e5); return n ? `H${n > 0 ? '+' : ''}${n}` : 'H (hari acara)'; };
-  const km = (a, b) => {
-    const r = Math.PI / 180, dLat = (b.lat - a.lat) * r, dLng = (b.lng - a.lng) * r;
-    return 12742 * Math.asin(Math.sqrt(Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLng / 2) ** 2));
-  };
-  const fmtKm = k => k < 1 ? `${Math.round(k * 1000)} m` : `${k.toFixed(1).replace('.', ',')} km`;
-  const lama = ms => { const j = Math.ceil(ms / 3600e3); return j < 24 ? `±${j} jam` : `±${Math.floor(j / 24)} hari${j % 24 ? ` ${j % 24} jam` : ''}`; };
-
-  /* baca pesan WA dari verifikasi.html atau booking "Kirim ke luar kota" di katalog */
-  function bacaPesan(txt) {
-    const baris = re => ((txt.match(re) || [])[1] || '').trim();
-    const isi = v => (/^(\.{2,}|…|belum memilih)$/i.test(v) ? '' : v);   // "Nama: ..." = belum diisi
-    const p = {
-      langkah: baris(/^\s*Langkah:\s*(\d)/mi) || (/booking kebaya/i.test(txt) ? '1' : ''),
-      nama: isi(baris(/^\s*Nama:\s*(.+)$/mi)),
-      kebaya: isi(baris(/^\s*Kebaya:\s*(.+)$/mi).replace(/\s*\(.*\)\s*$/, '')),
-      alamat: isi(baris(/^\s*Alamat (?:kirim|lengkap):\s*(.+)$/mi)),
-      kota: isi(baris(/^\s*(?:Kirim ke|Kota tujuan):\s*(.+)$/mi)),
-      resi: isi(baris(/^\s*Kurir & resi:\s*(.+)$/mi)),
-      lokasi: baris(/^\s*Lokasi HP:\s*(.+)$/mi),
-      ambilSendiri: /^\s*Pengambilan:\s*ambil di Sukabumi/mi.test(txt),
-    };
-    const ev = baris(/^\s*Tanggal acara:\s*(.+)$/mi).match(/(\d{1,2})\s+([a-z]+)\s+(\d{4})/i);
-    if (ev && bulanKe(ev[2]) >= 0) p.acara = isoDari(+ev[1], bulanKe(ev[2]), ev[3]);
-    const q = p.lokasi.match(/query=(-?\d{1,2}(?:\.\d+)?)(?:,|%2C)\s*(-?\d{1,3}(?:\.\d+)?)/i);
-    if (q) p.pos = { lat: +q[1], lng: +q[2] };
-    const ak = baris(/^\s*Akurasi(?: lokasi)?:\s*(.+)$/mi);
-    const a = ak.match(/±\s*([\d.,]+)\s*(km|m)\b/i);
-    if (a) p.acc = parseFloat(a[1].replace(',', '.')) * (a[2].toLowerCase() === 'km' ? 1000 : 1);
-    const w = ak.match(/(\d{1,2})\s+([a-z]{3,})\s+(\d{4}),?\s+(\d{1,2})[.:](\d{2})/i);
-    if (w && bulanKe(w[2]) >= 0) p.waktu = Date.UTC(+w[3], bulanKe(w[2]), +w[1], +w[4], +w[5]) - WIB;
-    return p;
-  }
-
-  /* 1 · link verifikasi + pesan WA untuk penyewa */
-  const PESAN = {
-    1: (k, t, u) => `Halo Kak, terima kasih sudah booking kebaya ${k} untuk ${t}. Untuk keamanan sewa luar kota, mohon isi verifikasi lokasi lewat link ini (nyalakan GPS lalu pilih Izinkan), kemudian kirim foto KTP asli di chat ini ya:\n${u}`,
-    2: (k, t, u) => `Halo Kak, paket kebaya ${k} sudah sampai? Mohon bagikan lokasi saat paket diterima lewat link ini ya:\n${u}`,
-    3: (k, t, u) => `Halo Kak, terima kasih sudah memakai kebaya ${k}. Batas kirim kembali hari ini pukul 12.00 WIB, kebaya tidak perlu dicuci. Setelah paket diserahkan ke kurir, mohon bagikan lokasi + nomor resi lewat link ini ya:\n${u}`,
-  };
-  const KAPAN = {
-    1: () => 'Setelah DP masuk, jika pesan booking belum berisi lokasi HP.',
-    2: t => `H-1 · ${fmtDate(tambahHari(t, -1))}, saat paket sampai.`,
-    3: t => `H+1 · ${fmtDate(tambahHari(t, 1))}, sebelum 12.00 WIB.`,
-  };
-  const nomorWa = v => { let d = v.replace(/\D/g, ''); if (d.startsWith('0')) d = '62' + d.slice(1); else if (d.startsWith('8')) d = '62' + d; return d.length >= 10 ? d : ''; };
-  function buatLink() {
-    const it = ITEMS.find(i => i.key === cKebaya.value), t = cDate.value;
-    links.hidden = !(it && t);
-    hint.hidden = !links.hidden;
-    if (links.hidden) return;
-    const wa = nomorWa(cWa.value);
-    links.innerHTML = ['1', '2', '3'].map(n => {
-      const u = new URL(`${ROOT}verifikasi.html?langkah=${n}&k=${it.key}&t=${t}`, location.href).href;
-      const msg = PESAN[n](it.name, fmtDate(t), u);
-      return `<li><b>Langkah ${n} · ${NAMA[n]}</b>${KAPAN[n](t)}<span class="ck-btns">` +
-        `<a class="ulink" href="https://wa.me/${wa}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">Kirim lewat WhatsApp${wa ? '' : ' (pilih kontak)'}</a>` +
-        `<button class="ulink" type="button" data-salin="${esc(msg)}">Salin pesan</button></span></li>`;
-    }).join('');
-  }
-  const salinLama = t => {
-    const ta = document.createElement('textarea'); ta.value = t; ta.style.cssText = 'position:fixed;top:0;opacity:0';
-    document.body.append(ta); ta.select(); let ok = false;
-    try { ok = document.execCommand('copy'); } catch (e) { /* tidak didukung */ }
-    ta.remove(); return ok;
-  };
-  links.addEventListener('click', e => {
-    const b = e.target.closest('[data-salin]'); if (!b) return;
-    const tanda = ok => { b.textContent = ok ? 'Tersalin ✓' : 'Gagal menyalin'; setTimeout(() => { b.textContent = 'Salin pesan'; }, 2000); };
-    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(b.dataset.salin).then(() => tanda(true), () => tanda(salinLama(b.dataset.salin)));
-    else tanda(salinLama(b.dataset.salin));
-  });
-
-  /* 2 · cek pesan penyewa */
-  function cek() {
-    const P = {};
-    boxes.forEach(b => { if (b.value.trim()) P[b.dataset.step] = bacaPesan(b.value); });
-    // data sewa diisi otomatis dari pesan penyewa, selama admin tidak mengisinya sendiri
-    const pertama = P[1] || P[2] || P[3];
-    const isiOtomatis = (el, v) => { if (el.value && !el.dataset.auto) return; el.value = v || ''; if (v) el.dataset.auto = '1'; else delete el.dataset.auto; };
-    isiOtomatis(cKebaya, pertama && ITEMS.find(i => i.name.toLowerCase() === pertama.kebaya.toLowerCase())?.key);
-    isiOtomatis(cDate, pertama && pertama.acara);
-    buatLink();
-
-    const acara = cDate.value, rows = [];
-    const r = (cls, html) => rows.push([cls, html]);
-    const jarakDari = (a, b, dari) => { const d = km(a, b); r(d > JAUH_KM ? 'warn' : 'ok', `Jarak dari ${dari}: ${fmtKm(d)}${d > JAUH_KM ? '. Jauh: tanyakan dulu ke penyewa sebelum lanjut.' : ''}`); };
-    for (const n of ['1', '2', '3']) {
-      const p = P[n]; if (!p) continue;
-      rows.push(['step', `Langkah ${n} · ${NAMA[n]}`]);
-      if (p.langkah && p.langkah !== n) r('warn', `Ini pesan langkah ${p.langkah}, bukan langkah ${n}. Pindahkan ke kotak yang benar.`);
-      if (p.pos) {
-        const kurang = p.acc > LOKASI_KURANG;
-        const waktu = p.waktu ? `${jam(p.waktu)}${acara ? ` (${labelH(isoWIB(p.waktu), acara)})` : ''}` : 'waktu tidak terbaca';
-        r(kurang ? 'warn' : 'ok', `Lokasi: <a href="${mapsUrl(p.pos)}" target="_blank" rel="noopener">buka peta</a> · akurasi ${p.acc != null ? jarak(p.acc) : 'tidak terbaca'} · ${waktu}` +
-          (kurang ? '<br>Akurasi rendah: GPS kemungkinan mati. Minta penyewa menyalakan GPS lalu kirim ulang.' : ''));
-      } else if (p.ambilSendiri) {
-        r('info', 'Penyewa memilih ambil di Sukabumi: verifikasi lokasi tidak perlu.');
-      } else {
-        r('bad', p.lokasi ? `Lokasi ${esc(p.lokasi)}. Kirim link langkah ${n} ke penyewa.` : 'Tidak ada link lokasi di pesan ini. Pastikan yang ditempel adalah pesan dari halaman verifikasi.');
-      }
-      if (n === '1' && !p.ambilSendiri) {
-        if (p.alamat) r('info', `Alamat kirim: ${esc(p.alamat)}. Buka peta: lokasi harus di kota yang sama.`);
-        else r('warn', p.kota ? `Baru kota tujuan (${esc(p.kota)}). Minta alamat lengkap; lokasi di peta harus di kota yang sama.` : 'Alamat kirim belum ada. Minta alamat lengkap.');
-        r(p.nama ? 'info' : 'warn', p.nama ? `Nama: <b>${esc(p.nama)}</b>. Cocokkan dengan foto KTP asli.` : 'Nama belum diisi. Minta nama lengkap sesuai KTP + foto KTP asli.');
-      }
-      if (n === '2' && P[1]?.pos && p.pos) jarakDari(P[1].pos, p.pos, 'lokasi booking (langkah 1)');
-      if (n === '3') {
-        r(p.resi ? 'info' : 'bad', p.resi ? `Kurir &amp; resi: <b>${esc(p.resi)}</b>. Cek di aplikasi atau situs kurir.` : 'Nomor resi belum ada. Minta foto resi.');
-        const asal = P[2]?.pos ? [P[2].pos, 'lokasi paket diterima (langkah 2)'] : P[1]?.pos ? [P[1].pos, 'lokasi booking (langkah 1)'] : null;
-        if (asal && p.pos) jarakDari(asal[0], p.pos, asal[1]);
-        if (acara && p.waktu) {
-          const hari = tambahHari(acara, 1), lewat = p.waktu - Date.parse(`${hari}T12:00:00+07:00`);
-          r(lewat > 0 ? 'warn' : 'ok', lewat > 0
-            ? `Terlambat ${lama(lewat)} dari batas ${fmtDate(hari)} pukul 12.00 WIB. Denda sesuai lama keterlambatan.`
-            : `Dikirim tepat waktu (batas ${fmtDate(hari)} pukul 12.00 WIB).`);
-        }
-      }
-    }
-    const isiP = Object.entries(P);
-    if (isiP.length) {
-      rows.push(['step', 'Kecocokan data']);
-      const sama = (label, ambil, acuan) => {
-        const nilai = isiP.map(([n, p]) => [`langkah ${n}`, ambil(p)]).filter(([, v]) => v);
-        if (acuan) nilai.unshift(['data sewa', acuan]);
-        if (nilai.length < 2) return;
-        const beda = new Set(nilai.map(([, v]) => v.toLowerCase().replace(/\s+/g, ' '))).size > 1;
-        r(beda ? 'warn' : 'ok', beda ? `${label} berbeda: ${nilai.map(([d, v]) => `${esc(v)} (${d})`).join(' · ')}` : `${label} sama: ${esc(nilai[0][1])}`);
-      };
-      const it = ITEMS.find(i => i.key === cKebaya.value);
-      sama('Nama', p => p.nama);
-      sama('Kebaya', p => p.kebaya, it && it.name);
-      sama('Tanggal acara', p => p.acara && fmtDate(p.acara), acara && fmtDate(acara));
-      if (rows[rows.length - 1][0] === 'step') rows.pop();
-    }
-    const perlu = rows.filter(([c]) => c === 'warn' || c === 'bad').length;
-    out.innerHTML = !rows.length ? '' :
-      `<p class="ck-sum ${perlu ? 'warn' : 'ok'}">${perlu ? `${perlu} hal perlu dicek (tanda ! dan ✕).` : '✓ Semua cek otomatis aman. Tetap cocokkan nama dengan foto KTP.'}</p>` +
-      `<ul class="ck-out">${rows.map(([c, t]) => c === 'step' ? `<li class="ck-step">${t}</li>` : `<li class="${c}">${t}</li>`).join('')}</ul>`;
-  }
-
-  /* 3 · daftar cek sebelum kirim */
-  const updGo = () => {
-    const sisa = kirimChecks.filter(c => !c.checked).length;
-    go.className = 'vf-status' + (sisa ? ' warn' : ' ok');
-    go.textContent = sisa ? `${sisa} dari ${kirimChecks.length} belum dicentang: kebaya belum boleh dikirim.` : '✓ Semua tercentang: kebaya boleh dikirim.';
-  };
-
-  /* simpan isian di tab ini saja */
-  const simpan = () => { try { sessionStorage.setItem(SIMPAN, JSON.stringify({ f: fields.map(f => f.value), a: fields.map(f => !!f.dataset.auto), c: checks.map(c => c.checked) })); } catch (e) { /* mode privat */ } };
-  try {
-    const s = JSON.parse(sessionStorage.getItem(SIMPAN) || 'null');
-    if (s) {
-      s.f.forEach((v, n) => { if (fields[n]) { fields[n].value = v; if (s.a?.[n]) fields[n].dataset.auto = '1'; } });
-      s.c.forEach((v, n) => { if (checks[n]) checks[n].checked = v; });
-    }
-  } catch (e) { /* mode privat */ }
-  const segarkan = () => { cek(); updGo(); simpan(); };
-  ['input', 'change'].forEach(ev => $('#konten').addEventListener(ev, e => {
-    if (!e.target.matches('[data-simpan], [data-cek]')) return;
-    if (e.target === cKebaya || e.target === cDate) delete e.target.dataset.auto;   // diisi admin sendiri
-    segarkan();
-  }));
-  $('#ckReset').addEventListener('click', () => {
-    if (!confirm('Kosongkan semua isian di halaman ini?')) return;
-    fields.forEach(f => { f.value = ''; delete f.dataset.auto; });
-    checks.forEach(c => { c.checked = false; });
-    try { sessionStorage.removeItem(SIMPAN); } catch (e) { /* mode privat */ }
-    segarkan();
-  });
-  segarkan();
 }
 
 /* ── Angka di hero ── */

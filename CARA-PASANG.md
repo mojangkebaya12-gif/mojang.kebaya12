@@ -56,8 +56,9 @@ booking yang lama (di balasan WhatsApp, bio Instagram, dll.).
 2. **Ambil di Sukabumi:** tanpa lokasi (Anda bertemu langsung & melihat KTP), langsung lanjut.
    **Dikirim ke luar kota:** lokasi HP langsung terdeteksi (browser meminta izin sekali) dan **wajib**.
    Saat menekan *Lanjut ke form booking*, nama, nomor WA, link Google Maps, akurasi, waktu, serta
-   jenis HP & browser tercatat ke Google Form **"Log Lokasi Booking"** (hanya Anda yang melihat
-   hasilnya: buka form itu → tab *Responses*, atau *Link to Sheets* supaya jadi spreadsheet).
+   jenis HP & browser tercatat ke Google Form **"Log Lokasi Booking"**. Hasilnya masuk otomatis ke
+   spreadsheet booking **"Contact Information Mojang Kebaya (Responses)"**, tab **"Log Lokasi Luar Kota"**
+   (satu baris per penyewa; hanya Anda yang bisa melihatnya).
 3. Google Form **"Booking Mojang.kebaya"** terbuka dengan nama, nomor WA & pengambilan sudah terisi.
    Form ini tidak diubah sama sekali.
 

@@ -59,9 +59,12 @@ booking yang lama (di balasan WhatsApp, bio Instagram, dll.).
 3. Google Form **"Booking Mojang.kebaya"** terbuka dengan nama & nomor WA sudah terisi. Form ini
    tidak diubah sama sekali.
 
-- Jika lokasi ditolak / GPS mati, penyewa melihat pengingat cara mengizinkan lokasi (sesuai iPhone
-  atau Android) + tombol *Coba lagi*. Booking tetap bisa lanjut; di log tertulis
-  `belum dibagikan (izin ditolak)`. Minta penyewa membagikan lokasi lewat WhatsApp sebelum mengirim kebaya.
+- **Lokasi wajib.** Jika lokasi ditolak / GPS mati, penyewa **tidak bisa lanjut** ke form booking; ia
+  melihat pengingat cara mengizinkan lokasi (sesuai iPhone/Android/aplikasi) + tombol *Coba lagi*.
+- Penyewa yang tertahan tercatat **sekali** di log dengan Lokasi HP `DITOLAK, belum bisa lanjut (…)`,
+  plus jenis HP & browser di Keterangan (mis. `iPhone · Instagram`). Hubungi penyewa itu lewat WhatsApp:
+  minta buka link di Safari/Chrome dan izinkan lokasi, atau kirim lokasi lewat WhatsApp
+  (ikon + → Lokasi → Kirim Lokasi Anda Saat Ini).
 - Link bisa langsung berisi kebaya & tanggal: `booking.html?k=aruni-navy&t=2026-11-21`
   (kolom Kebaya & Tanggal acara di Google Form ikut terisi).
 - Cocokkan log dengan jawaban form booking lewat **nama + nomor WA**.

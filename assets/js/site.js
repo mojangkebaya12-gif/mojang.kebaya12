@@ -47,8 +47,19 @@ const jarak = m => m < 1000 ? `±${Math.round(m)} m` : `±${(m / 1000).toFixed(1
 const jam = t => new Date(t).toLocaleString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' }) + ' WIB';
 // Petunjuk izin lokasi sesuai HP/browser penyewa (iPhone sering mematikan lokasi untuk Safari di Pengaturan)
 const UA = navigator.userAgent;
-const DI_APLIKASI = /Instagram|FBAN|FBAV|musical_ly|Bytedance|TikTok|Line\//i.test(UA);   // browser di dalam aplikasi
 const IOS = /iPhone|iPad|iPod/.test(UA) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const APLIKASI = (UA.match(/Instagram|FBAN|FBAV|musical_ly|Bytedance|TikTok|Line\/|WhatsApp|Telegram/i) || [''])[0];
+// browser di dalam aplikasi (Instagram, TikTok, …); di iPhone juga: tanpa tanda "Safari/" dan bukan Chrome/Firefox/Edge
+const DI_APLIKASI = !!APLIKASI || (IOS && !/Safari\//.test(UA) && !/CriOS|FxiOS|EdgiOS/.test(UA));
+// jenis HP & browser untuk log, mis. "iPhone · Safari", "Android · Chrome", "iPhone · Instagram"
+const PERANGKAT = [
+  IOS ? (/iPad/.test(UA) || !/iPhone|iPod/.test(UA) ? 'iPad' : 'iPhone') : /Android/.test(UA) ? 'Android' : 'Komputer',
+  APLIKASI ? ({ FBAN: 'Facebook', FBAV: 'Facebook', musical_ly: 'TikTok', Bytedance: 'TikTok', 'Line/': 'LINE' }[APLIKASI] || APLIKASI)
+    : DI_APLIKASI ? 'browser dalam aplikasi'
+    : /CriOS|Chrome\//.test(UA) && !/Edg|SamsungBrowser|OPR/.test(UA) ? 'Chrome'
+    : /SamsungBrowser/.test(UA) ? 'Samsung Internet' : /Edg/.test(UA) ? 'Edge' : /FxiOS|Firefox/.test(UA) ? 'Firefox'
+    : /Safari\//.test(UA) ? 'Safari' : 'browser lain',
+].join(' · ');
 const PETUNJUK_IZIN = DI_APLIKASI
   ? 'Lokasi tidak bisa dibaca di dalam aplikasi ini. Ketuk ⋯ lalu “Buka di browser” (Safari/Chrome), kemudian isi lagi.'
   : IOS
@@ -416,15 +427,24 @@ if ($('#shipForm')) {
    Lokasi HP terdeteksi otomatis saat penyewa mulai mengisi nama/nomor WA, dicatat ke Google Form
    "Log Lokasi Booking" (data.js → FORM_BOOKING.log), lalu form booking terbuka dengan nama & nomor WA
    (dan kebaya/tanggal dari link, mis. booking.html?k=aruni-navy&t=2026-11-21) sudah terisi.
-   Jika lokasi gagal/ditolak, muncul pengingat cara mengizinkan lokasi (+ tombol "Coba lagi");
-   booking tetap bisa lanjut dan alasannya ikut tercatat di log. */
+   Lokasi WAJIB: tanpa lokasi, tombol "Lanjut" hanya menampilkan pengingat cara mengizinkannya.
+   Percobaan yang tertolak dicatat sekali ke log (DITOLAK + jenis HP/browser) supaya admin bisa
+   menghubungi penyewa. */
 if ($('#bookForm') && FORM_BOOKING) {
   const form = $('#bookForm'), err = $('#bErr');
   const L = lokasiForm($('#bStatus'), {
     ok: 'Lokasi tercatat untuk keamanan sewa.',
-    selesai: () => { if (err.dataset.tunggu) { err.textContent = ''; delete err.dataset.tunggu; } },
+    selesai: () => {   // hasil deteksi yang ditunggu tombol "Lanjut": hapus pesan tunggu, atau ingatkan bahwa lokasi wajib
+      if (!err.dataset.tunggu) return;
+      delete err.dataset.tunggu;
+      err.textContent = L.gagal !== null ? WAJIB : '';
+    },
   });
+  const WAJIB = 'Lokasi wajib untuk melanjutkan booking. Ikuti petunjuk di atas, lalu ketuk Coba lagi.';
   L.otomatis(form);
+  let izinAwal = '';   // 'denied' = lokasi sudah diblokir sebelum ditanya (pengaturan HP/browser)
+  try { navigator.permissions?.query({ name: 'geolocation' }).then(st => { izinAwal = st.state; }, () => {}); } catch (e) { /* tidak didukung */ }
+  let tolakTercatat = false;
   const q = new URLSearchParams(location.search);
   const item = ITEMS.find(i => i.key === q.get('k'));
   const tgl = /^\d{4}-\d{2}-\d{2}$/.test(q.get('t') || '') ? q.get('t') : '';
@@ -448,24 +468,27 @@ if ($('#bookForm') && FORM_BOOKING) {
       bad.focus();
       return;
     }
-    // lokasi masih dideteksi, belum pernah dideteksi, atau sudah lebih dari 15 menit: tunggu dulu
-    if (L.mencari || (!L.segar() && L.gagal === null)) {
-      L.cari();
-      err.textContent = 'Lokasi sedang dideteksi. Tekan “Lanjut ke form booking” lagi setelah lokasinya muncul.';
-      err.dataset.tunggu = '1';
+    const nama = $('#bName').value.trim(), wa = $('#bWa').value.trim();
+    const g = FORM_BOOKING.log;
+    const ket = ['Halaman booking', PERANGKAT, item && `Kebaya: ${item.name}`, tgl && `Tanggal acara: ${tgl}`].filter(Boolean).join(' · ');
+    // lokasi wajib: belum ada, gagal, atau sudah lebih dari 15 menit → deteksi (ulang) dan tunggu
+    if (!L.segar()) {
+      if (L.gagal !== null && !tolakTercatat) {   // catat sekali bahwa penyewa ini tertahan karena lokasi
+        tolakTercatat = true;
+        kirimLog({ [g.nama]: nama, [g.wa]: wa, [g.akurasi]: '-', [g.ket]: ket,
+          [g.lokasi]: `DITOLAK, belum bisa lanjut (${LOKASI_GAGAL[L.gagal][1]}${izinAwal === 'denied' ? ', sudah diblokir sebelum ditanya' : ''})` });
+        track('Booking tertahan lokasi', { alasan: LOKASI_GAGAL[L.gagal][1], perangkat: PERANGKAT });
+      }
+      L.cari();   // coba lagi (mungkin penyewa baru saja mengubah pengaturan)
+      if (L.mencari) {
+        err.textContent = 'Lokasi sedang dideteksi. Tekan “Lanjut ke form booking” lagi setelah tanda ✓ muncul.';
+        err.dataset.tunggu = '1';
+      } else err.textContent = WAJIB;
       return;
     }
-    const nama = $('#bName').value.trim(), wa = $('#bWa').value.trim();
     const p = L.pos;
-    const g = FORM_BOOKING.log;
-    kirimLog({
-      [g.nama]: nama,
-      [g.wa]: wa,
-      [g.lokasi]: p ? mapsUrl(p) : `belum dibagikan (${LOKASI_GAGAL[L.gagal ?? 2][1]})`,
-      [g.akurasi]: p ? `${jarak(p.acc)}, ${jam(p.time)}` : '-',
-      [g.ket]: ['Halaman booking', item && `Kebaya: ${item.name}`, tgl && `Tanggal acara: ${tgl}`].filter(Boolean).join(' · '),
-    });
-    track('Lanjut form booking', { lokasi: p ? 'ada' : 'tidak' });
+    kirimLog({ [g.nama]: nama, [g.wa]: wa, [g.lokasi]: mapsUrl(p), [g.akurasi]: `${jarak(p.acc)}, ${jam(p.time)}`, [g.ket]: ket });
+    track('Lanjut form booking', { perangkat: PERANGKAT });
     const f = FORM_BOOKING.isi;
     const isi = new URLSearchParams({ usp: 'pp_url', [f.nama]: nama, [f.wa]: wa });
     if (item) isi.set(f.kebaya, item.name);

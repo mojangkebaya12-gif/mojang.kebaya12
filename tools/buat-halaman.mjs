@@ -258,7 +258,7 @@ wr('booking.html', page({
       <label class="label" for="bWa">Nomor WhatsApp</label>
       <input id="bWa" type="tel" inputmode="tel" required autocomplete="tel" placeholder="Contoh: 081234567890">
       <div class="vf-loc">
-        <p class="vf-status" id="bStatus" role="status" aria-live="polite">Untuk keamanan sewa, lokasi HP terdeteksi otomatis saat Anda mulai mengisi. Nyalakan GPS, lalu pilih <b>Izinkan</b> saat browser meminta izin lokasi.</p>
+        <p class="vf-status" id="bStatus" role="status" aria-live="polite">Lokasi HP <b>wajib</b> untuk keamanan sewa, dan terdeteksi otomatis saat Anda mulai mengisi. Nyalakan GPS, lalu pilih <b>Izinkan</b> saat browser meminta izin lokasi.</p>
       </div>
       <label class="vf-ok"><input type="checkbox" id="bAgree" required><span>Saya setuju lokasi HP saya dicatat oleh Mojang.Kebaya untuk keamanan sewa ini.</span></label>
       <button class="btn btn-dark" type="submit">Lanjut ke form booking</button>
